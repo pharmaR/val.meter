@@ -5,6 +5,37 @@ _Work-in-progress exploration of a `{riskmetric}` alternative, leveraging S7._
 This refactor is inspired by the _R Validation Hub_ Developer Day discussions
 and aims to explore some of the discussed design goals.
 
+## Status
+
+- [x] Metric as subclasses of atomic base types
+- [x] Metric derivations registered as an S7 generic (`pkg_data_derive`). We
+      continue to implement `$` and `[[` operator methods for convenience.
+- [x] Metric tags for annotation
+- [x] Metric descriptions for annotation
+- [x] Metric scopes: required capabilities which must be enabled to calculate
+      metrics
+- [x] Metric suggests dependencies
+- [x] Metric return type checking
+- [ ] Surfacing of errors from dependent data
+- [ ] Comprehensive evaluation of all metrics
+- [ ] Better CLI for communicating about metrics
+- [ ] Package resource (source of package information) conversion (ie, with a
+      CRAN resource, download the source code and create a local source
+      code resource)
+- [ ] Lots of documentation to write
+
+## Demo
+
+```r
+this_pkg <- pkg_from("./val.meter")
+this_pkg$r_cmd_check_error_count
+```
+
+Just like `riskmetric`, this causes the lazy evaluation of
+`rcmdcheck::rcmdcheck`. See `R/metric_r_cmd_check.R` to see how metrics
+are implemented and a rough overview of the metadata that comes with each
+metric.
+
 ## Explored Features
 
 ### Caching, Assessments, Metrics and Scores - Oh, my!
