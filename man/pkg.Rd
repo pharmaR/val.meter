@@ -17,7 +17,10 @@ resources.
 \section{Fields}{
 
 \describe{
-\item{\code{data}}{A mutable environment, used to aggregate package meatadata}
+\item{\code{data}}{A mutable environment, used to aggregate package meatadata.
+When working with a \code{\link{pkg}} object, you may prefer to use the \code{[[} and
+\code{$} operators for accessing data in this environment, which will also
+prompt any necessary data dependencies to be evaluated.}
 
 \item{\code{resources}}{A list of resources of package data for the
 particular package. The order of the list determines the precedence

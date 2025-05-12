@@ -1,26 +1,23 @@
-method(
-  pkg_data_derive,
-  list(pkg_data_class("desc"), pkg, pkg_local_resource)
-) <-
-  function(field, pkg, resource, ...) {
+register_data(
+  "desc",
+  class = c("description", "R6"),
+  pkg_local_resource = function(field, pkg, resource, ...) {
     desc::desc(resource@path)
   }
+)
 
-method(pkg_data_derive, list(pkg_data_class("name"), pkg, class_any)) <-
+register_data(
+  "name",
+  class = class_character,
   function(field, pkg, resource, ...) {
     pkg$desc$get_field("Package")
   }
+)
 
-method(pkg_data_derive, list(pkg_data_class("version"), pkg, class_any)) <-
+register_data(
+  "version",
+  class = class_character,
   function(field, pkg, resource, ...) {
     pkg$desc$get_field("Version")
   }
-
-method(
-  pkg_data_derive,
-  list(pkg_data_class("r_cmd_check"), pkg, pkg_local_resource)
-) <-
-  function(field, pkg, resource, ...) {
-
-    pkg$desc$get_field("Version")
-  }
+)

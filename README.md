@@ -27,9 +27,27 @@ and aims to explore some of the discussed design goals.
 ## Demo
 
 ```r
-this_pkg <- pkg_from("./val.meter")
-this_pkg$r_cmd_check_error_count
+# see all implemented metrics
+metrics()
+
+# see all implemented _data_ (a superset of metrics)
+metrics(all = TRUE)
+
+# calculate some data
+this_pkg <- pkg_from("../val.meter")
+this_pkg$version
+
+# calculate a metric
+this_pkg$downloads_grand_total
+#> <error/val_meter_val_meter_disallowed_scopes_error_error>
+#> Error in `this_pkg$downloads_grand_total`:
+#> ! data derivation requires disallowed scopes: "permit_transient",
+#>   "permit_version_independent", and "permit_network"
 ```
+
+> [!NOTE]
+> There's currently now way to opt in to these required capabilities! That
+> feature is on the way!
 
 Just like `riskmetric`, this causes the lazy evaluation of
 `rcmdcheck::rcmdcheck`. See `R/metric_r_cmd_check.R` to see how metrics

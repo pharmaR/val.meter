@@ -17,7 +17,7 @@ pkg_data_scopes <- new_class(
     all_scopes <- c(
       "permit_version_independent",
       "permit_transient",
-      "permit_computed",
+      "permit_execution",
       "permit_network"
     )
 
@@ -79,7 +79,10 @@ pkg_data_derive_error <- new_class(
 pkg <- new_class(
   "pkg",
   properties = list(
-    #' @field data A mutable environment, used to aggregate package meatadata
+    #' @field data A mutable environment, used to aggregate package meatadata.
+    #' When working with a [`pkg`] object, you may prefer to use the `[[` and
+    #' `$` operators for accessing data in this environment, which will also
+    #' prompt any necessary data dependencies to be evaluated.
     data = class_environment,
 
     #' @field resources A list of resources of package data for the
@@ -94,25 +97,28 @@ pkg <- new_class(
 )
 
 #' @exportS3Method ".DollarNames" "val.meter::pkg"
-`.DollarNames.val.meter::pkg` <- function(x, pattern, ...) { # nolint: object_name_linter, line_length.
-  signature_prefix <- "pkg_data_field_"
-
-  # get dispatch class types for first argument (field name)
-  signature_types <- names(pkg_data_derive@methods)
-
-  # subset for only methods which dispatch on [`pkg_data()`] types
-  is_pkg_data <- startsWith(signature_types, signature_prefix)
-  signature_types <- signature_types[is_pkg_data]
-
-  # remove prefix for completions, return only those that match pattern
-  fields <- substring(signature_types, nchar(signature_prefix) + 1L)
+`.DollarNames.val.meter::pkg` <- function(x, pattern, ...) {
+  fields <- get_data_derive_field_names()
   fields[grepl(pattern, fields)]
 }
 
-get_pkg_data <- function(x, name, ...) {
-  .trace$set_bottom(1L)
-  if (!exists(name, envir = x@data))
+get_pkg_data <- function(x, name, ..., .raise = .trace$raise) {
+  if (
+    .raise &&
+      exists(name, envir = x@data) &&
+      inherits(x@data[[name]], err_type())
+  ) {
+    err(
+      class = "derive_dependency",
+      "field depends on field '{name}' that threw an error during derivation"
+    )
+  }
+
+  if (!exists(name, envir = x@data)) {
     x@data[[name]] <- pkg_data_derive(name, x)
+  }
+
+
   x@data[[name]]
 }
 

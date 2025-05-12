@@ -24,12 +24,13 @@ Description:
 License: MIT + file LICENSE
 Imports:
     cli,
-	options,
+	desc,
+    options,
     S7,
-	utils,
+    utils,
     xml2
 Suggests:
-	rcmdcheck
+    rcmdcheck
 Collate:
 	package.R
 	options.R

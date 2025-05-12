@@ -1,8 +1,9 @@
 register_data(
   "r_cmd_check",
-  class = S7::new_S3_class("rcmdcheck"),
+  class = "rcmdcheck",
   tags = c("execution"),
   suggests = "rcmdcheck",
+  scopes = "permit_execution",
   pkg_source_resource = function(field, pkg, resource, ...) {
     rcmdcheck::rcmdcheck(resource@path)
   }
@@ -10,7 +11,7 @@ register_data(
 
 register_metric(
   "r_cmd_check_errors_count",
-  class = pkg_metric_integer,
+  class = class_integer,
   tags = c("execution"),
   scopes = c(),
   description = "the number of errors produced when running R CMD check",

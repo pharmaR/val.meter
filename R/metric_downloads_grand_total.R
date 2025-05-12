@@ -1,6 +1,6 @@
 register_metric(
   "downloads_grand_total",
-  class = pkg_metric_integer,
+  class = class_integer,
   tags = c(
     "adoption"
   ),

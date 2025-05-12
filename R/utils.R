@@ -1,6 +1,17 @@
+`%||%` <- function(lhs, rhs) {
+  if (is.null(lhs)) rhs else lhs
+}
+
 vlapply <- function(
   ...,
   FUN.VALUE = logical(1L) # nolint: object_name_linter.
+) {
+  vapply(..., FUN.VALUE = FUN.VALUE)
+}
+
+vcapply <- function(
+  ...,
+  FUN.VALUE = character(1L) # nolint: object_name_linter.
 ) {
   vapply(..., FUN.VALUE = FUN.VALUE)
 }
@@ -15,7 +26,7 @@ pkg_data_class <- function(field_name = NULL) {
 }
 
 as_pkg_data <- function(field_name) {
-  structure(list(), class = pkg_data_s3_class(field_name))
+  structure(field_name, class = pkg_data_s3_class(field_name))
 }
 
 glue <- function(..., .envir = parent.frame()) {
@@ -43,108 +54,100 @@ glue <- function(..., .envir = parent.frame()) {
 })
 
 .trace <- local({
-  bottom <- NULL
+  raise <- FALSE
 
-  set_bottom <- function(n = 0L) {
-    bottom <<- sys.frames()[[sys.nframe() - n - 1L]]
-    clear_bottom_on_task_callback()
+  raise_derive_errors <- function(value = TRUE) {
+    raise <<- value
+    set_on_task_callback("raise", raise <<- FALSE)
   }
 
-  clear_bottom_on_task_callback <- function() {
+  set_on_task_callback <- function(name, value, envir = parent.frame()) {
     addTaskCallback(
+      name = paste0(packageName(), "-clear-trace-", name),
       function(...) {
-        bottom <<- NULL
-        FALSE # don't persist after next callback
-      },
-      name = paste0(packageName(), "-clear-trace-bottom")
+        eval(expr, envir = envir)
+        FALSE  # don't persist after next callback
+      }
     )
   }
 
   environment()
 })
 
-get_generic_call <- function(calls) {
-  for (i in rev(seq_along(calls))) {
-    if (identical(calls[[i]], quote(S7::S7_dispatch()))) {
-      return(calls[[i - 1L]])
+get_package_boundary_call <- function(calls = sys.calls()) {
+  for (i in seq_len(sys.nframe())) {
+    if (identical(parent.env(sys.frame(i)), topenv())) {
+      return(sys.frame(i))
     }
   }
 
-  calls[[length(calls)]]
+  sys.frame()
 }
 
-err_type <- function(class) {
+err_type <- function(class = NULL) {
   prefix <- gsub(".", "_", packageName(), fixed = TRUE)
-  c(sprintf("%s_%s", prefix, class), prefix)
+  suffix <- "error"
+  c(
+    sprintf("%s_%s_%s", prefix, class, suffix),
+    paste(prefix, suffix, sep = "_")
+  )
 }
 
-err <- function(msg, class = NULL) {
-  errorCondition(msg, class = err_type(class))
+err <- function(
+  ...,
+  data = list(),
+  class = NULL,
+  .envir = parent.frame()
+) {
+  args <- data
+  args$message <- as.character(list(...))
+  args$call <- get_package_boundary_call()
+  args$class <- err_type(class)
+  args$.envir <- .envir
+  do.call(cli::cli_abort, args)
 }
 
 assert_scopes <- function(field, scopes) {
   required_scopes <- pkg_data_get_scopes(field)
-  if (!all(required_scopes %in% scopes)) {
-    call <- get_generic_call(sys.calls())
-    msg <- glue(
-      "data derivation requires disallowed scopes: ",
-      "{.str {required_scopes}}"
-    )
-
-    cli::cli_abort(
-      call = call,
-      msg,
-      err_type("disallowed_scopes"),
-      .frame = .trace$bottom
-    )
-  }
+  if (!all(required_scopes %in% scopes)) err(
+    class = err_type("disallowed_scopes"),
+    "data derivation requires disallowed scopes: {.str {required_scopes}}"
+  )
 }
 
 assert_suggests <- function(field) {
   suggests <- pkg_data_get_suggests(field)
   names(suggests) <- suggests
-
   has_suggests <- vlapply(suggests, requireNamespace, quietly = TRUE)
 
-  if (!all(has_suggests)) {
-    call <- get_generic_call(sys.calls())
-    msg <- glue("data derivation requires suggests: ", "{.pkg {suggests}}")
-
-    cli::cli_abort(
-      call = call,
-      msg,
-      err_type("missing_suggests"),
-      .frame = .trace$bottom
-    )
-  }
+  if (!all(has_suggests)) err(
+    class = "missing_suggests",
+    data = list(packages = names(suggests)[!has_suggests]),
+    "data derivation requires suggests: {.pkg {suggests}}"
+  )
 }
 
 assert_class_is <- function(subclass, class) {
-  if (!is_subclass(subclass, class)) {
-    call <- get_generic_call(sys.calls())
-    msg <- "test"
-    # msg <- glue("class {.cls {subclass}} is not a subclass of {.cls {class}}")
-
-    cli::cli_abort(
-      call = call,
-      msg,
-      err_type("metric_data_not_atomic")
-    )
-  }
+  if (!is_subclass(subclass, class)) err(
+    class = err_type("metric_data_not_atomic"),
+    "class {.cls {subclass}} is not of class {.cls {class}}"
+  )
 }
 
 assert_is <- function(obj, class) {
-  if (!is(obj, class)) {
-    call <- get_generic_call(sys.calls())
-    msg <- glue("data derivation returned data of unexpected class {.cls {class(obj)}}, expected {.cls {class}}")
+  if (!is(obj, class)) err(
+    class = err_type("unexpected_return_class"),
+    "data derivation returned data of unexpected class {.cls {class(obj)}},",
+    "expected {.cls {class}}"
+  )
+}
 
-    cli::cli_abort(
-      call = call,
-      msg,
-      err_type("unexpected_return_class"),
-      .frame = .trace$bottom
-    )
-  }
+as_pkg_data_derive_error <- function(x, ...) {
+  after <- match(err_type(), class(x), nomatch = 1L) - 1L
+  class(x) <- append(class(x), err_type("derive")[[1L]], after = after)
+  new_data <- list(...)
+  x[names(new_data)] <- new_data
+  x
 }
 
 register_data <- function(
@@ -154,15 +157,15 @@ register_data <- function(
   description = "",
   tags = pkg_data_tags(),
   scopes = pkg_data_scopes(),
-  suggests = c()
+  suggests = character(0L)
 ) {
   dots <- list(...)
   tags <- convert(tags, pkg_data_tags)
   description <- convert(description, class_character)
   scopes <- convert(scopes, pkg_data_scopes)
 
-  return_class <- class
-  return_class_or_derive_error <- S7::new_union(class, pkg_data_derive_error)
+  if (is.character(class)) class <- S7::new_S3_class(class)
+  return_class <- S7::as_class(class)
 
   if (length(dots) < 1L) {
     stop("At least one `derive` method must be provided")
@@ -179,6 +182,18 @@ register_data <- function(
     stop("All methods must be named with a valid `pkg_resource` class name")
   }
 
+  method(pkg_data_get_scopes, pkg_data_class(name)) <-
+    function(field) scopes
+
+  method(pkg_data_get_description, pkg_data_class(name)) <-
+    function(field) description
+
+  method(pkg_data_get_tags, pkg_data_class(name)) <-
+    function(field) tags
+
+  method(pkg_data_get_suggests, pkg_data_class(name)) <-
+    function(field) suggests
+
   for (i in seq_along(dots)) {
     resource_class <- eval(parse(text = names(dots)[[i]]))
     fn <- dots[[i]]
@@ -191,33 +206,24 @@ register_data <- function(
     names(fn_sig$params) <-
       utils::head(names(formals(fn)), length(fn_sig$params))
 
-    method(pkg_data_get_scopes, pkg_data_class(name)) <-
-      function(field) scopes
-
-    method(pkg_data_get_description, pkg_data_class(name)) <-
-      function(field) description
-
-    method(pkg_data_get_tags, pkg_data_class(name)) <-
-      function(field) tags
-
-    method(pkg_data_get_suggests, pkg_data_class(name)) <-
-      function(field) suggests
-
     method(pkg_data_get_derive_signature, pkg_data_class(name)) <-
       function(field) fn_sig
 
     method(pkg_data_derive, fn_sig$params) <-
       function(field, pkg, resource, scopes = opt("scopes"), ...) {
-        assert_scopes(field, scopes)
-        assert_suggests(field)
+        .trace$raise_derive_errors()
+        on.exit(.trace$raise_derive_errors(FALSE))
 
-        out <- tryCatch(
-          convert(fn(field, pkg, resource, ...), return_class),
-          error = pkg_data_derive_error
+        tryCatch(
+          {
+            assert_scopes(field, scopes)
+            assert_suggests(field)
+            convert(fn(field, pkg, resource, ...), return_class)
+          },
+          val_meter_error = function(e) {
+            as_pkg_data_derive_error(e, field = as.character(field))
+          }
         )
-
-        assert_is(out, return_class_or_derive_error)
-        out
       }
   }
 }
@@ -228,11 +234,10 @@ register_metric <- function(
   ...,
   tags = pkg_data_tags()
 ) {
-  assert_class_is(class, pkg_metric)
-  register_data(
-    name = name,
-    class = class,
-    tags = tags,
-    ...
-  )
+  assert_class_is(class, class_atomic)
+
+  method(pkg_data_is_metric, pkg_data_class(name)) <-
+    function(field) TRUE
+
+  register_data(name = name, class = class, tags = tags, ...)
 }
