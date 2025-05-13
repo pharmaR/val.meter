@@ -1,9 +1,8 @@
-register_metric(
+impl_data(
   "downloads_grand_total",
+  metric = TRUE,
   class = class_integer,
-  tags = c(
-    "adoption"
-  ),
+  tags = c("adoption"),
   scopes = c(
     "permit_transient",
     "permit_version_independent",
@@ -19,6 +18,8 @@ register_metric(
     #   the badge content?
     url <- paste0("https://cranlogs.r-pkg.org/badges/grand-total/", pkg$name)
     file <- tempfile(paste0(pkg$name, "_badge"), fileext = "svg")
+
+    # TODO: handle possible download failure
     download.file(url, file, quiet = TRUE)
 
     # extract grand total from svg, will be in human-readable format, eg "1.2K"
@@ -30,6 +31,11 @@ register_metric(
     digits <- gsub("[[:alpha:]]", "", total)
     suffix <- substring(total, nchar(digits) + 1L)
     suffix_as_scientific <- switch(suffix, "B" = "9", "M" = "6", "K" = "3")
-    as.integer(paste0(digits, "e+", suffix_as_scientific))
+
+    # handle case when package isn't in repo (returns "null")
+    tryCatch(
+      as.integer(paste0(digits, "e+", suffix_as_scientific)),
+      warning = function(w) 0L
+    )
   }
 )

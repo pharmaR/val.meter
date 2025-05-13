@@ -29,6 +29,9 @@ metric <- new_class(
 
 method(print, metric) <-
   function(x, ...) {
+    fields <- S7::prop_names(x)
+    n <- max(nchar(fields))
+
     type <- NULL
     if (S7::S7_inherits(x@type)) {
       type <- x@type@name
@@ -70,13 +73,29 @@ method(print, metric) <-
     cat(fmt, "\n")
   }
 
+#' @export
+format.val_meter_error <- function(x, ...) {
+  NextMethod(
+    backtrace = FALSE,
+    simplify = "branch",
+    drop = TRUE,
+    prefix = FALSE,
+    ...
+  )
+}
+
+#' @export
+print.val_meter_error <- function(x, ...) {
+  cat(format(x, ...), "\n")
+}
+
 method(convert, list(class_character, metric)) <-
   function(from, to) {
     metric(
       metric = pkg_data_is_metric(from),
       description = pkg_data_get_description(from),
       tags = pkg_data_get_tags(from),
-      type = pkg_data_get_derive_signature(from)$return,
+      type = pkg_data_get_class(from),
       suggests = pkg_data_get_suggests(from),
       scopes = pkg_data_get_scopes(from)
     )

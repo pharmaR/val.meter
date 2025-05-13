@@ -16,8 +16,8 @@ and aims to explore some of the discussed design goals.
       metrics
 - [x] Metric suggests dependencies
 - [x] Metric return type checking
-- [ ] Surfacing of errors from dependent data
-- [ ] Comprehensive evaluation of all metrics
+- [x] Surfacing of errors from dependent data
+- [x] Comprehensive evaluation of all metrics
 - [ ] Better CLI for communicating about metrics
 - [ ] Package resource (source of package information) conversion (ie, with a
       CRAN resource, download the source code and create a local source
@@ -27,22 +27,23 @@ and aims to explore some of the discussed design goals.
 ## Demo
 
 ```r
+library(val.meter)
+
 # see all implemented metrics
 metrics()
 
 # see all implemented _data_ (a superset of metrics)
 metrics(all = TRUE)
 
-# calculate some data
-this_pkg <- pkg_from("../val.meter")
-this_pkg$version
+# calculate some data, give permission to execute package code
+pkg <- pkg_from("../val.meter2", scopes = scopes_permissive)
 
-# calculate a metric
-this_pkg$downloads_grand_total
-#> <error/val_meter_val_meter_disallowed_scopes_error_error>
-#> Error in `this_pkg$downloads_grand_total`:
-#> ! data derivation requires disallowed scopes: "permit_transient",
-#>   "permit_version_independent", and "permit_network"
+# individual metrics are accessed using indexing operators
+pkg$version
+pkg$downloads_grand_total
+
+# view all metrics (will run R CMD check, report errors)
+pkg@metrics
 ```
 
 > [!NOTE]

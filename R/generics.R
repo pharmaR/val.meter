@@ -9,17 +9,16 @@
 #'
 #' @examples
 #' p <- pkg_from("glue")
-#' derive("desc", p)
+#' pkg_data_derive("desc", p)
 #'
 #' @export
 pkg_data_derive <- new_generic("pkg_data_derive", c("field", "pkg", "resource"))
 
 #' @export
-pkg_data_get_derive_signature <-
-  new_generic("pkg_data_get_derive_signature", c("field"))
+pkg_data_get_class <- new_generic("pkg_data_get_class", c("field"))
 
-method(pkg_data_get_derive_signature, class_character) <-
-  function(field) pkg_data_get_derive_signature(as_pkg_data(field))
+method(pkg_data_get_class, class_character) <-
+  function(field) pkg_data_get_class(as_pkg_data(field))
 
 #' @export
 pkg_data_get_description <- new_generic("pkg_data_get_description", c("field"))

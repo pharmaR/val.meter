@@ -16,11 +16,11 @@ Authors@R: c(
       )
     )
 Description:
-	Measures packages for common best practices, adoption and code execution.
-	Built with regulated industries in mind, supporting the surveying of
-	packages and aggregating findings into a portable format to support
-	activities like selecting mature packages and reporting on risk-based
-	software decision-making.
+    Measures packages for common best practices, adoption and code execution.
+    Built with regulated industries in mind, supporting the surveying of
+    packages and aggregating findings into a portable format to support
+    activities like selecting mature packages and reporting on risk-based
+    software decision-making.
 License: MIT + file LICENSE
 Imports:
     cli,
@@ -32,18 +32,18 @@ Imports:
 Suggests:
     rcmdcheck
 Collate:
-	package.R
-	options.R
-	utils.R
-	classes.R
-	classes_resources.R
-	generics.R
-	methods.R
-	methods_derive.R
-	classes_metrics.R
-	metric_downloads_grand_total.R
-	metric_r_cmd_check.R
-	zzz.R
+    package.R
+    utils.R
+    options.R
+    classes.R
+    classes_resources.R
+    generics.R
+    methods.R
+    classes_metrics.R
+    data_desc.R
+    data_downloads_grand_total.R
+    data_r_cmd_check.R
+    zzz.R
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

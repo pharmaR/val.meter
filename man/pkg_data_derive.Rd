@@ -16,6 +16,6 @@ lifetime package downloads.
 }
 \examples{
 p <- pkg_from("glue")
-derive("desc", p)
+pkg_data_derive("desc", p)
 
 }

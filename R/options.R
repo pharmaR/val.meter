@@ -7,13 +7,14 @@ NULL
 NULL
 
 define_options(
-  glue("Set the default {packageName()} package search policy."),
+  fmt("Set the default {packageName()} package search policy."),
   policy = pkg_resource_policy(),
 
-  glue("
+  fmt("
     Set the default {packageName()} data scopes policy. Scopes specify
     permissions permitted when deriving package data. For more details, see
     `?pkg_data_scopes`.
   "),
+
   scopes = pkg_data_scopes()
 )

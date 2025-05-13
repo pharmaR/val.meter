@@ -34,7 +34,7 @@ method(pkg_from, class_character) <-
     }
 
     # return pkg object with discovered resources
-    pkg(resources = resources)
+    new_pkg(resources = resources, ...)
   }
 
 
@@ -67,7 +67,7 @@ method(
 #' @noRd
 method(
   pkg_data_derive,
-  list(class_any, pkg, new_union(NULL, class_missing))
+  list(class_any, new_pkg, new_union(NULL, class_missing))
 ) <-
   function(field, pkg, resource, ..., field_name) {
     for (r in pkg@resources) {
@@ -79,10 +79,10 @@ method(
       if (!inherits(result, "S7_error_method_not_found")) return(result)
     }
 
-    stop(err(
+    err(
+      class = "missing_derivation",
       "Package data '{field_name}' could not be derived from known resources",
-      class = "missing_derivation"
-    ))
+    )
   }
 
 method(convert, list(class_character, pkg_data_tags)) <-
@@ -105,7 +105,7 @@ method(convert, list(class_character, pkg_install_resource)) <-
       return(convert(paths[[1]], to))
     }
 
-    stop(glue("Cannot convert string '{from}' into {.cls to}"))
+    stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }
 
 method(convert, list(class_character, pkg_archive_source_resource)) <-
@@ -114,7 +114,7 @@ method(convert, list(class_character, pkg_archive_source_resource)) <-
       return(to(path = from))
     }
 
-    stop(glue("Cannot convert string '{from}' into {.cls to}"))
+    stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }
 
 method(convert, list(class_character, pkg_source_resource)) <-
@@ -128,7 +128,7 @@ method(convert, list(class_character, pkg_source_resource)) <-
       return(to(path = from))
     }
 
-    stop(glue("Cannot convert string '{from}' into {.cls to}"))
+    stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }
 
 method(convert, list(class_character, pkg_repo_resource)) <-
@@ -144,5 +144,5 @@ method(convert, list(class_character, pkg_repo_resource)) <-
       ))
     }
 
-    stop(glue("Cannot convert string '{from}' into {.cls to}"))
+    stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }

@@ -29,42 +29,22 @@ as_pkg_data <- function(field_name) {
   structure(field_name, class = pkg_data_s3_class(field_name))
 }
 
-glue <- function(..., .envir = parent.frame()) {
-  cli::cli_fmt(cli::cli_text(..., .envir = .envir))
+fmt <- function(..., .envir = parent.frame()) {
+  cli::format_inline(..., .envir = .envir)
 }
-
-.desc <- local({
-  desc <- NULL
-
-  load <- function(lib) {
-    if (!is.null(desc)) return(desc)
-    dcf_path <- file.path(lib, packageName(), "DESCRIPTION")
-    dcf <- read.dcf(dcf_path, keep.white = TRUE)
-    desc <<- as.list(as.data.frame(dcf))
-  }
-
-  features <- function() {
-    is_feat <- startsWith(names(desc), "Config/Feature")
-    feats <- desc[is_feat]
-    names(feats) <- gsub("^Config/Feature/|@R$", "", names(desc)[is_feat])
-    lapply(feats, function(x) eval(parse(text = x), envir = baseenv()))
-  }
-
-  environment()
-})
 
 .trace <- local({
   raise <- FALSE
 
   raise_derive_errors <- function(value = TRUE) {
     raise <<- value
-    set_on_task_callback("raise", raise <<- FALSE)
+    once_on_task_callback("raise", raise <<- FALSE)
   }
 
-  set_on_task_callback <- function(name, value, envir = parent.frame()) {
+  once_on_task_callback <- function(name, expr, envir = parent.frame()) {
     addTaskCallback(
       name = paste0(packageName(), "-clear-trace-", name),
-      function(...) {
+      f = function(...) {
         eval(expr, envir = envir)
         FALSE  # don't persist after next callback
       }
@@ -110,7 +90,7 @@ err <- function(
 assert_scopes <- function(field, scopes) {
   required_scopes <- pkg_data_get_scopes(field)
   if (!all(required_scopes %in% scopes)) err(
-    class = err_type("disallowed_scopes"),
+    class = "disallowed_scopes",
     "data derivation requires disallowed scopes: {.str {required_scopes}}"
   )
 }
@@ -129,14 +109,14 @@ assert_suggests <- function(field) {
 
 assert_class_is <- function(subclass, class) {
   if (!is_subclass(subclass, class)) err(
-    class = err_type("metric_data_not_atomic"),
+    class = "metric_not_atomic",
     "class {.cls {subclass}} is not of class {.cls {class}}"
   )
 }
 
 assert_is <- function(obj, class) {
   if (!is(obj, class)) err(
-    class = err_type("unexpected_return_class"),
+    class = "unexpected_return_class",
     "data derivation returned data of unexpected class {.cls {class(obj)}},",
     "expected {.cls {class}}"
   )
@@ -150,37 +130,30 @@ as_pkg_data_derive_error <- function(x, ...) {
   x
 }
 
-register_data <- function(
+impl_data_derive <- function(name, fn, resource) {
+  return_class <- pkg_data_get_class(name)
+  method(pkg_data_derive, list(pkg_data_class(name), new_pkg, resource)) <-
+    function(field, pkg, resource, ...) {
+      assert_scopes(field, pkg@scopes)
+      assert_suggests(field)
+      convert(fn(field, pkg, resource, ...), return_class)
+    }
+}
+
+impl_data_meta <- function(
   name,
   class = class_any,
-  ...,
   description = "",
   tags = pkg_data_tags(),
   scopes = pkg_data_scopes(),
   suggests = character(0L)
 ) {
-  dots <- list(...)
   tags <- convert(tags, pkg_data_tags)
   description <- convert(description, class_character)
   scopes <- convert(scopes, pkg_data_scopes)
 
   if (is.character(class)) class <- S7::new_S3_class(class)
-  return_class <- S7::as_class(class)
-
-  if (length(dots) < 1L) {
-    stop("At least one `derive` method must be provided")
-  }
-
-  # special case, when a single function is provided assume it applies to any
-  # resource type, pkg_resource
-  if (length(dots) == 1L && is.null(names(dots))) {
-    names(dots) <- "pkg_resource"
-  }
-
-  # if any methods are unnamed, error and enforce naming convention
-  if (is.null(names(dots)) || any(names(dots) == "")) {
-    stop("All methods must be named with a valid `pkg_resource` class name")
-  }
+  class <- S7::as_class(class)
 
   method(pkg_data_get_scopes, pkg_data_class(name)) <-
     function(field) scopes
@@ -194,50 +167,29 @@ register_data <- function(
   method(pkg_data_get_suggests, pkg_data_class(name)) <-
     function(field) suggests
 
-  for (i in seq_along(dots)) {
-    resource_class <- eval(parse(text = names(dots)[[i]]))
-    fn <- dots[[i]]
-
-    fn_sig <- list(
-      params = list(pkg_data_class(name), pkg, resource_class),
-      return = class
-    )
-
-    names(fn_sig$params) <-
-      utils::head(names(formals(fn)), length(fn_sig$params))
-
-    method(pkg_data_get_derive_signature, pkg_data_class(name)) <-
-      function(field) fn_sig
-
-    method(pkg_data_derive, fn_sig$params) <-
-      function(field, pkg, resource, scopes = opt("scopes"), ...) {
-        .trace$raise_derive_errors()
-        on.exit(.trace$raise_derive_errors(FALSE))
-
-        tryCatch(
-          {
-            assert_scopes(field, scopes)
-            assert_suggests(field)
-            convert(fn(field, pkg, resource, ...), return_class)
-          },
-          val_meter_error = function(e) {
-            as_pkg_data_derive_error(e, field = as.character(field))
-          }
-        )
-      }
-  }
+  method(pkg_data_get_class, pkg_data_class(name)) <-
+    function(field) class
 }
 
-register_metric <- function(
+impl_data <- function(
   name,
-  class,
+  fn,
+  for_resource = pkg_resource,
   ...,
-  tags = pkg_data_tags()
+  metric = FALSE
 ) {
-  assert_class_is(class, class_atomic)
+  if (...length() > 0L)
+    impl_data_meta(name = name, ...)
 
+  if (!missing(fn))
+    impl_data_derive(name = name, fn = fn, resource = for_resource)
+
+  if (metric)
+    impl_metric(name)
+}
+
+impl_metric <- function(name, class = pkg_data_get_class(name)) {
+  assert_class_is(class, class_atomic)
   method(pkg_data_is_metric, pkg_data_class(name)) <-
     function(field) TRUE
-
-  register_data(name = name, class = class, tags = tags, ...)
 }
