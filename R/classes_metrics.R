@@ -23,54 +23,76 @@ metric <- new_class(
       if (inherits(res, "error")) res$message
     }),
     suggests = class_character,
-    scopes = pkg_data_scopes
+    scopes = pkg_data_permissions
   )
 )
 
-method(print, metric) <-
-  function(x, ...) {
-    fields <- S7::prop_names(x)
-    n <- max(nchar(fields))
-
-    type <- NULL
-    if (S7::S7_inherits(x@type)) {
-      type <- x@type@name
+method(format, metric) <-
+  function(
+    x,
+    ...,
+    permissions = opt("permissions"),
+    tags = opt("tags")
+  ) {
+    type <- if (S7::S7_inherits(x@type)) {  # nolint: object_usage_linter.
+      x@type@name
     } else {
-      type <- S7:::class_desc(x@type)
+      S7:::class_desc(x@type)
     }
 
-    lines <- Filter(Negate(is.null), list(
-      cli::style_dim("{type}"),
-      if (nchar(x@description) > 0L)
-        cli::style_italic("{x@description}"),
-      if (length(x@tags) > 0L) {
-        paste("tags: ", paste(collapse = " ", vcapply(x@tags, function(tag) {
-          cli::col_blue(cli::format_inline("[{tag}]"))
-        })))
-      },
-      if (length(x@scopes)) {
-        scopes <- paste(collapse = " ", vcapply(x@scopes, function(scopes) {
-          cli::col_blue(cli::format_inline("[{scopes}]"))
-        }))
-        paste("requires permissions:", scopes)
-      },
-      if (length(x@suggests)) {
-        is_installed <- vlapply(x@suggests, requireNamespace, quietly = TRUE)
-        suggests <- vcapply(seq_along(x@suggests), function(i) {
-          if (is_installed[[i]]) {
-            cli::col_green(cli::format_inline("{cli::symbol$tick} {x@suggests[[i]]}"))
-          } else {
-            cli::col_red(cli::format_inline("{cli::symbol$cross} {x@suggests[[i]]}"))
-          }
+    is_installed <- vlapply(x@suggests, requireNamespace, quietly = TRUE)
+    any_tags <- length(x@tags) + length(x@scopes) + length(x@suggests) > 0
+
+    c(
+      # data type
+      fmt(style_dim("{type}")),
+
+      if (any_tags) paste(collapse = " ", c(
+        # tags
+        vcapply(x@tags, function(tag) {
+          color <- if (tag %in% tags) "blue" else "red"
+          fmt(cli_tag(tag, scope = "", color = color))
+        }),
+
+        # permissions
+        vcapply(x@scopes, function(scope) {
+          color <- if (scope %in% permissions) "green" else "red"
+          fmt(cli_tag(scope, scope = "req", color = color))
+        }),
+
+        # suggests dependencies
+        vcapply(seq_along(x@suggests), function(i) {
+          color <- if (is_installed[[i]]) "green" else "red"
+          fmt(cli_tag(scope = "dep", x@suggests[[i]], color = color))
         })
+      )),
 
-        paste("requires packages:", suggests)
-      }
-    ))
+      # description
+      if (nchar(x@description) > 0L) fmt(style_italic("{x@description}"))
+    )
+  }
 
-    fmt <- vcapply(lines, cli::format_inline, .envir = environment())
-    fmt <- paste(fmt, collapse = "\n")
-    cat(fmt, "\n")
+method(print, metric) <-
+  function(
+    x,
+    permissions = opt("permissions"),
+    tags = opt("tags"),
+    ...
+  ) {
+    cat(paste(collapse = "\n", format(x, ...)), "\n")
+
+    if (!all(x@scopes %in% permissions) || !all(x@tags %in% tags)) {
+      cli_inform(
+        paste0(
+          "metric(s) will be disabled due to insufficient permissions or ",
+          "restricted tags. See {.code ?{ packageName() }::options()} for ",
+          "details about global policies."
+        ),
+        class = cnd_type("options", cnd = "message")
+      )
+    }
+
+    invisible(x)
   }
 
 #' @export
@@ -97,9 +119,40 @@ method(convert, list(class_character, metric)) <-
       tags = pkg_data_get_tags(from),
       type = pkg_data_get_class(from),
       suggests = pkg_data_get_suggests(from),
-      scopes = pkg_data_get_scopes(from)
+      scopes = pkg_data_get_permissions(from)
     )
   }
+
+metrics_list <- new_class("metrics_list", parent = class_list)
+
+method(print, metrics_list) <- function(x, ...) {
+  msgs <- list()
+
+  to_print <- x
+  class(to_print) <- NULL
+  attributes(to_print) <- NULL
+  names(to_print) <- names(x)
+
+  res <- withCallingHandlers(
+    print(to_print),
+    message = function(m) {
+      if (inherits(m, cnd_type(cnd = "message"))) {
+        msgs <<- append(msgs, list(m))
+        invokeRestart("muffleMessage")
+      }
+    }
+  )
+
+  if (length(msgs) > 0L) {
+    cli_alert_info("Some metrics will not be evaluated")
+  }
+
+  for (msg in unique(msgs)) {
+    cli_text(style_dim(msg$message))
+  }
+
+  invisible(res)
+}
 
 #' @export
 metrics <- function(all = FALSE) {
@@ -108,5 +161,5 @@ metrics <- function(all = FALSE) {
   fields <- lapply(fields, convert, to = metric)
   is_metric <- vlapply(fields, S7::prop, "metric")
   if (!all) fields <- fields[is_metric]
-  fields
+  metrics_list(fields)
 }

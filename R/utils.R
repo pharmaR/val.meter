@@ -33,7 +33,47 @@ fmt <- function(..., .envir = parent.frame()) {
   cli::format_inline(..., .envir = .envir)
 }
 
-.trace <- local({
+#' @param style A `list` of arguments to pass to the ellipsis arguments of
+#'   [`cli::make_ansi_style()`].
+cli_tag <- function(
+  ...,
+  scope = NULL,
+  color = "blue",
+  .envir = parent.frame()
+) {
+  symbols <- list(
+    lbracket = "\U0001FB6E",
+    rbracket = "\U0001FB6C",
+    rhalfblock = "\u2590"
+  )
+
+  # attempt to make a bright alternative for scoped tags
+  br_color <- if (is.character(color)) paste0("br_", color) else color
+  tag_color <- if (is.null(scope)) color else br_color
+
+  # convert colors to args
+  color <- as.list(color)
+  tag_color <- as.list(tag_color)
+
+  # create styles for tag elements
+  scope_fg <- do.call(cli::make_ansi_style, color)
+  scope_bg <- do.call(cli::make_ansi_style, append(color, list(bg = TRUE)))
+  tag_fg <- do.call(cli::make_ansi_style, tag_color)
+  tag_bg <- do.call(cli::make_ansi_style, append(tag_color, list(bg = TRUE)))
+
+
+  format_inline(
+    .envir = .envir,
+    scope_fg(symbols$lbracket),
+    if (!is.null(scope)) {
+      col_black(scope_bg(" ", scope, tag_fg(symbols$rhalfblock)))
+    },
+    style_bold(col_black(tag_bg(..., " "))),
+    tag_fg(symbols$rbracket)
+  )
+}
+
+.state <- local({
   raise <- FALSE
 
   raise_derive_errors <- function(value = TRUE) {
@@ -41,18 +81,18 @@ fmt <- function(..., .envir = parent.frame()) {
     once_on_task_callback("raise", raise <<- FALSE)
   }
 
-  once_on_task_callback <- function(name, expr, envir = parent.frame()) {
-    addTaskCallback(
-      name = paste0(packageName(), "-clear-trace-", name),
-      f = function(...) {
-        eval(expr, envir = envir)
-        FALSE  # don't persist after next callback
-      }
-    )
-  }
-
   environment()
 })
+
+once_on_task_callback <- function(name, expr, envir = parent.frame()) {
+  addTaskCallback(
+    name = paste0(packageName(), "-clear-trace-", name),
+    f = function(...) {
+      eval(expr, envir = envir)
+      FALSE  # don't persist after next callback
+    }
+  )
+}
 
 get_package_boundary_call <- function(calls = sys.calls()) {
   for (i in seq_len(sys.nframe())) {
@@ -64,12 +104,11 @@ get_package_boundary_call <- function(calls = sys.calls()) {
   sys.frame()
 }
 
-err_type <- function(class = NULL) {
+cnd_type <- function(class = NULL, cnd = "error") {
   prefix <- gsub(".", "_", packageName(), fixed = TRUE)
-  suffix <- "error"
   c(
-    sprintf("%s_%s_%s", prefix, class, suffix),
-    paste(prefix, suffix, sep = "_")
+    sprintf("%s_%s_%s", prefix, class, cnd),
+    paste(prefix, cnd, sep = "_")
   )
 }
 
@@ -82,13 +121,13 @@ err <- function(
   args <- data
   args$message <- as.character(list(...))
   args$call <- get_package_boundary_call()
-  args$class <- err_type(class)
+  args$class <- cnd_type(class)
   args$.envir <- .envir
   do.call(cli::cli_abort, args)
 }
 
 assert_scopes <- function(field, scopes) {
-  required_scopes <- pkg_data_get_scopes(field)
+  required_scopes <- pkg_data_get_permissions(field)
   if (!all(required_scopes %in% scopes)) err(
     class = "disallowed_scopes",
     "data derivation requires disallowed scopes: {.str {required_scopes}}"
@@ -123,8 +162,8 @@ assert_is <- function(obj, class) {
 }
 
 as_pkg_data_derive_error <- function(x, ...) {
-  after <- match(err_type(), class(x), nomatch = 1L) - 1L
-  class(x) <- append(class(x), err_type("derive")[[1L]], after = after)
+  after <- match(cnd_type(), class(x), nomatch = 1L) - 1L
+  class(x) <- append(class(x), cnd_type("derive")[[1L]], after = after)
   new_data <- list(...)
   x[names(new_data)] <- new_data
   x
@@ -144,19 +183,19 @@ impl_data_meta <- function(
   name,
   class = class_any,
   description = "",
-  tags = pkg_data_tags(),
-  scopes = pkg_data_scopes(),
+  tags = pkg_data_tags(c()),
+  permissions = pkg_data_permissions(FALSE),
   suggests = character(0L)
 ) {
   tags <- convert(tags, pkg_data_tags)
   description <- convert(description, class_character)
-  scopes <- convert(scopes, pkg_data_scopes)
+  permissions <- convert(permissions, pkg_data_permissions)
 
   if (is.character(class)) class <- S7::new_S3_class(class)
   class <- S7::as_class(class)
 
-  method(pkg_data_get_scopes, pkg_data_class(name)) <-
-    function(field) scopes
+  method(pkg_data_get_permissions, pkg_data_class(name)) <-
+    function(field) permissions
 
   method(pkg_data_get_description, pkg_data_class(name)) <-
     function(field) description

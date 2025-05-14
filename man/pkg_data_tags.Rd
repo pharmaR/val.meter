@@ -4,7 +4,7 @@
 \alias{pkg_data_tags}
 \title{Package Data Tags Class}
 \usage{
-pkg_data_tags(.data = character(0))
+pkg_data_tags(...)
 }
 \description{
 A enumeration of tags that can be applied to a metric, to capture metadata

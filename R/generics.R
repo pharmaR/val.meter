@@ -33,13 +33,13 @@ method(pkg_data_get_tags, class_character) <-
   function(field) pkg_data_get_tags(as_pkg_data(field))
 
 #' @export
-pkg_data_get_scopes <- new_generic("pkg_data_get_scopes", c("field"))
+pkg_data_get_permissions <- new_generic("pkg_data_get_scopes", c("field"))
 
-method(pkg_data_get_scopes, class_character) <-
-  function(field, scopes, ...) pkg_data_get_scopes(as_pkg_data(field))
+method(pkg_data_get_permissions, class_character) <-
+  function(field, scopes, ...) pkg_data_get_permissions(as_pkg_data(field))
 
-method(pkg_data_get_scopes, S7::new_S3_class(pkg_data_s3_class())) <-
-  function(field, scopes, ...) pkg_data_scopes()  # default, no scopes
+method(pkg_data_get_permissions, S7::new_S3_class(pkg_data_s3_class())) <-
+  function(field, scopes, ...) pkg_data_permissions()  # default, no scopes
 
 
 #' @export

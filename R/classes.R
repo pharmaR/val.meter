@@ -10,32 +10,39 @@
 #' assessed.
 #'
 #' @export
-pkg_data_scopes <- new_class(
-  "pkg_data_scopes",
-  parent = class_character,
-  validator = local({
-    all_scopes <- c(
-      "permit_version_independent",
-      "permit_transient",
-      "permit_execution",
-      "permit_network"
-    )
+pkg_data_permissions <- local({
+  values <- c(
+    "execution",
+    "network"
+  )
 
-    function(self) {
-      if (!all(self %in% all_scopes)) {
-        "Data tags must be one of provided scopes"
+  new_class(
+    "pkg_data_permissions",
+    parent = class_character,
+    constructor = function(...) {
+      n <- ...length()
+      value <- if (n == 0L) {
+        values
+      } else if (n == 1L && identical(..1, TRUE)) {
+        values
+      } else if (n == 1L && identical(..1, FALSE)) {
+        character(0L)
+      } else {
+        as.character(c(...))
+      }
+
+      new_object(value)
+    },
+    validator = function(self) {
+      if (!all(self %in% values)) {
+        fmt(
+          "Data permissions must be one of provided scopes: \n",
+          "  {.str {permissions}}"
+        )
       }
     }
-  })
-)
-
-#' @export
-scopes_permissive <- pkg_data_scopes(c(
-  "permit_version_independent",
-  "permit_transient",
-  "permit_execution",
-  "permit_network"
-))
+  )
+})
 
 #' Package Data Tags Class
 #'
@@ -43,25 +50,43 @@ scopes_permissive <- pkg_data_scopes(c(
 #' more effectively.
 #'
 #' @export
-pkg_data_tags <- new_class(
-  "pkg_data_tags",
-  parent = class_character,
-  validator = local({
-    accepted_tags <- c(
-      "adoption",
-      "lifecycle management",
-      "best practice",
-      "execution"
-    )
+pkg_data_tags <- local({
+  values <- c(
+    "adoption",
+    "lifecycle management",
+    "best practice",
+    "execution",
+    "transient",
+    "version-independent"
+  )
 
-    function(self) {
-      if (!all(self %in% accepted_tags)) {
-        "Data tags must be one of accepted tags"
+  new_class(
+    "pkg_data_tags",
+    parent = class_character,
+    constructor = function(...) {
+      n <- ...length()
+      value <- if (n == 0L) {
+        values
+      } else if (n == 1L && identical(..1, TRUE)) {
+        values
+      } else if (n == 1L && identical(..1, FALSE)) {
+        character(0L)
+      } else {
+        as.character(c(...))
+      }
+
+      new_object(value)
+    },
+    validator = function(self) {
+      if (!all(self %in% values)) {
+        fmt(
+          "Data tags must be one of provided tag names: \n",
+          "  {.str {permissions}}"
+        )
       }
     }
-  })
-)
-
+  )
+})
 
 
 #' Package Data Function Class
@@ -103,7 +128,7 @@ new_pkg <- new_class(
     resources = class_list,
 
     #' @field scopes Permissible scopes for deriving data.
-    scopes = pkg_data_scopes
+    scopes = pkg_data_permissions
   )
 )
 
@@ -113,13 +138,13 @@ new_pkg <- new_class(
   fields[grepl(pattern, fields)]
 }
 
-get_pkg_data <- function(x, name, ..., .raise = .trace$raise) {
+get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
   if (!exists(name, envir = x@data)) {
     # upon computing subsequent data dependencies, raise their errors so that
     # they can be captured and annotated as dependency errors
     if (!.raise) {
-      .trace$raise_derive_errors()
-      on.exit(.trace$raise_derive_errors(FALSE))
+      .state$raise_derive_errors()
+      on.exit(.state$raise_derive_errors(FALSE))
     }
 
     x@data[[name]] <- pkg_data_derive(name, x)

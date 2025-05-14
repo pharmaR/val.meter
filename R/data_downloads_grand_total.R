@@ -2,12 +2,8 @@ impl_data(
   "downloads_grand_total",
   metric = TRUE,
   class = class_integer,
-  tags = c("adoption"),
-  scopes = c(
-    "permit_transient",
-    "permit_version_independent",
-    "permit_network"
-  ),
+  tags = c("adoption", "transient", "version-independent"),
+  permissions = c("network"),
   description = paste0(
     "total number of lifetime downloads, as reported by the Posit ",
     "CRAN mirror through the cranlogs.rpkg.org API"

@@ -3,7 +3,7 @@ impl_data(
   class = S7::new_S3_class("rcmdcheck"),
   tags = c("execution"),
   suggests = "rcmdcheck",
-  scopes = "permit_execution",
+  permissions = "execution",
 )
 
 impl_data(
@@ -18,7 +18,7 @@ impl_data(
   metric = TRUE,
   class = class_integer,
   tags = c("execution"),
-  scopes = c(),
+  permissions = c(),
   description = "the number of errors produced when running R CMD check",
   function(field, pkg, resource, ...) {
     length(pkg$r_cmd_check$errors)

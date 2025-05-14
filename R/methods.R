@@ -91,10 +91,10 @@ method(convert, list(class_character, pkg_data_tags)) <-
 method(convert, list(NULL, pkg_data_tags)) <-
   function(from, to) convert(character(0L), to)
 
-method(convert, list(class_character, pkg_data_scopes)) <-
-  function(from, to) pkg_data_scopes(from)
+method(convert, list(class_character, pkg_data_permissions)) <-
+  function(from, to) pkg_data_permissions(from)
 
-method(convert, list(NULL, pkg_data_scopes)) <-
+method(convert, list(NULL, pkg_data_permissions)) <-
   function(from, to) convert(character(0L), to)
 
 method(convert, list(class_character, pkg_install_resource)) <-

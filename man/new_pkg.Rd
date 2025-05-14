@@ -7,7 +7,7 @@
 new_pkg(
   data = new.env(parent = emptyenv()),
   resources = list(),
-  scopes = pkg_data_scopes()
+  scopes = pkg_data_permissions()
 )
 }
 \description{

@@ -11,10 +11,16 @@ define_options(
   policy = pkg_resource_policy(),
 
   fmt("
-    Set the default {packageName()} data scopes policy. Scopes specify
-    permissions permitted when deriving package data. For more details, see
-    `?pkg_data_scopes`.
+    Set the default {packageName()} data permissions policy. Permissions
+    specify what capabilities are permitted when deriving package data. For more
+    details, see [`pkg_data_permissions()`].
   "),
+  permissions = pkg_data_permissions(FALSE),
 
-  scopes = pkg_data_scopes()
+  fmt("
+    Set the default {packageName()} tags policy. Tags characterize the types
+    of information various metrics contain. For more details, see
+    [`pkg_data_tags()`].
+  "),
+  tags = pkg_data_tags(TRUE)
 )
