@@ -46,10 +46,6 @@ pkg$downloads_grand_total
 pkg@metrics
 ```
 
-> [!NOTE]
-> There's currently now way to opt in to these required capabilities! That
-> feature is on the way!
-
 Just like `riskmetric`, this causes the lazy evaluation of
 `rcmdcheck::rcmdcheck`. See `R/metric_r_cmd_check.R` to see how metrics
 are implemented and a rough overview of the metadata that comes with each
