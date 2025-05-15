@@ -6,6 +6,7 @@ NULL
 #' @name options_params
 NULL
 
+#' @include utils_cli.R
 define_options(
   fmt("Set the default {packageName()} package search policy."),
   policy = pkg_resource_policy(),
@@ -13,14 +14,14 @@ define_options(
   fmt("
     Set the default {packageName()} data permissions policy. Permissions
     specify what capabilities are permitted when deriving package data. For more
-    details, see [`pkg_data_permissions()`].
+    details, see [`permissions()`].
   "),
-  permissions = pkg_data_permissions(FALSE),
+  permissions = permissions(FALSE),
 
   fmt("
     Set the default {packageName()} tags policy. Tags characterize the types
     of information various metrics contain. For more details, see
-    [`pkg_data_tags()`].
+    [`tags()`].
   "),
-  tags = pkg_data_tags(TRUE)
+  tags = tags(TRUE)
 )

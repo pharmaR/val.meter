@@ -1,17 +1,5 @@
-get_data_derive_field_names <- function() {
-  signature_prefix <- "pkg_data_field_"
-
-  # get dispatch class types for first argument (field name)
-  signature_types <- names(pkg_data_derive@methods)
-
-  # subset for only methods which dispatch on [`pkg_data()`] types
-  is_pkg_data <- startsWith(signature_types, signature_prefix)
-  signature_types <- signature_types[is_pkg_data]
-
-  # remove prefix for completions, return only those that match pattern
-  substring(signature_types, nchar(signature_prefix) + 1L)
-}
-
+#' @include class_permissions.R
+#' @include class_tags.R
 metric <- new_class(
   "metric",
   properties = list(
@@ -34,10 +22,10 @@ method(format, metric) <-
     permissions = opt("permissions"),
     tags = opt("tags")
   ) {
-    type <- if (S7_inherits(x@type)) {  # nolint: object_usage_linter.
+    type <- if (S7::S7_inherits(x@type)) {  # nolint: object_usage_linter.
       x@type@name
     } else {
-      class_desc(x@type)
+      S7:::class_desc(x@type)
     }
 
     is_installed <- vlapply(x@suggests, requireNamespace, quietly = TRUE)

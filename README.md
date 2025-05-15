@@ -36,7 +36,7 @@ metrics()
 metrics(all = TRUE)
 
 # calculate some data, give permission to execute package code
-pkg <- pkg_from("../val.meter2", scopes = scopes_permissive)
+pkg <- pkg_from("../val.meter", scopes = scopes_permissive)
 
 # individual metrics are accessed using indexing operators
 pkg$version

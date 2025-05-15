@@ -1,7 +1,9 @@
+#' @include trait_pkg_data.R
+
 impl_data(
   "desc",
   class = c("description", "R6"),
-  for_resource = pkg_local_resource,
+  for_resource = local_resource,
   function(field, pkg, resource, ...) {
     desc::desc(resource@path)
   }

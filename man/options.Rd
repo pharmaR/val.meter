@@ -29,7 +29,7 @@ Set the default val.meter package search policy.\item{default: }{\preformatted{p
 \item{permissions}{\describe{
 Set the default val.meter data permissions policy. Permissions
 specify what capabilities are permitted when deriving package data. For more
-details, see \code{\link[=pkg_data_permissions]{pkg_data_permissions()}}.\item{default: }{\preformatted{pkg_data_permissions(FALSE)}}
+details, see \code{\link[=permissions]{permissions()}}.\item{default: }{\preformatted{permissions(FALSE)}}
 \item{option: }{val.meter.permissions}
 \item{envvar: }{R_VAL_METER_PERMISSIONS (evaluated if possible, raw string otherwise)}
 }}
@@ -37,7 +37,7 @@ details, see \code{\link[=pkg_data_permissions]{pkg_data_permissions()}}.\item{d
 \item{tags}{\describe{
 Set the default val.meter tags policy. Tags characterize the types
 of information various metrics contain. For more details, see
-\code{\link[=pkg_data_tags]{pkg_data_tags()}}.\item{default: }{\preformatted{pkg_data_tags(TRUE)}}
+\code{\link[=tags]{tags()}}.\item{default: }{\preformatted{tags(TRUE)}}
 \item{option: }{val.meter.tags}
 \item{envvar: }{R_VAL_METER_TAGS (evaluated if possible, raw string otherwise)}
 }}

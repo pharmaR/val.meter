@@ -32,18 +32,27 @@ Imports:
 Suggests:
     rcmdcheck
 Collate:
-    package.R
-    utils.R
-    options.R
-    classes.R
-    classes_resources.R
-    generics.R
-    methods.R
-    classes_metrics.R
-    data_desc.R
-    data_downloads_grand_total.R
-    data_r_cmd_check.R
-    zzz.R
+    'utils_enum_vector.R'
+    'class_tags.R'
+    'class_permissions.R'
+    'class_metric.R'
+    'class_resource.R'
+    'class_pkg.R'
+    'classes_metrics.R'
+    'utils_s7.R'
+    'utils_assertions.R'
+    'utils.R'
+    'trait_pkg_data_s3.R'
+    'utils_s7_convert.R'
+    'trait_pkg_data.R'
+    'data_desc.R'
+    'data_downloads_grand_total.R'
+    'data_r_cmd_check.R'
+    'utils_cli.R'
+    'options.R'
+    'package.R'
+    'utils_err.R'
+    'zzz.R'
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

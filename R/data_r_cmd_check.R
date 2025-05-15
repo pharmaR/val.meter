@@ -1,3 +1,5 @@
+#' @include trait_pkg_data.R
+
 impl_data(
   "r_cmd_check",
   class = S7::new_S3_class("rcmdcheck"),
@@ -7,7 +9,7 @@ impl_data(
 )
 
 impl_data(
-  "r_cmd_check", for_resource = pkg_source_resource,
+  "r_cmd_check", for_resource = source_resource,
   function(field, pkg, resource, ...) {
     rcmdcheck::rcmdcheck(resource@path)
   }

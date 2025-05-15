@@ -1,3 +1,5 @@
+#' @include trait_pkg_data.R
+
 impl_data(
   "downloads_grand_total",
   metric = TRUE,
