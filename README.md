@@ -34,15 +34,34 @@ metrics()
 
 # see all implemented _data_ (a superset of metrics)
 metrics(all = TRUE)
+```
 
-# calculate some data, give permission to execute package code
-pkg <- pkg_from("../val.meter", scopes = scopes_permissive)
+By default, evaluation uses a very restrictive set of permissions, disallowing
+arbitrary code execution and downloading content from the web.
 
-# individual metrics are accessed using indexing operators
+```r
+# calculate some data, using default conservative permissions
+pkg <- pkg_from("../val.meter")
+
+# package data is accessed using indexing operators
 pkg$version
 pkg$downloads_grand_total
 
-# view all metrics (will run R CMD check, report errors)
+# view all metrics (will report execution errors for metrics that can not
+# be derived without more permission, ie execution of code and network access)
+pkg@metrics
+```
+
+We can opt-in to more extensive capabilities by giving our package more
+permissive scopes. We pass `permissions(TRUE)` to grant blanket permission
+to all capabilities.
+
+```r
+# calculate some data, using permissive execution capabilities
+pkg <- pkg_from("../val.meter", scopes = permissions(TRUE))
+
+# view all metrics (which will use extended permissions to execute R CMD check
+# and query cranlogs API)
 pkg@metrics
 ```
 

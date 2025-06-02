@@ -21,7 +21,7 @@ options::opt(x, default, env = "val.meter")
 
 \describe{
 \item{policy}{\describe{
-Set the default val.meter package search policy.\item{default: }{\preformatted{pkg_resource_policy()}}
+Set the default val.meter package search policy.\item{default: }{\preformatted{resource_policy()}}
 \item{option: }{val.meter.policy}
 \item{envvar: }{R_VAL_METER_POLICY (evaluated if possible, raw string otherwise)}
 }}

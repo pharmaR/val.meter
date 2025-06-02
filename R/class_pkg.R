@@ -16,6 +16,7 @@ new_pkg <- class_pkg <- new_class(
 
     #' @field metrics Return calculated listing of all metrics
     metrics = new_property(
+      class_any,
       getter = function(self) self[TRUE]
     ),
 
@@ -30,7 +31,13 @@ new_pkg <- class_pkg <- new_class(
     scopes = permissions
   ),
   constructor = function(x, scopes = opt("permissions")) {
-    new_object(resources = convert(x, resource), scopes = scopes)
+    new_object(
+      .parent = S7::S7_object(),
+      data = new.env(parent = emptyenv()),
+      metrics = list(),
+      resource = convert(x, resource),
+      scopes = scopes
+    )
   }
 )
 
@@ -43,7 +50,11 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
       on.exit(.state$raise_derive_errors(FALSE))
     }
 
-    x@data[[name]] <- pkg_data_derive(name, x)
+    x@data[[name]] <- tryCatch(pkg_data_derive(name, x), error = identity)
+
+    if (.raise && inherits(x@data[[name]], "error")) {
+      stop(x@data[[name]])
+    }
   }
 
   if (.raise && inherits(x@data[[name]], cnd_type())) err(

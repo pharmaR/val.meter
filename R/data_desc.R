@@ -24,3 +24,15 @@ impl_data(
     pkg$desc$get_field("Version")
   }
 )
+
+impl_data(
+  "dependency_count",
+  class = class_integer,
+  metric = TRUE,
+  tags = c("best practice"),
+  permissions = c(),
+  description = "the number of required dependencies",
+  function(field, pkg, resource, ...) {
+    sum(pkg$desc$get_deps()$type %in% c("Depends", "Imports", "LinkingTo"))
+  }
+)

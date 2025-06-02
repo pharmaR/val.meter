@@ -11,29 +11,19 @@ impl_data(
     "CRAN mirror through the cranlogs.rpkg.org API"
   ),
   function(field, pkg, resource, ...) {
-    # pull package downloads
-    # NOTE: apparently the only way to get lifetime downloads is by parsing
-    #   the badge content?
-    url <- paste0("https://cranlogs.r-pkg.org/badges/grand-total/", pkg$name)
-    file <- tempfile(paste0(pkg$name, "_badge"), fileext = "svg")
+    from <- as.Date("1970-01-01")
+    to   <- as.Date("3000-01-01")
+
+    file <- tempfile(paste0(pkg$name, "_downloads"), fileext = ".json")
+    url <- sprintf(
+      "https://cranlogs.r-pkg.org/downloads/total/%s:%s/%s",
+      from, to, pkg$name
+    )
 
     # TODO: handle possible download failure
-    download.file(url, file, quiet = TRUE)
-
-    # extract grand total from svg, will be in human-readable format, eg "1.2K"
-    xml <- xml2::read_html(file)
-    total_node <- xml2::xml_find_first(xml, "//text[last()]")
-    total <- trimws(xml2::xml_text(total_node))
-
-    # parse human-readable format into best estimate of total
-    digits <- gsub("[[:alpha:]]", "", total)
-    suffix <- substring(total, nchar(digits) + 1L)
-    suffix_as_scientific <- switch(suffix, "B" = "9", "M" = "6", "K" = "3")
+    downloads <- jsonlite::read_json(url)[[1]]$downloads
 
     # handle case when package isn't in repo (returns "null")
-    tryCatch(
-      as.integer(paste0(digits, "e+", suffix_as_scientific)),
-      warning = function(w) 0L
-    )
+    tryCatch(as.integer(downloads), warning = function(w) 0L)
   }
 )

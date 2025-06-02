@@ -9,7 +9,7 @@ NULL
 #' @include utils_cli.R
 define_options(
   fmt("Set the default {packageName()} package search policy."),
-  policy = pkg_resource_policy(),
+  policy = resource_policy(),
 
   fmt("
     Set the default {packageName()} data permissions policy. Permissions

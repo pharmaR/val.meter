@@ -16,7 +16,7 @@
 #' @name resource
 resource <- class_resource <- new_class("resource", abstract = TRUE)
 
-multi_resource <- new_class(
+multi_resource <- class_multi_resource <- new_class(
   "multi_resource",
   parent = resource,
   properties = list(
@@ -42,7 +42,7 @@ multi_resource <- new_class(
 #' build systems.
 #'
 #' @export
-source_resource <- new_class(
+source_resource <- class_source_resource <- new_class(
   "source_resource",
   parent = resource,
   properties = list(
@@ -62,7 +62,7 @@ source_resource <- new_class(
 #' The extracted source code from a package's build archive.
 #'
 #' @export
-archive_source_resource <- new_class(
+archive_source_resource <- class_archive_source_resource <- new_class(
   "archive_source_resource",
   parent = source_resource,
 )
@@ -72,7 +72,7 @@ archive_source_resource <- new_class(
 #' An installed version of a package, as would be found in a package library.
 #'
 #' @export
-install_resource <- new_class(
+install_resource <- class_install_resource <- new_class(
   "install_resource",
   parent = source_resource
 )
@@ -82,14 +82,15 @@ install_resource <- new_class(
 #' A union of all package resource classes that have local source code.
 #'
 #' @export
-local_resource <- new_union(source_resource, install_resource)
+local_resource <- class_local_resource <-
+  new_union(source_resource, install_resource)
 
 #' Package Repository Resource Class
 #'
 #' A reference to a listing in an R package repository.
 #'
 #' @export
-repo_resource <- new_class(
+repo_resource <- class_repo_resource <- new_class(
   "repo_resource",
   parent = resource,
   properties = list(
@@ -104,7 +105,7 @@ repo_resource <- new_class(
 #' A reference to a listing in an R package git source code repository.
 #'
 #' @export
-git_resource <- new_class(
+git_resource <- class_git_resource <- new_class(
   "git_resource",
   parent = resource,
   properties = list(
@@ -120,7 +121,7 @@ git_resource <- new_class(
 #'
 #' @export
 #' @name resource_policy
-resource_policy <- new_class(
+resource_policy <- class_resource_policy <- new_class(
   "resource_policy",
   properties = list(
     #' @field types A list of resources types to permit. Ordered by priority,
@@ -167,7 +168,7 @@ method(convert, list(class_character, class_resource)) <-
 
     # helper function to add a resource to our discovered resource list
     add_resource <- function(resource) {
-      idx <- match(list(.s7_class(resource)), all_resource_types)
+      idx <- match(list(S7::S7_class(resource)), all_resource_types)
       if (is.na(idx) || !is.null(resources[[idx]])) return()
       resources[[idx]] <<- resource
     }

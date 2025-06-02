@@ -24,11 +24,11 @@ Description:
 License: MIT + file LICENSE
 Imports:
     cli,
-	desc,
+    desc,
     options,
     S7,
     utils,
-    xml2
+    jsonlite
 Suggests:
     rcmdcheck
 Collate:
@@ -38,7 +38,6 @@ Collate:
     'class_metric.R'
     'class_resource.R'
     'class_pkg.R'
-    'classes_metrics.R'
     'utils_s7.R'
     'utils_assertions.R'
     'utils.R'

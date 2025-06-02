@@ -8,7 +8,7 @@
 of information various metrics contain. For more details, see
 \code{\link[=tags]{tags()}}. (Defaults to \code{tags(TRUE)}, overwritable using option 'val.meter.tags' or environment variable 'R_VAL_METER_TAGS')}
 
-\item{policy}{Set the default val.meter package search policy. (Defaults to \code{pkg_resource_policy()}, overwritable using option 'val.meter.policy' or environment variable 'R_VAL_METER_POLICY')}
+\item{policy}{Set the default val.meter package search policy. (Defaults to \code{resource_policy()}, overwritable using option 'val.meter.policy' or environment variable 'R_VAL_METER_POLICY')}
 
 \item{permissions}{Set the default val.meter data permissions policy. Permissions
 specify what capabilities are permitted when deriving package data. For more

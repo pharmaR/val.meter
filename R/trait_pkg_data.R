@@ -13,6 +13,22 @@ NULL
 
 
 
+get_data_derive_field_names <- function() {
+  signature_prefix <- "pkg_data_field_"
+
+  # get dispatch class types for first argument (field name)
+  signature_types <- names(pkg_data_derive@methods)
+
+  # subset for only methods which dispatch on [`pkg_data()`] types
+  is_pkg_data <- startsWith(signature_types, signature_prefix)
+  signature_types <- signature_types[is_pkg_data]
+
+  # remove prefix for completions, return only those that match pattern
+  substring(signature_types, nchar(signature_prefix) + 1L)
+}
+
+
+
 #' @describeIn pkg_data
 #' Derive a [`pkg`] data field, giving a function by which a piece of package
 #' data is calculated. This function is not called directly, it used by the
@@ -50,18 +66,40 @@ method(
   list(class_any, class_pkg, new_union(NULL, class_missing))
 ) <-
   function(field, pkg, resource, ..., field_name) {
-    for (r in pkg@resources) {
+    pkg_data_derive(
+      field = field,
+      pkg = pkg,
+      resource = pkg@resource,
+      ...,
+      field_name = field_name
+    )
+  }
+
+method(
+  pkg_data_derive,
+  list(class_any, class_pkg, class_multi_resource)
+) <-
+  function(field, pkg, resource, ..., field_name) {
+    for (resource in resource@resources) {
       result <- tryCatch(
-        pkg_data_derive(field = field, pkg = pkg, resource = r, ...),
+        pkg_data_derive(
+          field = field,
+          pkg = pkg,
+          resource = resource,
+          ...,
+          field_name = field_name
+        ),
         error = identity
       )
 
-      if (!inherits(result, "S7_error_method_not_found")) return(result)
+      if (!inherits(result, "S7_error_method_not_found")) {
+        return(result)
+      }
     }
 
     err(
       class = "missing_derivation",
-      "Package data '{field_name}' could not be derived from known resources",
+      "Package data '{field_name}' could not be derived from known resources"
     )
   }
 
