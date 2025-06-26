@@ -57,7 +57,7 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
     }
   }
 
-  if (.raise && inherits(x@data[[name]], cnd_type())) err(
+  if (.raise && inherits(x@data[[name]], cnd_type())) new_err(
     class = "derive_dependency",
     data = list(field = name),
     "field depends on field '{name}' that threw an error during derivation"
@@ -87,9 +87,55 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
 
   if (is.logical(index)) {
     if (length(index) != 1)
-      err("pkg objects can only be indexed with scalar logical values")
+      new_err("pkg objects can only be indexed with scalar logical values")
     return(x[names(metrics(all = all))])
   }
 
-  err("pkg objects don't know how to index with class {.cls index}")
+  new_err("pkg objects don't know how to index with class {.cls index}")
+}
+
+method(print, class_pkg) <- function(x, ...) {
+  class_header <- paste0("<", class(x)[[1]], ">")
+
+  fields <- get_data_derive_field_names()
+  names(fields) <- fields
+  fields <- lapply(fields, convert, to = metric)
+  is_metric <- vlapply(fields, S7::prop, "metric")
+  fields <- fields[order(!is_metric)]
+
+  out <- paste0(
+    class_header, "\n",
+    "@resources", "\n",
+    paste0("  ", capture.output(x@resource), collapse = "\n"), "\n",
+    "@scopes", "\n",
+    paste0("  ", capture.output(x@scopes), collapse = "\n"), "\n",
+    paste0(
+      collapse = "\n",
+      "$", names(fields), "\n",
+      vcapply(names(fields), function(field) {
+        paste("  ", collapse = "\n", if (exists(field, x@data)) {
+          capture.output(x@data[[field]])
+        } else {
+          "not yet derived ..."
+        })
+      })
+    )
+  )
+
+  cat(out, "\n")
+}
+
+#' @include utils_dcf.R
+#' @export
+method(encode_dcf, class_pkg) <- function(x, ...) {
+  c(
+    encode_dcf(x@resource),
+    paste0(names(x@metrics), ": ", vcapply(x@metrics, encode_dcf))
+  )
+}
+
+#' @include utils_dcf.R
+#' @export
+method(decode_dcf, class_pkg) <- function(x, ...) {
+  
 }

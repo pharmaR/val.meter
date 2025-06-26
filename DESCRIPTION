@@ -36,8 +36,10 @@ Collate:
     'class_tags.R'
     'class_permissions.R'
     'class_metric.R'
+    'utils_dcf.R'
     'class_resource.R'
     'class_pkg.R'
+    'utils_err.R'
     'utils_s7.R'
     'utils_assertions.R'
     'utils.R'
@@ -50,7 +52,6 @@ Collate:
     'utils_cli.R'
     'options.R'
     'package.R'
-    'utils_err.R'
     'zzz.R'
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

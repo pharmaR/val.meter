@@ -97,7 +97,7 @@ method(
       }
     }
 
-    err(
+    new_err(
       class = "missing_derivation",
       "Package data '{field_name}' could not be derived from known resources"
     )
@@ -287,7 +287,7 @@ impl_data_derive <- function(name, fn, resource) {
 #' @include trait_pkg_data_s3.R
 #' @export
 impl_metric <- function(name, class = pkg_data_get_class(name)) {
-  assert_class_is(class, class_atomic)
+  assert_metric_is_atomic(class)
   method(pkg_data_is_metric, pkg_data_class(name)) <-
     function(field) TRUE
 }
