@@ -102,6 +102,7 @@ method(print, class_pkg) <- function(x, ...) {
   fields <- lapply(fields, convert, to = metric)
   is_metric <- vlapply(fields, S7::prop, "metric")
   fields <- fields[order(!is_metric)]
+  is_metric <- is_metric[order(!is_metric)]
 
   out <- paste0(
     class_header, "\n",
@@ -111,13 +112,25 @@ method(print, class_pkg) <- function(x, ...) {
     paste0("  ", capture.output(x@scopes), collapse = "\n"), "\n",
     paste0(
       collapse = "\n",
-      "$", names(fields), "\n",
-      vcapply(names(fields), function(field) {
-        paste("  ", collapse = "\n", if (exists(field, x@data)) {
-          capture.output(x@data[[field]])
+      "$", names(fields),
+      ifelse(!is_metric, " (internal)", ""),
+      vcapply(seq_along(fields), function(i) {
+        field <- names(fields)[[i]]
+        if (is_metric[[i]]) {
+          if (exists(field, x@data)) {
+            data <- x@data[[field]]
+            if (inherits(data, cnd_type())) {
+              output <- strsplit(format(data, backtrace = FALSE), "\n")[[1]]
+              paste0("\n  ", output, collapse = "")
+            } else {
+              paste0("\n  ", capture.output(data), collapse = "")
+            }
+          } else {
+            "\n  promise ..."
+          }
         } else {
-          "not yet derived ..."
-        })
+          ""
+        }
       })
     )
   )
@@ -128,14 +141,32 @@ method(print, class_pkg) <- function(x, ...) {
 #' @include utils_dcf.R
 #' @export
 method(encode_dcf, class_pkg) <- function(x, ...) {
-  c(
+  paste(collapse = "\n", c(
     encode_dcf(x@resource),
+    paste0("MD5: ", x$archive_md5),
     paste0(names(x@metrics), ": ", vcapply(x@metrics, encode_dcf))
-  )
+  ))
 }
 
 #' @include utils_dcf.R
 #' @export
-method(decode_dcf, class_pkg) <- function(x, ...) {
-  
-}
+method(convert, list(S7::new_S3_class("dcf"), class_pkg)) <-
+  function(from, to, ...) {
+    con <- textConnection(from)
+    desc <- read.dcf(con, all = TRUE)
+    resource <- unknown_resource(
+      package = desc[[1, "Package"]],
+      version = desc[[1, "Version"]]
+    )
+
+    is_data_field <- colnames(desc) %in% get_data_derive_field_names()
+    data <- new.env(parent = emptyenv())
+    for (name in colnames(desc)[is_data_field]) {
+      data[[name]] <- decode_dcf(desc[[1, name]], class_any)
+    }
+
+    pkg <- new_pkg(resource)
+    pkg@data <- data
+
+    pkg
+  }

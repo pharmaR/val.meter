@@ -51,6 +51,12 @@ new_err <- function(
   trace = NULL,
   .envir = parent.frame()
 ) {
+  topenv_frame_idx <- Position(
+    function(frame) identical(frame, topenv()),
+    sys.frames(),
+    nomatch = sys.nframe()
+  )
+
   args <- data
   args$message <- as.character(list(...))
   args$call <- get_package_boundary_call()
@@ -58,6 +64,7 @@ new_err <- function(
   args$.envir <- .envir
   args$trace <- trace
   args$call <- call
+  args$.trace_bottom <- sys.frames()[[topenv_frame_idx]]
   do.call(cli::cli_abort, args)
 }
 
@@ -103,7 +110,7 @@ err <- list(
 )
 
 #' @export
-ERROR <- function(type, ...) {  # nolint
+ERROR <- function(type, ...) {  # nolint: object_usage_linter, object_name_linter, line_length_linter.
   cnd <- tryCatch(do.call(err[[type]], list(...)), error = identity)
   cnd$trace <- NULL
   cnd$call <- NULL
@@ -123,6 +130,12 @@ method(encode_dcf, S7::new_S3_class("val_meter_error")) <- function(x, ...) {
     paste0(names(text_data), " = ", text_data, collapse = ", "),
     ")"
   )
+}
+
+#' @include utils_dcf.R
+#' @export
+method(encode_dcf, S7::new_S3_class("condition")) <- function(x, ...) {
+  stop("Condition type cannot be encoded to dcf format")
 }
 
 as_pkg_data_derive_error <- function(x, ...) {

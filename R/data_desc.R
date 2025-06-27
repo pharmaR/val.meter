@@ -12,16 +12,36 @@ impl_data(
 impl_data(
   "name",
   class = class_character,
+  for_resource = local_resource,
   function(field, pkg, resource, ...) {
     pkg$desc$get_field("Package")
   }
 )
 
 impl_data(
+  "name",
+  class = class_character,
+  for_resource = repo_resource,
+  function(field, pkg, resource, ...) {
+    resource@package
+  }
+)
+
+impl_data(
   "version",
   class = class_character,
+  for_resource = local_resource,
   function(field, pkg, resource, ...) {
     pkg$desc$get_field("Version")
+  }
+)
+
+impl_data(
+  "version",
+  class = class_character,
+  for_resource = repo_resource,
+  function(field, pkg, resource, ...) {
+    resource@version
   }
 )
 
@@ -32,6 +52,7 @@ impl_data(
   tags = c("best practice"),
   permissions = c(),
   description = "the number of required dependencies",
+  for_resource = local_resource,
   function(field, pkg, resource, ...) {
     sum(pkg$desc$get_deps()$type %in% c("Depends", "Imports", "LinkingTo"))
   }

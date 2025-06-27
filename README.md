@@ -41,7 +41,7 @@ arbitrary code execution and downloading content from the web.
 
 ```r
 # calculate some data, using default conservative permissions
-pkg <- pkg_from("../val.meter")
+pkg <- new_pkg("../val.meter")
 
 # package data is accessed using indexing operators
 pkg$version
@@ -58,7 +58,7 @@ to all capabilities.
 
 ```r
 # calculate some data, using permissive execution capabilities
-pkg <- pkg_from("../val.meter", scopes = permissions(TRUE))
+pkg <- new_pkg("../val.meter", scopes = permissions(TRUE))
 
 # view all metrics (which will use extended permissions to execute R CMD check
 # and query cranlogs API)
@@ -66,9 +66,29 @@ pkg@metrics
 ```
 
 Just like `riskmetric`, this causes the lazy evaluation of
-`rcmdcheck::rcmdcheck`. See `R/metric_r_cmd_check.R` to see how metrics
+`rcmdcheck::rcmdcheck`. See `R/data_r_cmd_check.R` to see how metrics
 are implemented and a rough overview of the metadata that comes with each
 metric.
+
+Now that we've calculated our metrics, we can write them out to a `.dcf` file
+conformant with the `PACKAGES` file used to host repositories:
+
+```r
+dcf_content <- encode_dcf(pkg)
+cat(dcf_content)
+```
+
+The object can be _partially_ reconstructed from the `PACKAGES` file contents.
+Some information is lost in transit, such as intermediate data derived to
+produce these metrics and more full error types captured during execution.
+
+```r
+pkg <- decode_dcf(dcf_content)
+pkg
+```
+
+Now we can easily use this package's derived metrics for activities like
+evaluating selection criteria and reporting.
 
 ## Explored Features
 

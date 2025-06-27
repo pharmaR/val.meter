@@ -16,6 +16,15 @@
 #' @name resource
 resource <- class_resource <- new_class("resource", abstract = TRUE)
 
+unknown_resource <- class_unknown_resource <- new_class(
+  "unknown_resource",
+  parent = resource,
+  properties = list(
+    package = class_character,
+    version = class_character
+  )
+)
+
 multi_resource <- class_multi_resource <- new_class(
   "multi_resource",
   parent = resource,
@@ -199,7 +208,7 @@ method(convert, list(class_character, class_resource)) <-
 method(convert, list(class_character, install_resource)) <-
   function(from, to) {
     if (file.exists(from) && file.exists(file.path(from, "INDEX"))) {
-      return(to(path = from))
+      return(to(path = normalizePath(from)))
     } else if (length(paths <- find.package(from, quiet = TRUE)) > 0L) {
       return(convert(paths[[1]], to))
     }
@@ -209,8 +218,8 @@ method(convert, list(class_character, install_resource)) <-
 
 method(convert, list(class_character, archive_source_resource)) <-
   function(from, to) {
-    if (file.exists(from) && file.exists(file.path(from, "MD5"))) {
-      return(to(path = from))
+    if (file.exists(from) && endsWith(from, ".tar.gz")) {
+      return(to(path = normalizePath(from)))
     }
 
     stop(fmt("Cannot convert string '{from}' into {.cls to}"))
@@ -221,10 +230,9 @@ method(convert, list(class_character, source_resource)) <-
     if (
       file.exists(from) &&
         !file.exists(file.path(from, "INDEX")) &&
-        !file.exists(file.path(from, "MD5")) &&
         file.exists(file.path(from, "DESCRIPTION"))
     ) {
-      return(to(path = from))
+      return(to(path = normalizePath(from)))
     }
 
     stop(fmt("Cannot convert string '{from}' into {.cls to}"))
