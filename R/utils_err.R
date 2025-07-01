@@ -109,8 +109,20 @@ err <- list(
   }
 )
 
+#' Build an error from an error type and data attributes
+#'
+#' @note This function is not intended for developers.
+#'
+#' This function uses an error class to build an error object. It intentionally
+#' produces incomplete error objects, lacking the error backtracer
+#' call.
+#'
+#' For signalling errors internal to the package, see [`err()`]. This function
+#' is used to provide a readable syntax to exported `PACKAGES` files, which
+#' are parsed using this function back into their respective error objects.
+#'
 #' @export
-ERROR <- function(type, ...) {  # nolint: object_usage_linter, object_name_linter, line_length_linter.
+error <- function(type, ...) {  # nolint: object_usage_linter, object_name_linter, line_length_linter.
   cnd <- tryCatch(do.call(err[[type]], list(...)), error = identity)
   cnd$trace <- NULL
   cnd$call <- NULL
@@ -119,12 +131,12 @@ ERROR <- function(type, ...) {  # nolint: object_usage_linter, object_name_linte
 
 #' @include utils_dcf.R
 #' @export
-method(encode_dcf, S7::new_S3_class("val_meter_error")) <- function(x, ...) {
+method(to_dcf, S7::new_S3_class("val_meter_error")) <- function(x, ...) {
   subclass <- cnd_class_from_type(class(x)[[1]])
-  text_data <- lapply(x$data, encode_dcf)
+  text_data <- lapply(x$data, to_dcf)
 
   paste0(
-    "ERROR(",
+    packageName(), "::", "error(",
     '"', subclass, '"',
     if (length(text_data) > 0) ", ",
     paste0(names(text_data), " = ", text_data, collapse = ", "),
@@ -134,7 +146,7 @@ method(encode_dcf, S7::new_S3_class("val_meter_error")) <- function(x, ...) {
 
 #' @include utils_dcf.R
 #' @export
-method(encode_dcf, S7::new_S3_class("condition")) <- function(x, ...) {
+method(to_dcf, S7::new_S3_class("condition")) <- function(x, ...) {
   stop("Condition type cannot be encoded to dcf format")
 }
 

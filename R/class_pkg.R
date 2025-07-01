@@ -5,7 +5,7 @@
 #'
 #' @include class_resource.R
 #' @export
-new_pkg <- class_pkg <- new_class(
+pkg <- class_pkg <- new_class(
   "pkg",
   properties = list(
     #' @field data A mutable environment, used to aggregate package meatadata.
@@ -120,7 +120,7 @@ method(print, class_pkg) <- function(x, ...) {
           if (exists(field, x@data)) {
             data <- x@data[[field]]
             if (inherits(data, cnd_type())) {
-              output <- strsplit(format(data, backtrace = FALSE), "\n")[[1]]
+              output <- strsplit(format(data), "\n")[[1]]
               paste0("\n  ", output, collapse = "")
             } else {
               paste0("\n  ", capture.output(data), collapse = "")
@@ -140,32 +140,38 @@ method(print, class_pkg) <- function(x, ...) {
 
 #' @include utils_dcf.R
 #' @export
-method(encode_dcf, class_pkg) <- function(x, ...) {
+method(to_dcf, class_pkg) <- function(x, ...) {
   paste(collapse = "\n", c(
-    encode_dcf(x@resource),
+    to_dcf(x@resource),
     paste0("MD5: ", x$archive_md5),
-    paste0(names(x@metrics), ": ", vcapply(x@metrics, encode_dcf))
+    paste0("Metric/", names(x@metrics), "@R: ", vcapply(x@metrics, to_dcf))
   ))
+}
+
+#)' @include utils_dcf.R
+#' @export
+pkg_from_dcf <- function(x, ...) {
+  from_dcf(x, to = class_pkg, ...)
 }
 
 #' @include utils_dcf.R
 #' @export
-method(convert, list(S7::new_S3_class("dcf"), class_pkg)) <-
-  function(from, to, ...) {
-    con <- textConnection(from)
-    desc <- read.dcf(con, all = TRUE)
+method(from_dcf, list(class_character, class_pkg)) <-
+  function(x, to, ...) {
+    dcf <- from_dcf(x, class_any)
     resource <- unknown_resource(
-      package = desc[[1, "Package"]],
-      version = desc[[1, "Version"]]
+      package = dcf[[1, "Package"]],
+      version = dcf[[1, "Version"]]
     )
 
-    is_data_field <- colnames(desc) %in% get_data_derive_field_names()
     data <- new.env(parent = emptyenv())
-    for (name in colnames(desc)[is_data_field]) {
-      data[[name]] <- decode_dcf(desc[[1, name]], class_any)
+    prefix <- "Metric/"
+    for (name in colnames(dcf)[startsWith(colnames(dcf), prefix)]) {
+      field <- sub(prefix, "", name)
+      data[[field]] <- dcf[[1, name]]
     }
 
-    pkg <- new_pkg(resource)
+    pkg <- pkg(resource)
     pkg@data <- data
 
     pkg

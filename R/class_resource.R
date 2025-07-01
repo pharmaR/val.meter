@@ -254,11 +254,11 @@ method(convert, list(class_character, repo_resource)) <-
     stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }
 
-method(encode_dcf, class_resource) <- function(x, ...) {
+method(to_dcf, class_resource) <- function(x, ...) {
   new_err("Resource {.cls x} cannot be encoded for output to a DCF file.")
 }
 
-method(encode_dcf, class_source_resource) <- function(x, ...) {
+method(to_dcf, class_source_resource) <- function(x, ...) {
   deps <- c("Depends", "Imports", "LinkingTo", "Suggests")
   fields <- c("Package", "Version", deps, "License", "NeedsCompilation")
   desc <- read.dcf(file.path(x@path, "DESCRIPTION"), fields = fields)

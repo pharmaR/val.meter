@@ -270,7 +270,7 @@ impl_data_meta <- function(
 #' @export
 impl_data_derive <- function(name, fn, resource) {
   return_class <- pkg_data_get_class(name)
-  method(pkg_data_derive, list(pkg_data_class(name), new_pkg, resource)) <-
+  method(pkg_data_derive, list(pkg_data_class(name), pkg, resource)) <-
     function(field, pkg, resource, ...) {
       assert_scopes(field, pkg@scopes)
       assert_suggests(field)
