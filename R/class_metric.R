@@ -15,73 +15,89 @@ metric <- new_class(
   )
 )
 
-method(format, metric) <-
-  function(
-    x,
-    ...,
-    permissions = opt("permissions"),
-    tags = opt("tags")
-  ) {
-    type <- if (S7::S7_inherits(x@type)) {  # nolint: object_usage_linter.
-      x@type@name
-    } else {
-      S7:::class_desc(x@type)
-    }
+# NOTE:
+#   required to avoid odd interaction when same external S3 generic is defined
+#   for both S3 and S7 dispatch
+#
+#   https://github.com/RConsortium/S7/issues/390#issuecomment-2987133166
+#
+local({
+  method(format, metric) <-
+    function(
+      x,
+      ...,
+      permissions = opt("permissions"),
+      tags = opt("tags")
+    ) {
+      type <- if (S7::S7_inherits(x@type)) {  # nolint: object_usage_linter.
+        x@type@name
+      } else {
+        S7:::class_desc(x@type)
+      }
 
-    is_installed <- vlapply(x@suggests, requireNamespace, quietly = TRUE)
-    any_tags <- length(x@tags) + length(x@scopes) + length(x@suggests) > 0
+      is_installed <- vlapply(x@suggests, requireNamespace, quietly = TRUE)
+      any_tags <- length(x@tags) + length(x@scopes) + length(x@suggests) > 0
 
-    c(
-      # data type
-      fmt(style_dim("{type}")),
+      c(
+        # data type
+        fmt(style_dim("{type}")),
 
-      if (any_tags) paste(collapse = " ", c(
-        # tags
-        vcapply(x@tags, function(tag) {
-          color <- if (tag %in% tags) "blue" else "red"
-          fmt(cli_tag(tag, scope = "", color = color))
-        }),
+        if (any_tags) paste(collapse = " ", c(
+          # tags
+          vcapply(x@tags, function(tag) {
+            color <- if (tag %in% tags) "blue" else "red"
+            fmt(cli_tag(tag, scope = "", color = color))
+          }),
 
-        # permissions
-        vcapply(x@scopes, function(scope) {
-          color <- if (scope %in% permissions) "green" else "red"
-          fmt(cli_tag(scope, scope = "req", color = color))
-        }),
+          # permissions
+          vcapply(x@scopes, function(scope) {
+            color <- if (scope %in% permissions) "green" else "red"
+            fmt(cli_tag(scope, scope = "req", color = color))
+          }),
 
-        # suggests dependencies
-        vcapply(seq_along(x@suggests), function(i) {
-          color <- if (is_installed[[i]]) "green" else "red"
-          fmt(cli_tag(scope = "dep", x@suggests[[i]], color = color))
-        })
-      )),
+          # suggests dependencies
+          vcapply(seq_along(x@suggests), function(i) {
+            color <- if (is_installed[[i]]) "green" else "red"
+            fmt(cli_tag(scope = "dep", x@suggests[[i]], color = color))
+          })
+        )),
 
-      # description
-      if (nchar(x@description) > 0L) fmt(style_italic("{x@description}"))
-    )
-  }
-
-method(print, metric) <-
-  function(
-    x,
-    permissions = opt("permissions"),
-    tags = opt("tags"),
-    ...
-  ) {
-    cat(paste(collapse = "\n", format(x, ...)), "\n")
-
-    if (!all(x@scopes %in% permissions) || !all(x@tags %in% tags)) {
-      cli_inform(
-        paste0(
-          "metric(s) will be disabled due to insufficient permissions or ",
-          "restricted tags. See {.code ?{ packageName() }::options()} for ",
-          "details about global policies."
-        ),
-        class = cnd_type("options", cnd = "message")
+        # description
+        if (nchar(x@description) > 0L) fmt(style_italic("{x@description}"))
       )
     }
+})
 
-    invisible(x)
-  }
+# NOTE:
+#   required to avoid odd interaction when same external S3 generic is defined
+#   for both S3 and S7 dispatch
+#
+#   https://github.com/RConsortium/S7/issues/390#issuecomment-2987133166
+#
+local({
+  method(print, metric) <-
+    function(
+      x,
+      permissions = opt("permissions"),
+      tags = opt("tags"),
+      ...
+    ) {
+      cat(paste(collapse = "\n", format(x, ...)), "\n")
+
+      if (!all(x@scopes %in% permissions) || !all(x@tags %in% tags)) {
+        cli_inform(
+          paste0(
+            "metric(s) will be disabled due to insufficient permissions or ",
+            "restricted tags. See {.code ?{ packageName() }::options()} for ",
+            "details about global policies."
+          ),
+          class = cnd_type("options", cnd = "message")
+        )
+      }
+
+      invisible(x)
+    }
+})
 
 #' @export
 format.val_meter_error <- function(x, ...) {

@@ -5,7 +5,7 @@
 #'
 #' @include class_resource.R
 #' @export
-new_pkg <- class_pkg <- new_class(
+pkg <- class_pkg <- new_class(
   "pkg",
   properties = list(
     #' @field data A mutable environment, used to aggregate package meatadata.
@@ -57,7 +57,7 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
     }
   }
 
-  if (.raise && inherits(x@data[[name]], cnd_type())) err(
+  if (.raise && inherits(x@data[[name]], cnd_type())) new_err(
     class = "derive_dependency",
     data = list(field = name),
     "field depends on field '{name}' that threw an error during derivation"
@@ -87,9 +87,92 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
 
   if (is.logical(index)) {
     if (length(index) != 1)
-      err("pkg objects can only be indexed with scalar logical values")
+      new_err("pkg objects can only be indexed with scalar logical values")
     return(x[names(metrics(all = all))])
   }
 
-  err("pkg objects don't know how to index with class {.cls index}")
+  new_err("pkg objects don't know how to index with class {.cls index}")
 }
+
+method(print, class_pkg) <- function(x, ...) {
+  class_header <- paste0("<", class(x)[[1]], ">")
+
+  fields <- get_data_derive_field_names()
+  names(fields) <- fields
+  fields <- lapply(fields, convert, to = metric)
+  is_metric <- vlapply(fields, S7::prop, "metric")
+  fields <- fields[order(!is_metric)]
+  is_metric <- is_metric[order(!is_metric)]
+
+  out <- paste0(
+    class_header, "\n",
+    "@resources", "\n",
+    paste0("  ", capture.output(x@resource), collapse = "\n"), "\n",
+    "@scopes", "\n",
+    paste0("  ", capture.output(x@scopes), collapse = "\n"), "\n",
+    paste0(
+      collapse = "\n",
+      "$", names(fields),
+      ifelse(!is_metric, " (internal)", ""),
+      vcapply(seq_along(fields), function(i) {
+        field <- names(fields)[[i]]
+        if (is_metric[[i]]) {
+          if (exists(field, x@data)) {
+            data <- x@data[[field]]
+            if (inherits(data, cnd_type())) {
+              output <- strsplit(format(data), "\n")[[1]]
+              paste0("\n  ", output, collapse = "")
+            } else {
+              paste0("\n  ", capture.output(data), collapse = "")
+            }
+          } else {
+            "\n  promise ..."
+          }
+        } else {
+          ""
+        }
+      })
+    )
+  )
+
+  cat(out, "\n")
+}
+
+#' @include utils_dcf.R
+#' @export
+method(to_dcf, class_pkg) <- function(x, ...) {
+  paste(collapse = "\n", c(
+    to_dcf(x@resource),
+    paste0("MD5: ", x$archive_md5),
+    paste0("Metric/", names(x@metrics), "@R: ", vcapply(x@metrics, to_dcf))
+  ))
+}
+
+#)' @include utils_dcf.R
+#' @export
+pkg_from_dcf <- function(x, ...) {
+  from_dcf(x, to = class_pkg, ...)
+}
+
+#' @include utils_dcf.R
+#' @export
+method(from_dcf, list(class_character, class_pkg)) <-
+  function(x, to, ...) {
+    dcf <- from_dcf(x, class_any)
+    resource <- unknown_resource(
+      package = dcf[[1, "Package"]],
+      version = dcf[[1, "Version"]]
+    )
+
+    data <- new.env(parent = emptyenv())
+    prefix <- "Metric/"
+    for (name in colnames(dcf)[startsWith(colnames(dcf), prefix)]) {
+      field <- sub(prefix, "", name)
+      data[[field]] <- dcf[[1, name]]
+    }
+
+    pkg <- pkg(resource)
+    pkg@data <- data
+
+    pkg
+  }

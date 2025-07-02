@@ -18,11 +18,16 @@ and aims to explore some of the discussed design goals.
 - [x] Metric return type checking
 - [x] Surfacing of errors from dependent data
 - [x] Comprehensive evaluation of all metrics
-- [ ] Better CLI for communicating about metrics
+- [x] Better CLI for communicating about metrics
 - [ ] Package resource (source of package information) conversion (ie, with a
       CRAN resource, download the source code and create a local source
       code resource)
 - [ ] Lots of documentation to write
+  - [ ] Function docs
+  - [ ] Vignettes
+    - [ ] Developer-focused architecture introduction
+    - [ ] Adding data and metrics
+    - [ ] Extending `val.meter`
 
 ## Demo
 
@@ -41,15 +46,15 @@ arbitrary code execution and downloading content from the web.
 
 ```r
 # calculate some data, using default conservative permissions
-pkg <- pkg_from("../val.meter")
+p <- pkg("../val.meter")
 
 # package data is accessed using indexing operators
-pkg$version
-pkg$downloads_grand_total
+p$version
+p$downloads_grand_total
 
 # view all metrics (will report execution errors for metrics that can not
 # be derived without more permission, ie execution of code and network access)
-pkg@metrics
+p@metrics
 ```
 
 We can opt-in to more extensive capabilities by giving our package more
@@ -58,17 +63,36 @@ to all capabilities.
 
 ```r
 # calculate some data, using permissive execution capabilities
-pkg <- pkg_from("../val.meter", scopes = permissions(TRUE))
+p <- pkg("../val.meter", scopes = permissions(TRUE))
 
 # view all metrics (which will use extended permissions to execute R CMD check
 # and query cranlogs API)
-pkg@metrics
+p@metrics
 ```
 
 Just like `riskmetric`, this causes the lazy evaluation of
-`rcmdcheck::rcmdcheck`. See `R/metric_r_cmd_check.R` to see how metrics
+`rcmdcheck::rcmdcheck`. See `R/data_r_cmd_check.R` to see how metrics
 are implemented and a rough overview of the metadata that comes with each
 metric.
+
+Now that we've calculated our metrics, we can write them out to a `.dcf` file
+conformant with the `PACKAGES` file used to host repositories:
+
+```r
+dcf <- to_dcf(pkg)
+cat(dcf_content)
+```
+
+The object can be _partially_ reconstructed from the `PACKAGES` file contents.
+Some information is lost in transit, such as intermediate data derived to
+produce these metrics and more full error types captured during execution.
+
+```r
+pkg_from_dcf(dcf)
+```
+
+Now we can easily use this package's derived metrics for activities like
+evaluating selection criteria and reporting.
 
 ## Explored Features
 
