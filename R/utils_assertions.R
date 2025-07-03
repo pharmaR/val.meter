@@ -2,18 +2,16 @@
 #' @include utils_err.R
 NULL
 
-assert_scopes <- function(field, scopes) {
-  required_scopes <- pkg_data_get_permissions(field)
-  if (!all(required_scopes %in% scopes))
+assert_scopes <- function(required_scopes, provided_scopes) {
+  if (!all(required_scopes %in% provided_scopes))
     err$disallowed_scopes(scopes = required_scopes)
 }
 
-assert_suggests <- function(field) {
-  suggests <- pkg_data_get_suggests(field)
-  names(suggests) <- suggests
-  has_suggests <- vlapply(suggests, requireNamespace, quietly = TRUE)
+assert_suggests <- function(required_suggests) {
+  names(required_suggests) <- required_suggests
+  has_suggests <- vlapply(required_suggests, requireNamespace, quietly = TRUE)
   if (!all(has_suggests))
-    err$missing_suggests(packages = names(suggests)[!has_suggests])
+    err$missing_suggests(packages = names(required_suggests)[!has_suggests])
 }
 
 assert_metric_is_atomic <- function(class) {

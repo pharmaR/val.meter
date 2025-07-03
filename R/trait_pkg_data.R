@@ -106,97 +106,13 @@ method(
 
 
 #' @describeIn pkg_data
-#' Retrieve the class of the data field. When implemented using [`impl_data()`],
-#' the result of calling [`pkg_data_derive()`] is automatically converted into
-#' this class, raising errors if conversion fails. The default implementation
-#' returns [`S7::class_any`], though it is recommended that a more precise
-#' class should be specified.
+#' Retrieve metadata about a data field.
 #'
 #' @export
-pkg_data_get_class <- new_generic("pkg_data_get_class", c("field"))
+pkg_data_info <- new_generic("pkg_data_get_meta", c("field"))
 
-method(pkg_data_get_class, class_character) <-
-  function(field) pkg_data_get_class(as_pkg_data(field))
-
-method(pkg_data_get_class, S7::new_S3_class(pkg_data_s3_class())) <-
-  function(field) class_any
-
-
-
-#' @describeIn pkg_data
-#' Retrieve a description of the data field. Descriptions should be roughly one
-#' sentence and for metrics, provide necessary information for interpretting the
-#' result. The default implmentation provides no description.
-#'
-#' @export
-pkg_data_get_description <- new_generic("pkg_data_get_description", c("field"))
-
-method(pkg_data_get_description, class_character) <-
-  function(field) pkg_data_get_description(as_pkg_data(field))
-
-method(pkg_data_get_description, S7::new_S3_class(pkg_data_s3_class())) <-
-  function(field) ""
-
-
-#' @describeIn pkg_data
-#' Retrieve a [`tags()`] object describing tags associated with the data field.
-#' The default implementation lists no tags.
-#'
-#' @export
-pkg_data_get_tags <- new_generic("pkg_data_get_tags", c("field"))
-
-method(pkg_data_get_tags, class_character) <-
-  function(field) pkg_data_get_tags(as_pkg_data(field))
-
-method(pkg_data_get_tags, S7::new_S3_class(pkg_data_s3_class())) <-
-  function(field, scopes, ...) tags(FALSE)  # default, no tags
-
-
-
-#' @describeIn pkg_data
-#' Retrieve a [`permissions()`] object describing necessary permissions required
-#' to compute the data. The default implementation lists no required
-#' permissions.
-#'
-#' @export
-pkg_data_get_permissions <- new_generic("pkg_data_get_scopes", c("field"))
-
-method(pkg_data_get_permissions, class_character) <-
-  function(field, scopes, ...) pkg_data_get_permissions(as_pkg_data(field))
-
-method(pkg_data_get_permissions, S7::new_S3_class(pkg_data_s3_class())) <-
-  function(field, scopes, ...) permissions(FALSE)  # default, no scopes
-
-
-
-#' @describeIn pkg_data
-#' Retrieve a vector of any `Suggests` dependencies required for deriving the
-#' data. The default implementation returns no dependencies.
-#'
-#' @export
-pkg_data_get_suggests <- new_generic("pkg_data_get_suggests", c("field"))
-
-method(pkg_data_get_suggests, class_any) <-
-  function(field, ...) character(0L)  # default, no suggests
-
-method(pkg_data_get_suggests, class_character) <-
-  function(field, ...) pkg_data_get_suggests(as_pkg_data(field))
-
-
-
-#' @describeIn pkg_data
-#' Retrieve a `logical` flag, indicating whether the data field is a `metric`.
-#' When implemented using [`impl_data()`], defining a field of data as a metric
-#' also enforces that its return type is atomic. The default implementation
-#' always returns `FALSE`.
-#'
-#' @export
-pkg_data_is_metric <- new_generic("pkg_data_is_metric", c("field"))
-
-method(pkg_data_is_metric, class_any) <- function(field) FALSE
-
-method(pkg_data_is_metric, class_character) <-
-  function(field) pkg_data_is_metric(as_pkg_data(field))
+method(pkg_data_info, class_character) <-
+  function(field) pkg_data_info(as_pkg_data(field))
 
 
 
@@ -210,13 +126,10 @@ method(pkg_data_is_metric, class_character) <-
 #' @export
 impl_data <- function(name, fn, for_resource = resource, ..., metric = FALSE) {
   if (...length() > 0L)
-    impl_data_meta(name = name, ...)
+    impl_data_info(name = name, ..., metric = metric)
 
   if (!missing(fn))
     impl_data_derive(name = name, fn = fn, resource = for_resource)
-
-  if (metric)
-    impl_metric(name)
 }
 
 
@@ -228,13 +141,14 @@ impl_data <- function(name, fn, for_resource = resource, ..., metric = FALSE) {
 #' @include utils_s7_convert.R
 #' @include trait_pkg_data_s3.R
 #' @export
-impl_data_meta <- function(
+impl_data_info <- function(
   name,
   class = class_any,
   description = "",
   tags = class_tags(c()),
   permissions = class_permissions(c()),
-  suggests = character(0L)
+  suggests = character(0L),
+  metric = FALSE
 ) {
   tags <- convert(tags, class_tags)
   description <- convert(description, class_character)
@@ -245,20 +159,17 @@ impl_data_meta <- function(
 
   class <- S7::as_class(class)
 
-  method(pkg_data_get_permissions, pkg_data_class(name)) <-
-    function(field) permissions
-
-  method(pkg_data_get_description, pkg_data_class(name)) <-
-    function(field) description
-
-  method(pkg_data_get_tags, pkg_data_class(name)) <-
-    function(field) tags
-
-  method(pkg_data_get_suggests, pkg_data_class(name)) <-
-    function(field) suggests
-
-  method(pkg_data_get_class, pkg_data_class(name)) <-
-    function(field) class
+  method(pkg_data_info, pkg_data_class(name)) <-
+    function(field) {
+      data_info(
+        metric = metric,
+        description = description,
+        tags = tags,
+        type = class,
+        suggests = suggests,
+        scopes = permissions
+      )
+    }
 }
 
 #' @describeIn pkg_data
@@ -269,25 +180,13 @@ impl_data_meta <- function(
 #' @include trait_pkg_data_s3.R
 #' @export
 impl_data_derive <- function(name, fn, resource) {
-  return_class <- pkg_data_get_class(name)
+  return_class <- pkg_data_info(name)@type
   method(pkg_data_derive, list(pkg_data_class(name), pkg, resource)) <-
     function(field, pkg, resource, ...) {
-      assert_scopes(field, pkg@scopes)
-      assert_suggests(field)
+      required_scopes <- pkg_data_get_permissions(field)
+      required_suggests <- pkg_data_get_suggests(field)
+      assert_scopes(required_scopes, pkg@scopes)
+      assert_suggests(required_suggests)
       convert(fn(field, pkg, resource, ...), return_class)
     }
-}
-
-#' @describeIn pkg_data
-#' Declare a data field to be a metric, enforcing that the derivation return
-#' type is atomic.
-#'
-#' @include utils.R
-#' @include utils_assertions.R
-#' @include trait_pkg_data_s3.R
-#' @export
-impl_metric <- function(name, class = pkg_data_get_class(name)) {
-  assert_metric_is_atomic(class)
-  method(pkg_data_is_metric, pkg_data_class(name)) <-
-    function(field) TRUE
 }

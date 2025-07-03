@@ -3,9 +3,8 @@
 impl_data(
   "archive_md5",
   class = class_character,
-  for_resource = archive_source_resource,
+  for_resource = source_archive_resource,
   function(field, pkg, resource, ...) {
-    browser()
     tools::md5sum(resource@path)
   }
 )
@@ -13,9 +12,9 @@ impl_data(
 impl_data(
   "archive_md5",
   class = class_character,
-  for_resource = local_resource,
+  for_resource = source_code_resource,
   function(field, pkg, resource, ...) {
-    outdir <- pkg_tmpdir(pkg, "archive")
+    outdir <- tmpdir(pkg, "archive")
 
     wd <- getwd()
     on.exit(setwd(wd), add = TRUE)

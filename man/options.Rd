@@ -21,13 +21,13 @@ options::opt(x, default, env = "val.meter")
 
 \describe{
 \item{policy}{\describe{
-Set the default val.meter package search policy.\item{default: }{\preformatted{resource_policy()}}
+Set the default \code{val.meter} package search policy.\item{default: }{\preformatted{resource_policy()}}
 \item{option: }{val.meter.policy}
 \item{envvar: }{R_VAL_METER_POLICY (evaluated if possible, raw string otherwise)}
 }}
 
 \item{permissions}{\describe{
-Set the default val.meter data permissions policy. Permissions
+Set the default \code{val.meter} data permissions policy. Permissions
 specify what capabilities are permitted when deriving package data. For more
 details, see \code{\link[=permissions]{permissions()}}.\item{default: }{\preformatted{permissions(FALSE)}}
 \item{option: }{val.meter.permissions}
@@ -35,11 +35,26 @@ details, see \code{\link[=permissions]{permissions()}}.\item{default: }{\preform
 }}
 
 \item{tags}{\describe{
-Set the default val.meter tags policy. Tags characterize the types
-of information various metrics contain. For more details, see
+Set the default \code{val.meter} tags policy. Tags characterize the
+types of information various metrics contain. For more details, see
 \code{\link[=tags]{tags()}}.\item{default: }{\preformatted{tags(TRUE)}}
 \item{option: }{val.meter.tags}
 \item{envvar: }{R_VAL_METER_TAGS (evaluated if possible, raw string otherwise)}
+}}
+
+\item{logs}{\describe{
+Logging directory where artifacts will be stored. Defaults to a temporary
+directory.\item{default: }{\preformatted{ns_tmp_root()}}
+\item{option: }{val.meter.logs}
+\item{envvar: }{R_VAL_METER_LOGS (evaluated if possible, raw string otherwise)}
+}}
+
+\item{quiet}{\describe{
+Silences console output during evaluation. This applies when pulling package
+resources (such as download and installation output) and executing code
+(for example, running \verb{R CMD check})\item{default: }{\preformatted{TRUE}}
+\item{option: }{val.meter.quiet}
+\item{envvar: }{R_VAL_METER_QUIET (evaluated if possible, raw string otherwise)}
 }}
 
 }

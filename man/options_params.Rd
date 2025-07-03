@@ -4,15 +4,22 @@
 \alias{options_params}
 \title{Options As Parameters}
 \arguments{
-\item{tags}{Set the default val.meter tags policy. Tags characterize the types
-of information various metrics contain. For more details, see
+\item{tags}{Set the default \code{val.meter} tags policy. Tags characterize the
+types of information various metrics contain. For more details, see
 \code{\link[=tags]{tags()}}. (Defaults to \code{tags(TRUE)}, overwritable using option 'val.meter.tags' or environment variable 'R_VAL_METER_TAGS')}
 
-\item{policy}{Set the default val.meter package search policy. (Defaults to \code{resource_policy()}, overwritable using option 'val.meter.policy' or environment variable 'R_VAL_METER_POLICY')}
+\item{quiet}{Silences console output during evaluation. This applies when pulling package
+resources (such as download and installation output) and executing code
+(for example, running \verb{R CMD check}) (Defaults to \code{TRUE}, overwritable using option 'val.meter.quiet' or environment variable 'R_VAL_METER_QUIET')}
 
-\item{permissions}{Set the default val.meter data permissions policy. Permissions
+\item{policy}{Set the default \code{val.meter} package search policy. (Defaults to \code{resource_policy()}, overwritable using option 'val.meter.policy' or environment variable 'R_VAL_METER_POLICY')}
+
+\item{permissions}{Set the default \code{val.meter} data permissions policy. Permissions
 specify what capabilities are permitted when deriving package data. For more
 details, see \code{\link[=permissions]{permissions()}}. (Defaults to \code{permissions(FALSE)}, overwritable using option 'val.meter.permissions' or environment variable 'R_VAL_METER_PERMISSIONS')}
+
+\item{logs}{Logging directory where artifacts will be stored. Defaults to a temporary
+directory. (Defaults to \code{ns_tmp_root()}, overwritable using option 'val.meter.logs' or environment variable 'R_VAL_METER_LOGS')}
 }
 \description{
 Options As Parameters

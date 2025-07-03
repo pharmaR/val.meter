@@ -4,14 +4,19 @@
 \alias{resource}
 \title{Resource Class}
 \usage{
-resource()
+resource(
+  id = next_id(),
+  md5 = NA_character_,
+  package = NA_character_,
+  version = NA_character_
+)
 }
 \description{
-A package resource is a resource for producing package information. Package
-resources can vary from source code repositories to R package repository
-listings. Each resources should be able to produce a downloadable version
-of executable package code, but the extent of included code might vary
-depending on source.
+A package resource is a resource for producing package information.
+Package resources can vary from source code repositories to R package
+repository listings. Each resources should be able to produce a downloadable
+version of executable package code, but the extent of included code might
+vary depending on source.
 }
 \details{
 Package resources should also implement \code{convert()}, providing a method for
@@ -20,3 +25,14 @@ only a listing of a package in a repository, calling \code{convert()} on such
 a reference may populate a local directory with the source code of the
 package.
 }
+\section{Fields}{
+
+\describe{
+\item{\code{optional}}{id used for tracking resources throughout execution.
+For example, the package source code from a \code{\link[=repo_resource]{repo_resource()}} may be
+downloaded to add a \code{\link[=archive_source_resource]{archive_source_resource()}} and add it to a new
+\code{\link[=multi_resource]{multi_resource()}}. Because all of these represent the same package,
+they retain the same \code{id}. Primarily the \code{id} is used for
+isolating temporary files.}
+}}
+

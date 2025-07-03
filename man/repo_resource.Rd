@@ -5,8 +5,10 @@
 \title{Package Repository Resource Class}
 \usage{
 repo_resource(
-  package = character(0),
-  version = character(0),
+  id = next_id(),
+  md5 = NA_character_,
+  package = NA_character_,
+  version = NA_character_,
   repo = character(0)
 )
 }

@@ -1,10 +1,10 @@
 #' Resource Class
 #'
-#' A package resource is a resource for producing package information. Package
-#' resources can vary from source code repositories to R package repository
-#' listings. Each resources should be able to produce a downloadable version
-#' of executable package code, but the extent of included code might vary
-#' depending on source.
+#' A package resource is a resource for producing package information.
+#' Package resources can vary from source code repositories to R package
+#' repository listings. Each resources should be able to produce a downloadable
+#' version of executable package code, but the extent of included code might
+#' vary depending on source.
 #'
 #' Package resources should also implement `convert()`, providing a method for
 #' converting into a more desirable source of information. For example, given
@@ -14,7 +14,22 @@
 #'
 #' @export
 #' @name resource
-resource <- class_resource <- new_class("resource", abstract = TRUE)
+resource <- class_resource <- new_class(
+  "resource",
+  abstract = TRUE,
+  properties = list(
+    #' @field optional id used for tracking resources throughout execution.
+    #'   For example, the package source code from a [`repo_resource()`] may be
+    #'   downloaded to add a [`archive_source_resource()`] and add it to a new
+    #'   [`multi_resource()`]. Because all of these represent the same package,
+    #'   they retain the same `id`. Primarily the `id` is used for
+    #'   isolating temporary files.
+    id = new_property(class_integer, default = quote(next_id())),
+    md5 = new_property(class_character, default = NA_character_),
+    package = new_property(class_character, default = NA_character_),
+    version = new_property(class_character, default = NA_character_)
+  )
+)
 
 unknown_resource <- class_unknown_resource <- new_class(
   "unknown_resource",
@@ -32,7 +47,7 @@ multi_resource <- class_multi_resource <- new_class(
     resources = new_property(
       class_list,
       validator = function(value) {
-        if (!any(vlapply(value, Negate(S7_inherits), resource)))
+        if (!all(vlapply(value, S7_inherits, resource)))
           "can only be constructed from a list of resources"
       }
     )
@@ -54,6 +69,7 @@ multi_resource <- class_multi_resource <- new_class(
 source_resource <- class_source_resource <- new_class(
   "source_resource",
   parent = resource,
+  abstract = TRUE,
   properties = list(
     path = new_property(
       class_character,
@@ -71,8 +87,8 @@ source_resource <- class_source_resource <- new_class(
 #' The extracted source code from a package's build archive.
 #'
 #' @export
-archive_source_resource <- class_archive_source_resource <- new_class(
-  "archive_source_resource",
+source_archive_resource <- class_source_archive_resource <- new_class(
+  "source_archive_resource",
   parent = source_resource,
 )
 
@@ -91,8 +107,10 @@ install_resource <- class_install_resource <- new_class(
 #' A union of all package resource classes that have local source code.
 #'
 #' @export
-local_resource <- class_local_resource <-
-  new_union(source_resource, install_resource)
+source_code_resource <- class_source_code_resource <- new_class(
+  "source_code_resource",
+  parent = source_resource
+)
 
 #' Package Repository Resource Class
 #'
@@ -103,8 +121,6 @@ repo_resource <- class_repo_resource <- new_class(
   "repo_resource",
   parent = resource,
   properties = list(
-    package = class_character,
-    version = class_character,
     repo = class_character
   )
 )
@@ -122,46 +138,6 @@ git_resource <- class_git_resource <- new_class(
   )
 )
 
-#' Package Resource Policy Class
-#'
-#' A descriptor of how package resources should be discovered, indicating
-#' which types of package resources should be considered and how they must be
-#' used to produce consistently sourced information.
-#'
-#' @export
-#' @name resource_policy
-resource_policy <- class_resource_policy <- new_class(
-  "resource_policy",
-  properties = list(
-    #' @field types A list of resources types to permit. Ordered by priority,
-    #' highest to lowest.
-    types = new_property(
-      class_list,
-      default = list(
-        source_resource,
-        archive_source_resource,
-        install_resource
-      )
-    ),
-
-    #' @field accepted_source_types A list of additional resources types to
-    #' use, ordered by priority, highest to lowest. These types must be able
-    #' to be [`S7::convert()`]ed into one of `@types` to be used as a resource.
-    accepted_source_types = new_property(
-      class_list,
-      default = list(
-        repo_resource,
-        git_resource
-      )
-    ),
-
-    #' @field permit_download When `TRUE`, permits downloading of additional
-    #' files. Most commonly, this means downloading the package archive from
-    #' a provided repository.
-    permit_download = new_property(class_logical, default = TRUE)
-  )
-)
-
 #' [`resource`] from `character`
 #'
 #' Attempt to find any suitable package sources.
@@ -169,7 +145,12 @@ resource_policy <- class_resource_policy <- new_class(
 #' @noRd
 method(convert, list(class_character, class_resource)) <-
   function(from, to, ..., policy = opt("policy")) {
-    all_resource_types <- append(policy@types, policy@accepted_source_types)
+    all_resource_types <- append(
+      policy@accepted_resources,
+      policy@source_resources
+    )
+
+    all_resource_type_names <- vcapply(all_resource_types, class_desc)
 
     # create an empty list to populate with discovered resources
     resources <- list()
@@ -177,21 +158,65 @@ method(convert, list(class_character, class_resource)) <-
 
     # helper function to add a resource to our discovered resource list
     add_resource <- function(resource) {
-      idx <- match(list(S7::S7_class(resource)), all_resource_types)
+      resource_type_name <- class_desc(S7::S7_class(resource))
+      idx <- match(resource_type_name, all_resource_type_names)
       if (is.na(idx) || !is.null(resources[[idx]])) return()
       resources[[idx]] <<- resource
+      idx
     }
 
-    # try to cast into each resource type
+    # try to cast input into each resource type
     for (resource_type in all_resource_types) {
-      tryCatch(
+      new_idx <- tryCatch(
         add_resource(convert(from, resource_type)),
         error = identity
       )
+
+      # stop on the first discovered source
+      if (!inherits(new_idx, "error")) {
+        break
+      }
+    }
+
+    # after we've found all the resources we can parse a string into, try to
+    # cast to any other resource types (eg, downloading source from repo)
+    from_idx <- 1L
+    while (from_idx <= length(resources)) {
+      # for each resource
+      from_resource <- resources[[from_idx]]
+      if (!is.null(from_resource)) {
+        # iterate over other allowed resource types
+        for (to_idx in seq_along(all_resource_types)) {
+          # that are not yet populated with a known resource
+          to_resource <- resources[[to_idx]]
+          if (!is.null(to_resource)) {
+            next
+          }
+
+          # and try to convert a known resource to another desired resource type
+          to_resource_type <- all_resource_types[[to_idx]]
+          new_idx <- tryCatch(
+            add_resource(convert(from_resource, to_resource_type)),
+            error = identity
+          )
+
+          if (inherits(new_idx, "error")) {
+            next
+          }
+
+          # if we found a more preferential resource, start again from that one
+          if (is.integer(new_idx) && new_idx < from_idx) {
+            from_idx <- new_idx - 1L # -1 to compensate for increment below
+            break # from inner for-loop, continue with next while
+          }
+        }
+      }
+
+      from_idx <- from_idx + 1L
     }
 
     # filter out undiscovered resource types
-    resources <- utils::head(resources, length(policy@types))
+    resources <- utils::head(resources, length(policy@accepted_resources))
     resources <- Filter(Negate(is.null), resources)
 
     if (length(resources) < 1L) {
@@ -201,11 +226,24 @@ method(convert, list(class_character, class_resource)) <-
     if (length(resources) == 1L) {
       resources[[1L]]
     } else {
-      multi_resource(resources)
+      multi_resource(
+        package = resources[[1]]@package,
+        version = resources[[1]]@version,
+        resources = resources
+      )
     }
   }
 
-method(convert, list(class_character, install_resource)) <-
+# mask built-in convert up/down-casting conversions
+method(convert, list(class_resource, class_any)) <-
+  function(from, to) {
+    from_class <- attr(from, "S7_class")
+    from_str <- S7:::class_desc(from_class)  # nolint
+    to_str <- S7:::class_desc(to)  # nolint
+    stop(fmt("Unable to convert from {from_str} to {to_str}"))
+  }
+
+method(convert, list(class_character, class_install_resource)) <-
   function(from, to) {
     if (file.exists(from) && file.exists(file.path(from, "INDEX"))) {
       return(to(path = normalizePath(from)))
@@ -216,7 +254,7 @@ method(convert, list(class_character, install_resource)) <-
     stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }
 
-method(convert, list(class_character, archive_source_resource)) <-
+method(convert, list(class_character, class_source_archive_resource)) <-
   function(from, to) {
     if (file.exists(from) && endsWith(from, ".tar.gz")) {
       return(to(path = normalizePath(from)))
@@ -225,7 +263,7 @@ method(convert, list(class_character, archive_source_resource)) <-
     stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }
 
-method(convert, list(class_character, source_resource)) <-
+method(convert, list(class_character, class_source_code_resource)) <-
   function(from, to) {
     if (
       file.exists(from) &&
@@ -238,20 +276,114 @@ method(convert, list(class_character, source_resource)) <-
     stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }
 
-method(convert, list(class_character, repo_resource)) <-
+method(convert, list(class_character, class_repo_resource)) <-
   function(from, to) {
     ap <- available.packages()
     ap_idx <- Position(function(pkg) identical(from, pkg), ap[, "Package"])
 
     if (!is.na(ap_idx)) {
       return(to(
-        package = ap[ap_idx, "Package"],
-        version = ap[ap_idx, "Version"],
-        repo = ap[ap_idx, "Repository"]
+        package = ap[[ap_idx, "Package"]],
+        version = ap[[ap_idx, "Version"]],
+        md5 = ap[[ap_idx, "MD5sum"]],
+        repo = ap[[ap_idx, "Repository"]]
       ))
     }
 
     stop(fmt("Cannot convert string '{from}' into {.cls to}"))
+  }
+
+method(convert, list(repo_resource, install_resource)) <-
+  function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
+    assert_scopes(c("network", "write"), policy@scopes)
+
+    # before creating install resource, get a new resource id for install path
+    id <- next_id()
+    lib_path <- resource_dir(.id = id, "lib")
+
+    install.packages(
+      pkgs = from@package,
+      lib = lib_path,
+      contriburl = from@repo,
+      repos = NULL,
+      quiet = quiet
+    )
+
+    pkg_dir <- list.files(lib_path, full.names = TRUE)
+    stopifnot(length(pkg_dir) == 1L)
+
+    pkg_desc <- read.dcf(file.path(pkg_dir, "DESCRIPTION"))
+    package <- pkg_desc[[1L, "Package"]]
+    version <- pkg_desc[[1L, "Version"]]
+
+    install_resource(
+      id = id,
+      path = pkg_dir,
+      package = package,
+      md5 = from@md5,
+      version = version
+    )
+  }
+
+method(convert, list(repo_resource, source_archive_resource)) <-
+  function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
+    assert_scopes("network", policy@scopes)
+
+    # before creating the resource, get resource id to specify download path
+    id <- next_id()
+    path <- resource_dir(.id = id, "archive")
+
+    x <- download.packages(
+      pkgs = from@package,
+      destdir = path,
+      repos = NULL,
+      contriburl = from@repo,
+      quiet = quiet
+    )
+
+    package <- x[[1, 1]]
+    path <- x[[1, 2]]
+    version <- gsub("^.*/[^_]*_(.*)\\.tar\\.gz$", "\\1", path)
+
+    source_archive_resource(
+      id = id, # once downloaded, reuse id so we can avoid re-download
+      package = package,
+      version = version,
+      md5 = from@md5,
+      path = path
+    )
+  }
+
+method(convert, list(source_resource, install_resource)) <-
+  function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
+    assert_scopes("write", policy@scopes)
+
+    # before creating install resource, get a new resource id for install path
+    id <- next_id()
+    lib_path <- resource_dir(.id = id, "lib")
+
+    install.packages(
+      pkgs = from@path,
+      lib = lib_path,
+      repos = NULL,
+      type = "source",
+      quiet = quiet
+    )
+
+    pkg_dir <- list.files(lib_path, full.names = TRUE)
+    stopifnot(length(pkg_dir) == 1L)
+
+    pkg_desc <- read.dcf(file.path(pkg_dir, "DESCRIPTION"))
+    package <- pkg_desc[[1L, "Package"]]
+    version <- pkg_desc[[1L, "Version"]]
+
+    install_resource(
+      id = id,
+      path = pkg_dir,
+      package = package,
+      md5 = from@md5,
+      version = version
+    )
   }
 
 method(to_dcf, class_resource) <- function(x, ...) {

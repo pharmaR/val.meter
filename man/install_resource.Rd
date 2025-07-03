@@ -4,7 +4,13 @@
 \alias{install_resource}
 \title{Package Install Resource Class}
 \usage{
-install_resource(path = NA_character_)
+install_resource(
+  id = next_id(),
+  md5 = NA_character_,
+  package = NA_character_,
+  version = NA_character_,
+  path = NA_character_
+)
 }
 \description{
 An installed version of a package, as would be found in a package library.

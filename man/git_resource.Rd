@@ -4,7 +4,13 @@
 \alias{git_resource}
 \title{Package \code{git} Resource Class}
 \usage{
-git_resource(http_url = character(0))
+git_resource(
+  id = next_id(),
+  md5 = NA_character_,
+  package = NA_character_,
+  version = NA_character_,
+  http_url = character(0)
+)
 }
 \description{
 A reference to a listing in an R package git source code repository.

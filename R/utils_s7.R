@@ -43,3 +43,11 @@ method(is_subclass, list(class_any, .s7_union)) <-
   function(subclass, class) {
     any(vlapply(class$classes, subclass = subclass, is_subclass))
   }
+
+
+
+#' lifted from S7:::class_desc
+#' @noRd
+class_desc <- function(x) {
+  paste(c(attr(x, "package"), attr(x, "name")), collapse = "::")
+}

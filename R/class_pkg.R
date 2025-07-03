@@ -99,7 +99,7 @@ method(print, class_pkg) <- function(x, ...) {
 
   fields <- get_data_derive_field_names()
   names(fields) <- fields
-  fields <- lapply(fields, convert, to = metric)
+  fields <- lapply(fields, convert, to = data_info)
   is_metric <- vlapply(fields, S7::prop, "metric")
   fields <- fields[order(!is_metric)]
   is_metric <- is_metric[order(!is_metric)]

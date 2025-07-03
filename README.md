@@ -19,7 +19,7 @@ and aims to explore some of the discussed design goals.
 - [x] Surfacing of errors from dependent data
 - [x] Comprehensive evaluation of all metrics
 - [x] Better CLI for communicating about metrics
-- [ ] Package resource (source of package information) conversion (ie, with a
+- [x] Package resource (source of package information) conversion (ie, with a
       CRAN resource, download the source code and create a local source
       code resource)
 - [ ] Lots of documentation to write

@@ -1,7 +1,7 @@
 #' @include class_permissions.R
 #' @include class_tags.R
-metric <- new_class(
-  "metric",
+data_info <- class_data_info <- new_class(
+  "data_info",
   properties = list(
     metric = class_logical,
     description = class_character,
@@ -22,7 +22,7 @@ metric <- new_class(
 #   https://github.com/RConsortium/S7/issues/390#issuecomment-2987133166
 #
 local({
-  method(format, metric) <-
+  method(format, data_info) <-
     function(
       x,
       ...,
@@ -75,7 +75,7 @@ local({
 #   https://github.com/RConsortium/S7/issues/390#issuecomment-2987133166
 #
 local({
-  method(print, metric) <-
+  method(print, data_info) <-
     function(
       x,
       permissions = opt("permissions"),
@@ -115,21 +115,12 @@ print.val_meter_error <- function(x, ...) {
   cat(format(x, ...), "\n")
 }
 
-method(convert, list(class_character, metric)) <-
-  function(from, to) {
-    metric(
-      metric = pkg_data_is_metric(from),
-      description = pkg_data_get_description(from),
-      tags = pkg_data_get_tags(from),
-      type = pkg_data_get_class(from),
-      suggests = pkg_data_get_suggests(from),
-      scopes = pkg_data_get_permissions(from)
-    )
-  }
+method(convert, list(class_character, data_info)) <-
+  function(from, to) pkg_data_info(from)
 
-metrics_list <- new_class("metrics_list", parent = class_list)
+data_info_list <- new_class("data_info_list", parent = class_list)
 
-method(print, metrics_list) <- function(x, ...) {
+method(print, data_info_list) <- function(x, ...) {
   msgs <- list()
 
   to_print <- x
@@ -162,8 +153,8 @@ method(print, metrics_list) <- function(x, ...) {
 metrics <- function(all = FALSE) {
   fields <- get_data_derive_field_names()
   names(fields) <- fields
-  fields <- lapply(fields, convert, to = metric)
+  fields <- lapply(fields, convert, to = data_info)
   is_metric <- vlapply(fields, S7::prop, "metric")
   if (!all) fields <- fields[is_metric]
-  metrics_list(fields)
+  data_info_list(fields)
 }

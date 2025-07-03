@@ -4,7 +4,13 @@
 \alias{archive_source_resource}
 \title{Package Archive Source Code Resource Class}
 \usage{
-archive_source_resource(path = NA_character_)
+archive_source_resource(
+  id = next_id(),
+  md5 = NA_character_,
+  package = NA_character_,
+  version = NA_character_,
+  path = NA_character_
+)
 }
 \description{
 The extracted source code from a package's build archive.
