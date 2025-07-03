@@ -79,8 +79,8 @@ Now that we've calculated our metrics, we can write them out to a `.dcf` file
 conformant with the `PACKAGES` file used to host repositories:
 
 ```r
-dcf <- to_dcf(pkg)
-cat(dcf_content)
+dcf <- to_dcf(p)
+cat(dcf, "\n")
 ```
 
 The object can be _partially_ reconstructed from the `PACKAGES` file contents.

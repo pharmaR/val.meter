@@ -5,13 +5,33 @@ impl_data(
   class = S7::new_S3_class("rcmdcheck"),
   tags = c("execution"),
   suggests = "rcmdcheck",
-  permissions = "execution",
+  permissions = "execution"
 )
 
 impl_data(
-  "r_cmd_check", for_resource = source_resource,
-  function(field, pkg, resource, ...) {
-    rcmdcheck::rcmdcheck(resource@path)
+  "r_cmd_check",
+  for_resource = S7::new_union(
+    local_source_resource,
+    source_archive_resource
+  ),
+  function(field, pkg, resource, ..., quiet = opt("quiet")) {
+    # suppress messages to avoid stdout output from subprocess
+    # (eg warnings about latex availability not suppressed by rcmdcheck)
+    wrapper <- if (quiet) {
+      function(...) capture.output(..., type = "message")
+    } else {
+      identity
+    }
+
+    wrapper({
+      result <- rcmdcheck::rcmdcheck(
+        resource@path,
+        quiet = quiet,
+        error_on = "never"
+      )
+    })
+
+    result
   }
 )
 

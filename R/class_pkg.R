@@ -143,7 +143,7 @@ method(print, class_pkg) <- function(x, ...) {
 method(to_dcf, class_pkg) <- function(x, ...) {
   paste(collapse = "\n", c(
     to_dcf(x@resource),
-    paste0("MD5: ", x$archive_md5),
+    paste0("MD5: ", x@resource@md5),
     paste0("Metric/", names(x@metrics), "@R: ", vcapply(x@metrics, to_dcf))
   ))
 }
@@ -161,7 +161,8 @@ method(from_dcf, list(class_character, class_pkg)) <-
     dcf <- from_dcf(x, class_any)
     resource <- unknown_resource(
       package = dcf[[1, "Package"]],
-      version = dcf[[1, "Version"]]
+      version = dcf[[1, "Version"]],
+      md5 = if ("MD5" %in% colnames(dcf)) dcf[[1, "MD5"]] else NA_character_
     )
 
     data <- new.env(parent = emptyenv())

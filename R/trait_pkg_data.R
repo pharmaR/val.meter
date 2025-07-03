@@ -180,13 +180,13 @@ impl_data_info <- function(
 #' @include trait_pkg_data_s3.R
 #' @export
 impl_data_derive <- function(name, fn, resource) {
-  return_class <- pkg_data_info(name)@type
   method(pkg_data_derive, list(pkg_data_class(name), pkg, resource)) <-
     function(field, pkg, resource, ...) {
-      required_scopes <- pkg_data_get_permissions(field)
-      required_suggests <- pkg_data_get_suggests(field)
+      info <- pkg_data_info(field)
+      required_scopes <- info@scopes
+      required_suggests <- info@suggests
       assert_scopes(required_scopes, pkg@scopes)
       assert_suggests(required_suggests)
-      convert(fn(field, pkg, resource, ...), return_class)
+      convert(fn(field, pkg, resource, ...), info@type)
     }
 }

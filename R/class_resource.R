@@ -66,8 +66,8 @@ multi_resource <- class_multi_resource <- new_class(
 #' build systems.
 #'
 #' @export
-source_resource <- class_source_resource <- new_class(
-  "source_resource",
+local_resource <- class_local_resource <- new_class(
+  "local_resource",
   parent = resource,
   abstract = TRUE,
   properties = list(
@@ -82,6 +82,20 @@ source_resource <- class_source_resource <- new_class(
   )
 )
 
+#' @export
+remote_source_resource <- class_remote_source_resource <- new_class(
+  "remote_source_resource",
+  abstract = TRUE,
+  parent = resource
+)
+
+#' @export
+local_source_resource <- class_local_source_resource <- new_class(
+  "local_source_resource",
+  abstract = TRUE,
+  parent = local_resource
+)
+
 #' Package Archive Source Code Resource Class
 #'
 #' The extracted source code from a package's build archive.
@@ -89,7 +103,7 @@ source_resource <- class_source_resource <- new_class(
 #' @export
 source_archive_resource <- class_source_archive_resource <- new_class(
   "source_archive_resource",
-  parent = source_resource,
+  parent = local_resource,
 )
 
 #' Package Install Resource Class
@@ -99,7 +113,7 @@ source_archive_resource <- class_source_archive_resource <- new_class(
 #' @export
 install_resource <- class_install_resource <- new_class(
   "install_resource",
-  parent = source_resource
+  parent = local_resource
 )
 
 #' Package Local Resource Class Union
@@ -109,7 +123,7 @@ install_resource <- class_install_resource <- new_class(
 #' @export
 source_code_resource <- class_source_code_resource <- new_class(
   "source_code_resource",
-  parent = source_resource
+  parent = local_source_resource
 )
 
 #' Package Repository Resource Class
@@ -132,7 +146,7 @@ repo_resource <- class_repo_resource <- new_class(
 #' @export
 git_resource <- class_git_resource <- new_class(
   "git_resource",
-  parent = resource,
+  parent = remote_source_resource,
   properties = list(
     http_url = class_character
   )
@@ -223,15 +237,31 @@ method(convert, list(class_character, class_resource)) <-
       stop("Unable to discover package resource")
     }
 
+    md5s <- vcapply(resources, S7::prop, "md5")
     if (length(resources) == 1L) {
       resources[[1L]]
     } else {
+      if (length(unique(md5s)) != 1L) {
+        warning("Discovered resources for \"{from}\" vary in their md5 hashes.")
+      }
+
       multi_resource(
         package = resources[[1]]@package,
         version = resources[[1]]@version,
+        md5 = resources[[1]]@md5,
         resources = resources
       )
     }
+  }
+
+method(convert, list(class_resource, class_resource)) <-
+  function(from, to) {
+    if (S7::S7_inherits(from, class = to)) {
+      return(from)
+    }
+    from_str <- S7:::class_desc(from_class)  # nolint
+    to_str <- S7:::class_desc(to)  # nolint
+    stop(fmt("{from_str} cannot be cast into a {to_str}"))
   }
 
 # mask built-in convert up/down-casting conversions
@@ -293,7 +323,7 @@ method(convert, list(class_character, class_repo_resource)) <-
     stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }
 
-method(convert, list(repo_resource, install_resource)) <-
+method(convert, list(class_repo_resource, class_install_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
     assert_scopes(c("network", "write"), policy@scopes)
 
@@ -325,7 +355,7 @@ method(convert, list(repo_resource, install_resource)) <-
     )
   }
 
-method(convert, list(repo_resource, source_archive_resource)) <-
+method(convert, list(class_repo_resource, class_source_archive_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
     assert_scopes("network", policy@scopes)
 
@@ -354,7 +384,7 @@ method(convert, list(repo_resource, source_archive_resource)) <-
     )
   }
 
-method(convert, list(source_resource, install_resource)) <-
+method(convert, list(class_local_source_resource, class_install_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
     assert_scopes("write", policy@scopes)
 
@@ -390,12 +420,34 @@ method(to_dcf, class_resource) <- function(x, ...) {
   new_err("Resource {.cls x} cannot be encoded for output to a DCF file.")
 }
 
-method(to_dcf, class_source_resource) <- function(x, ...) {
-  deps <- c("Depends", "Imports", "LinkingTo", "Suggests")
-  fields <- c("Package", "Version", deps, "License", "NeedsCompilation")
-  desc <- read.dcf(file.path(x@path, "DESCRIPTION"), fields = fields)
-  out <- character(0L)
-  con <- textConnection("out", open = "w", local = TRUE)
-  write.dcf(desc, con, keep.white = FALSE)
-  out
+method(
+  to_dcf,
+  S7::new_union(class_local_source_resource, class_install_resource)
+) <-
+  function(x, ...) {
+    deps <- c("Depends", "Imports", "LinkingTo", "Suggests")
+    fields <- c("Package", "Version", deps, "License", "NeedsCompilation")
+    desc <- read.dcf(file.path(x@path, "DESCRIPTION"), fields = fields)
+    out <- character(0L)
+    con <- textConnection("out", open = "w", local = TRUE)
+    write.dcf(desc, con, keep.white = FALSE)
+    out
+  }
+
+method(to_dcf, class_multi_resource) <- function(x, ...) {
+  for (resource in x@resources) {
+    result <- tryCatch(
+      to_dcf(resource, ...),
+      error = identity
+    )
+
+    if (!inherits(result, "error")) {
+      return(result)
+    }
+  }
+
+  browser()
+
+  cls <- class(x)[[1]]  # nolint
+  new_err("Resource {.cls {cls}} has no resources which produce a DCF output.")
 }
