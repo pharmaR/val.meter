@@ -10,7 +10,7 @@ impl_data(
     "total number of lifetime downloads, as reported by the Posit ",
     "CRAN mirror through the cranlogs.rpkg.org API"
   ),
-  function(field, pkg, resource, ...) {
+  function(pkg, resource, ...) {
     from <- as.Date("1970-01-01")
     to   <- as.Date("3000-01-01")
 

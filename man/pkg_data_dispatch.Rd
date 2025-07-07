@@ -7,7 +7,7 @@
 \alias{as_pkg_data}
 \title{Various helpers for using a field name for method dispatch}
 \usage{
-pkg_data_s3_class(field_name = c())
+pkg_data_s3_class(field_name = NULL)
 
 pkg_data_class(field_name = NULL)
 

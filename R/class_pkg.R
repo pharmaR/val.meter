@@ -44,6 +44,7 @@ pkg <- class_pkg <- new_class(
   }
 )
 
+#' @export
 random_pkg <- function(
   package = random_pkg_name(),
   version = random_pkg_version(),
@@ -58,6 +59,7 @@ random_pkg <- function(
   pkg(resource, ...)
 }
 
+#' @export
 random_pkgs <- function(n = 100, ...) {
   pkg_names <- random_pkg_name(n = n)
   pkgs <- lapply(pkg_names, random_pkg, ...)
@@ -65,7 +67,7 @@ random_pkgs <- function(n = 100, ...) {
   # generate mock metrics
   for (pkg in pkgs) {
     # provide cohort of package names to desc for generating dependencies
-    pkg_data_derive("desc", pkg, cohort = pkg_names)
+    pkg_data_derive(pkg, field = "desc", cohort = pkg_names)
     pkg@metrics
   }
 
@@ -81,7 +83,10 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
       on.exit(.state$raise_derive_errors(FALSE))
     }
 
-    x@data[[name]] <- tryCatch(pkg_data_derive(name, x), error = identity)
+    x@data[[name]] <- tryCatch(
+      pkg_data_derive(pkg = x, field = name),
+      error = identity
+    )
 
     if (.raise && inherits(x@data[[name]], "error")) {
       stop(x@data[[name]])

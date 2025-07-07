@@ -17,7 +17,15 @@ get_data_derive_field_names <- function() {
   signature_prefix <- "pkg_data_field_"
 
   # get dispatch class types for first argument (field name)
-  signature_types <- names(pkg_data_derive@methods)
+  # must match signature of pkg_data_derive
+  dispatch_args <- list("pkg" = class_pkg, "resource" = class_resource)
+  methods <- pkg_data_derive@methods
+
+  # will only subset methods for S7 dispatch
+  for (arg in dispatch_args) methods <- methods[[class_desc(arg)]]
+
+  # extract fields for which derivation is implemented given dispatch args
+  signature_types <- names(methods)
 
   # subset for only methods which dispatch on [`pkg_data()`] types
   is_pkg_data <- startsWith(signature_types, signature_prefix)
@@ -38,7 +46,7 @@ get_data_derive_field_names <- function() {
 #' `resource`, instead iterating through `pkg` resources by priority.
 #'
 #' @export
-pkg_data_derive <- new_generic("pkg_data_derive", c("field", "pkg", "resource"))
+pkg_data_derive <- new_generic("pkg_data_derive", c("pkg", "resource", "field"))
 
 #' Derive by Field Name
 #'
@@ -48,11 +56,16 @@ pkg_data_derive <- new_generic("pkg_data_derive", c("field", "pkg", "resource"))
 #' @noRd
 method(
   pkg_data_derive,
-  list(class_character, class_any, new_union(class_any, class_missing))
+  list(class_any, new_union(class_any, class_missing), class_character)
 ) <-
-  function(field, pkg, resource, ...) {
-    field <- as_pkg_data(field)
-    pkg_data_derive(field, pkg, resource = NULL, ..., field_name = field)
+  function(pkg, resource, field, ...) {
+    pkg_data_derive(
+      pkg,
+      resource = NULL,
+      field = as_pkg_data(field),
+      ...,
+      field_name = field
+    )
   }
 
 #' Derive using Pkg Resources
@@ -63,29 +76,23 @@ method(
 #' @noRd
 method(
   pkg_data_derive,
-  list(class_any, class_pkg, new_union(NULL, class_missing))
+  list(class_pkg, new_union(NULL, class_missing), class_any)
 ) <-
-  function(field, pkg, resource, ..., field_name) {
-    pkg_data_derive(
-      field = field,
-      pkg = pkg,
-      resource = pkg@resource,
-      ...,
-      field_name = field_name
-    )
+  function(pkg, resource, field, ...) {
+    pkg_data_derive(pkg = pkg, resource = pkg@resource, field = field, ...)
   }
 
 method(
   pkg_data_derive,
-  list(class_any, class_pkg, class_multi_resource)
+  list(class_pkg, class_multi_resource, class_any)
 ) <-
-  function(field, pkg, resource, ..., field_name) {
+  function(pkg, resource, field, ..., field_name) {
     for (resource in resource@resources) {
       result <- tryCatch(
         pkg_data_derive(
-          field = field,
           pkg = pkg,
           resource = resource,
+          field = field,
           ...,
           field_name = field_name
         ),
@@ -112,23 +119,22 @@ method(
 #' @noRd
 method(
   pkg_data_derive,
-  list(pkg_data_class(), class_any, class_mock_resource)
+  list(class_pkg, class_mock_resource, pkg_data_class())
 ) <-
-  function(field, pkg, resource, ...) {
+  function(pkg, resource, field, ...) {
     info <- pkg_data_info(field)
-    pkg_data_derive(info@type, pkg, resource, ...)
+    pkg_data_derive(pkg, resource, info@type, ...)
   }
 
 method(
   pkg_data_derive,
-  list(new_union(.s7_class, .s7_base_class), class_any, class_mock_resource)
+  list(class_any, class_mock_resource, new_union(.s7_class, .s7_base_class))
 ) <-
-  function(field, pkg, resource, ...) {
-    class <- c(paste0("S7_base_", field$class, "_class"), class(field))
+  function(pkg, resource, field, ...) {
     pkg_data_derive(
-      structure(list(), class = class),
       pkg = pkg,
       resource = resource,
+      field = structure(list(), class = c(field$class, class(field))),
       ...,
       field_name = field
     )
@@ -136,21 +142,21 @@ method(
 
 method(
   pkg_data_derive,
-  list(new_S3_class("S7_base_logical_class"), class_any, class_mock_resource)
+  list(class_any, class_mock_resource, new_S3_class("logical"))
 ) <-
-  function(field, pkg, resource, ...) sample(c(TRUE, FALSE), 1)
+  function(pkg, resource, field, ...) sample(c(TRUE, FALSE), 1)
 
 method(
   pkg_data_derive,
-  list(new_S3_class("S7_base_integer_class"), class_any, class_mock_resource)
+  list(class_any, class_mock_resource, new_S3_class("integer"))
 ) <-
-  function(field, pkg, resource, ...) rpois(n = 1, lambda = 2)
+  function(pkg, resource, field, ...) rpois(n = 1, lambda = 2)
 
 method(
   pkg_data_derive,
-  list(new_S3_class("S7_base_numeric_class"), class_any, class_mock_resource)
+  list(class_any, class_mock_resource, new_S3_class("numeric"))
 ) <-
-  function(field, pkg, resource, ...) runif() ^ rpois(n = 1, lambda = 2)
+  function(pkg, resource, field, ...) runif() ^ rpois(n = 1, lambda = 2)
 
 #' @describeIn pkg_data
 #' Retrieve metadata about a data field.
@@ -227,13 +233,13 @@ impl_data_info <- function(
 #' @include trait_pkg_data_s3.R
 #' @export
 impl_data_derive <- function(name, fn, resource) {
-  method(pkg_data_derive, list(pkg_data_class(name), pkg, resource)) <-
-    function(field, pkg, resource, ...) {
+  method(pkg_data_derive, list(pkg, resource, pkg_data_class(name))) <-
+    function(pkg, resource, field, ...) {
       info <- pkg_data_info(field)
       required_scopes <- info@scopes
       required_suggests <- info@suggests
       assert_scopes(required_scopes, pkg@scopes)
       assert_suggests(required_suggests)
-      convert(fn(field, pkg, resource, ...), info@type)
+      convert(fn(pkg, resource, field, ...), info@type)
     }
 }

@@ -14,7 +14,7 @@ impl_data(
     local_source_resource,
     source_archive_resource
   ),
-  function(field, pkg, resource, ..., quiet = opt("quiet")) {
+  function(pkg, resource, ..., quiet = opt("quiet")) {
     # suppress messages to avoid stdout output from subprocess
     # (eg warnings about latex availability not suppressed by rcmdcheck)
     wrapper <- if (quiet) {
@@ -42,7 +42,7 @@ impl_data(
   tags = c("execution"),
   permissions = c(),
   description = "the number of errors produced when running R CMD check",
-  function(field, pkg, resource, ...) {
+  function(pkg, resource, ...) {
     length(pkg$r_cmd_check$errors)
   }
 )

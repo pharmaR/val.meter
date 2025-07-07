@@ -4,7 +4,7 @@ impl_data(
   "desc",
   class = c("description", "R6"),
   for_resource = new_union(source_code_resource, install_resource),
-  function(field, pkg, resource, ...) {
+  function(pkg, resource, ...) {
     desc::desc(resource@path)
   }
 )
@@ -12,7 +12,7 @@ impl_data(
 impl_data(
   "name",
   class = class_character,
-  function(field, pkg, resource, ...) {
+  function(pkg, resource, ...) {
     pkg$desc$get_field("Package")
   }
 )
@@ -21,7 +21,7 @@ impl_data(
   "name",
   class = class_character,
   for_resource = repo_resource,
-  function(field, pkg, resource, ...) {
+  function(pkg, resource, ...) {
     resource@package
   }
 )
@@ -29,7 +29,7 @@ impl_data(
 impl_data(
   "version",
   class = class_character,
-  function(field, pkg, resource, ...) {
+  function(pkg, resource, ...) {
     pkg$desc$get_field("Version")
   }
 )
@@ -38,7 +38,7 @@ impl_data(
   "version",
   class = class_character,
   for_resource = repo_resource,
-  function(field, pkg, resource, ...) {
+  function(pkg, resource, ...) {
     resource@version
   }
 )
@@ -50,7 +50,7 @@ impl_data(
   tags = c("best practice"),
   permissions = c(),
   description = "the number of required dependencies",
-  function(field, pkg, resource, ...) {
+  function(pkg, resource, ...) {
     sum(pkg$desc$get_deps()$type %in% c("Depends", "Imports", "LinkingTo"))
   }
 )
@@ -58,7 +58,7 @@ impl_data(
 impl_data(
   "desc",
   for_resource = mock_resource,
-  function(field, pkg, resource, ..., cohort = random_pkg_name(n = 100)) {
+  function(pkg, resource, ..., cohort = random_pkg_name(n = 100)) {
     # mock a desc::desc object given a package cohort, generating data
     # dependencies
 
