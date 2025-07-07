@@ -67,7 +67,10 @@ impl_data(
     desc$set("Version", resource@version)
     desc$set("License", "Phony License")
 
+    # NOTE: naive dependency simulation, to do this robustly we would need
+    #   to ensure that we aren't creating cyclic dependencies
     deps <- list()
+    cohort <- setdiff(cohort, resource@package)
     deps$Depends <- c("R", sample(cohort, min(rpois(1, 0.5), length(cohort))))
     cohort <- setdiff(cohort, deps$Depends)
     deps$LinkingTo <- sample(cohort, min(rpois(1, 0.5), length(cohort)))

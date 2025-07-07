@@ -91,6 +91,15 @@ produce these metrics and more full error types captured during execution.
 pkg_from_dcf(dcf)
 ```
 
+We can simulate a cohort of packages using `random_pkgs()`
+
+```r
+ps <- random_pkgs(n = 3, scopes = permissions(TRUE))
+dcfs <- vapply(ps, to_dcf, character(1L))
+cat(dcfs, sep = "\n\n")
+```
+
+
 Now we can easily use this package's derived metrics for activities like
 evaluating selection criteria and reporting.
 

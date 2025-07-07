@@ -67,7 +67,7 @@ random_pkgs <- function(n = 100, ...) {
   # generate mock metrics
   for (pkg in pkgs) {
     # provide cohort of package names to desc for generating dependencies
-    pkg_data_derive(pkg, field = "desc", cohort = pkg_names)
+    get_pkg_data(pkg, "desc", cohort = pkg_names)
     pkg@metrics
   }
 
@@ -84,7 +84,7 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
     }
 
     x@data[[name]] <- tryCatch(
-      pkg_data_derive(pkg = x, field = name),
+      pkg_data_derive(pkg = x, field = name, ...),
       error = identity
     )
 
@@ -179,7 +179,7 @@ method(print, class_pkg) <- function(x, ...) {
 method(to_dcf, class_pkg) <- function(x, ...) {
   paste(collapse = "\n", c(
     to_dcf(x$desc),
-    paste0("MD5: ", x@resource@md5),
+    if (!is.na(x@resource@md5)) paste0("MD5: ", x@resource@md5),
     paste0("Metric/", names(x@metrics), "@R: ", vcapply(x@metrics, to_dcf))
   ))
 }
