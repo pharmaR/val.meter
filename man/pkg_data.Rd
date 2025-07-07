@@ -9,7 +9,7 @@
 \alias{impl_data_derive}
 \title{Package Data Trait}
 \usage{
-pkg_data_derive(field, pkg, resource, ...)
+pkg_data_derive(pkg, resource, field, ...)
 
 pkg_data_info(field, ...)
 
