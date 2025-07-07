@@ -103,13 +103,60 @@ method(
     )
   }
 
+#' Derive for Mock Resource
+#'
+#' Individual data implementations might provide their own functions for mock
+#' resources, but for those that don't we can provide sensible defaults based
+#' on the expected return type.
+#'
+#' @noRd
+method(
+  pkg_data_derive,
+  list(pkg_data_class(), class_any, class_mock_resource)
+) <-
+  function(field, pkg, resource, ...) {
+    info <- pkg_data_info(field)
+    pkg_data_derive(info@type, pkg, resource, ...)
+  }
 
+method(
+  pkg_data_derive,
+  list(new_union(.s7_class, .s7_base_class), class_any, class_mock_resource)
+) <-
+  function(field, pkg, resource, ...) {
+    class <- c(paste0("S7_base_", field$class, "_class"), class(field))
+    pkg_data_derive(
+      structure(list(), class = class),
+      pkg = pkg,
+      resource = resource,
+      ...,
+      field_name = field
+    )
+  }
+
+method(
+  pkg_data_derive,
+  list(new_S3_class("S7_base_logical_class"), class_any, class_mock_resource)
+) <-
+  function(field, pkg, resource, ...) sample(c(TRUE, FALSE), 1)
+
+method(
+  pkg_data_derive,
+  list(new_S3_class("S7_base_integer_class"), class_any, class_mock_resource)
+) <-
+  function(field, pkg, resource, ...) rpois(n = 1, lambda = 2)
+
+method(
+  pkg_data_derive,
+  list(new_S3_class("S7_base_numeric_class"), class_any, class_mock_resource)
+) <-
+  function(field, pkg, resource, ...) runif() ^ rpois(n = 1, lambda = 2)
 
 #' @describeIn pkg_data
 #' Retrieve metadata about a data field.
 #'
 #' @export
-pkg_data_info <- new_generic("pkg_data_get_meta", c("field"))
+pkg_data_info <- new_generic("pkg_data_info", c("field"))
 
 method(pkg_data_info, class_character) <-
   function(field) pkg_data_info(as_pkg_data(field))

@@ -29,7 +29,7 @@ resource_policy(
     
     new_object(S7_object(), id = id, md5 = md5, package = package, version = version,
     path = path)
- }, name = "source_resource", parent = structure(function (id =
+ }, name = "local_resource", parent = structure(function (id =
     next_id(), md5 = NA_character_, package = NA_character_, version = NA_character_) 
 
     {
@@ -293,39 +293,52 @@ resource_policy(
      path
      new_object(S7_object(), id = id, md5 = md5,
     package = package, version = version, path = path)
- }, name = "source_resource",
-    parent = structure(function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_) 
+ }, name =
+    "local_source_resource", parent = structure(function (id = next_id(), md5 =
+    NA_character_, package = NA_character_, version = NA_character_, path =
+    NA_character_) 
  {
      id
      md5
      package
+     version
+     path
     
-    version
-     new_object(S7_object(), id = id, md5 = md5, package = package, version =
-    version)
- }, name = "resource", parent = structure(function () 
- {
-    
-    .Call(S7_object_)
- }, name = "S7_object", properties = list(), abstract = FALSE,
-    constructor = function () 
+    new_object(S7_object(), id = id, md5 = md5, package = package, version = version,
+    path = path)
+ }, name = "local_resource", parent = structure(function (id =
+    next_id(), md5 = NA_character_, package = NA_character_, version = NA_character_) 
+
+    {
+     id
+     md5
+     package
+     version
+     new_object(S7_object(), id = id,
+    md5 = md5, package = package, version = version)
+ }, name = "resource", parent =
+    structure(function () 
  {
      .Call(S7_object_)
- }, validator = function (self)
-    
+ }, name = "S7_object", properties =
+    list(), abstract = FALSE, constructor = function () 
+ {
+     .Call(S7_object_)
+ },
+    validator = function (self) 
  {
      if (!is_S7_type(self)) {
-         "Underlying data is corrupt"
+        
+    "Underlying data is corrupt"
      }
- },
-    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(id =
-    structure(list(name = "id", class = structure(list(class = "integer",
-    constructor_name = "integer", constructor = function (.data = integer(0)) 
- .data,
-    validator = function (object) 
+ }, class = c("S7_class", "S7_object")), package
+    = "val.meter", properties = list(id = structure(list(name = "id", class =
+    structure(list(class = "integer", constructor_name = "integer", constructor =
+    function (.data = integer(0)) 
+ .data, validator = function (object) 
  {
-     if (base_class(object) != name) {
+     if
+    (base_class(object) != name) {
         
     sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
      }
@@ -522,6 +535,84 @@ resource_policy(
    
          "invalid path"
  }, default = NA_character_), class = "S7_property")), abstract =
+    TRUE, constructor = function (id = next_id(), md5 = NA_character_, package =
+    NA_character_, version = NA_character_, path = NA_character_) 
+ {
+     id
+     md5
+  
+      package
+     version
+     path
+     new_object(S7_object(), id = id, md5 = md5,
+    package = package, version = version, path = path)
+ }, class = c("S7_class",
+    "S7_object")), package = "val.meter", properties = list(id = structure(list(name =
+    "id", class = structure(list(class = "integer", constructor_name = "integer",
+    constructor = function (.data = integer(0)) 
+ .data, validator = function (object) 
+
+    {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
+    structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), package = structure(list(name = "package",
+    class = structure(list(class = "character", constructor_name = "character",
+    constructor = function (.data = character(0)) 
+ .data, validator = function (object)
+    
+ {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), version = structure(list(name = "version",
+    class = structure(list(class = "character", constructor_name = "character",
+    constructor = function (.data = character(0)) 
+ .data, validator = function (object)
+    
+ {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), path = structure(list(name = "path", class
+    = structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
+    (value) 
+ {
+     if (length(value) != 1L || is.na(value) || !file.exists(value)) 
+   
+         "invalid path"
+ }, default = NA_character_), class = "S7_property")), abstract =
     FALSE, constructor = function (id = next_id(), md5 = NA_character_, package =
     NA_character_, version = NA_character_, path = NA_character_) 
  {
@@ -557,7 +648,7 @@ resource_policy(
      path
      new_object(S7_object(), id = id, md5 = md5,
     package = package, version = version, path = path)
- }, name = "source_resource",
+ }, name = "local_resource",
     parent = structure(function (id = next_id(), md5 = NA_character_, package =
     NA_character_, version = NA_character_) 
  {

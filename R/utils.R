@@ -15,3 +15,22 @@ vcapply <- function(
 ) {
   vapply(..., FUN.VALUE = FUN.VALUE)
 }
+
+viapply <- function(
+  ...,
+  FUN.VALUE = integer(1L) # nolint: object_name_linter.
+) {
+  vapply(..., FUN.VALUE = FUN.VALUE)
+}
+
+
+vnapply <- function(
+  ...,
+  FUN.VALUE = numeric(1L) # nolint: object_name_linter.
+) {
+  vapply(..., FUN.VALUE = FUN.VALUE)
+}
+
+tocamel <- function(x, ...) {
+  paste0(toupper(substring(x, 1, 1)), tolower(substring(x, 2)))
+}

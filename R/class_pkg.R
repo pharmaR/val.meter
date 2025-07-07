@@ -25,21 +25,52 @@ pkg <- class_pkg <- new_class(
     #' [`multi_resource`], the order of resources determines the precedence
     #' of information. If information about a package could be derived from
     #' multiple sources, the first source is prioritized.
-    resource = class_resource,
+    resource = S7::new_union(class_resource, class_mock_resource),
 
     #' @field scopes Permissible scopes for deriving data.
     scopes = permissions
   ),
   constructor = function(x, scopes = opt("permissions")) {
+    is_mocked <- S7::S7_inherits(x, class_mock_resource)
+    if (!is_mocked) x <- convert(x, resource)
+
     new_object(
       .parent = S7::S7_object(),
       data = new.env(parent = emptyenv()),
       metrics = list(),
-      resource = convert(x, resource),
+      resource = x,
       scopes = scopes
     )
   }
 )
+
+random_pkg <- function(
+  package = random_pkg_name(),
+  version = random_pkg_version(),
+  ...
+) {
+  resource <- mock_resource(
+    package = package,
+    version = version,
+    md5 = tools::md5sum(bytes = charToRaw(paste0(package, " v", version)))
+  )
+
+  pkg(resource, ...)
+}
+
+random_pkgs <- function(n = 100, ...) {
+  pkg_names <- random_pkg_name(n = n)
+  pkgs <- lapply(pkg_names, random_pkg, ...)
+
+  # generate mock metrics
+  for (pkg in pkgs) {
+    # provide cohort of package names to desc for generating dependencies
+    pkg_data_derive("desc", pkg, cohort = pkg_names)
+    pkg@metrics
+  }
+
+  pkgs
+}
 
 get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
   if (!exists(name, envir = x@data)) {
@@ -106,7 +137,7 @@ method(print, class_pkg) <- function(x, ...) {
 
   out <- paste0(
     class_header, "\n",
-    "@resources", "\n",
+    "@resource", "\n",
     paste0("  ", capture.output(x@resource), collapse = "\n"), "\n",
     "@scopes", "\n",
     paste0("  ", capture.output(x@scopes), collapse = "\n"), "\n",
@@ -126,7 +157,7 @@ method(print, class_pkg) <- function(x, ...) {
               paste0("\n  ", capture.output(data), collapse = "")
             }
           } else {
-            "\n  promise ..."
+            "\n  <promise>"
           }
         } else {
           ""
@@ -142,16 +173,23 @@ method(print, class_pkg) <- function(x, ...) {
 #' @export
 method(to_dcf, class_pkg) <- function(x, ...) {
   paste(collapse = "\n", c(
-    to_dcf(x@resource),
+    to_dcf(x$desc),
     paste0("MD5: ", x@resource@md5),
     paste0("Metric/", names(x@metrics), "@R: ", vcapply(x@metrics, to_dcf))
   ))
 }
 
-#)' @include utils_dcf.R
+#' @include utils_dcf.R
 #' @export
 pkg_from_dcf <- function(x, ...) {
   from_dcf(x, to = class_pkg, ...)
+}
+
+#' @include utils_dcf.R
+#' @export
+pkgs_from_dcf <- function(x, ...) {
+  parts <- strsplit(x, "\n\n")
+  lapply(parts, from_dcf, to = class_pkg)
 }
 
 #' @include utils_dcf.R

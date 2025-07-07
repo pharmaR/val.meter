@@ -25,9 +25,9 @@ NULL
 
 #' @describeIn pkg_data_dispatch
 #' Convert a field name into an S3 class name for dispatch
-pkg_data_s3_class <- function(field_name = c()) {
+pkg_data_s3_class <- function(field_name = NULL) {
   base <- "pkg_data_field"
-  c(paste(base, field_name, sep = "_"), base)
+  c(sprintf("%s_%s", base, field_name), base)
 }
 
 #' @describeIn pkg_data_dispatch

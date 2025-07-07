@@ -46,3 +46,9 @@ impl_data(
     length(pkg$r_cmd_check$errors)
   }
 )
+
+impl_data(
+  "r_cmd_check_errors_count",
+  for_resource = mock_resource,
+  function(...) rpois(1, 0.2)
+)

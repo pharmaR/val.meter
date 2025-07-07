@@ -27,3 +27,9 @@ impl_data(
     tryCatch(as.integer(downloads), warning = function(w) 0L)
   }
 )
+
+impl_data(
+  "downloads_grand_total",
+  for_resource = mock_resource,
+  function(...) as.integer(rpois(1, 100) ^ runif(1, 0.5, 3))
+)
