@@ -64,10 +64,24 @@ random_pkgs <- function(n = 100, ...) {
   pkg_names <- random_pkg_name(n = n)
   pkgs <- lapply(pkg_names, random_pkg, ...)
 
+  pkg_deps <- if (requireNamespace("igraph", quietly = TRUE)) {
+    pkg_graph <- random_pkg_graph(pkg_names)
+    function(pkg_name, ...) random_pkg_igraph_deps(pkg_graph, pkg_name)
+  } else {
+    cli::cli_warn(
+      "package cohort may have cyclic dependencies. install {.pkg igraph} to",
+      "ensure acyclic relationship"
+    )
+
+    function(pkg_name) random_pkg_naive_deps(pkg_name, cohort = pkg_names)
+  }
+
   # generate mock metrics
-  for (pkg in pkgs) {
+  for (i in seq_along(pkgs)) {
     # provide cohort of package names to desc for generating dependencies
-    get_pkg_data(pkg, "desc", cohort = pkg_names)
+    pkg_name <- pkg_names[[i]]
+    pkg <- pkgs[[i]]
+    get_pkg_data(pkg, "desc", deps = pkg_deps(pkg_name))
     pkg@metrics
   }
 

@@ -30,7 +30,10 @@ Imports:
     utils,
     jsonlite
 Suggests:
-    rcmdcheck
+    rcmdcheck,
+    igraph
+Config/Needs/data:
+    tidytext
 Collate:
     'utils_enum_vector.R'
     'class_tags.R'

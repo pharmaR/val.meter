@@ -91,3 +91,45 @@ random_pkg_version <- function(n = 1) {
     ifelse(n_parts > 2, paste0(c_sep, rpois(n = n, lambda = c_lambda)), "")
   )
 }
+
+random_pkg_graph <- function(vnames) {
+  n <- length(vnames)
+  g <- igraph::sample_gnp(n, min(20 / n, 1))
+  g <- igraph::as_directed(g, mode = "acyclic")
+  igraph::V(g)$name <- vnames
+  igraph::E(g)$type <- sample(
+    c("Depends", "Imports", "LinkingTo", "Suggests"),
+    size = length(igraph::E(g)),
+    prob = c(2, 10, 1, 10),
+    replace = TRUE
+  )
+
+  g
+}
+
+random_pkg_igraph_deps <- function(g, v) {
+  e <- igraph::incident_edges(g, v, mode = "out")[[1]]
+  data.frame(
+    type = c("Depends", e$type),
+    package = c("R", igraph::head_of(g, e)$name),
+    version = "*"
+  )
+}
+
+random_pkg_naive_deps <- function(pkg_name, ..., cohort) {
+  deps <- list()
+  cohort <- setdiff(cohort, resource@package)
+  deps$Depends <- c("R", sample(cohort, min(rpois(1, 0.5), length(cohort))))
+  cohort <- setdiff(cohort, deps$Depends)
+  deps$LinkingTo <- sample(cohort, min(rpois(1, 0.5), length(cohort)))
+  cohort <- setdiff(cohort, deps$LinkingTo)
+  deps$Imports <- sample(cohort, min(rpois(1, 2), length(cohort)))
+  cohort <- setdiff(cohort, deps$Imports)
+  deps$Suggests <- sample(cohort, min(rpois(1, 2), length(cohort)))
+
+  data.frame(
+    type = rep(names(deps), times = viapply(deps, length)),
+    package = unlist(deps, use.names = FALSE),
+    version = "*"
+  )
+}

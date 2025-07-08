@@ -58,7 +58,7 @@ impl_data(
 impl_data(
   "desc",
   for_resource = mock_resource,
-  function(pkg, resource, ..., cohort = random_pkg_name(n = 100)) {
+  function(pkg, resource, ..., deps = NULL) {
     # mock a desc::desc object given a package cohort, generating data
     # dependencies
 
@@ -66,24 +66,9 @@ impl_data(
     desc$set("Package", resource@package)
     desc$set("Version", resource@version)
     desc$set("License", "Phony License")
-
-    # NOTE: naive dependency simulation, to do this robustly we would need
-    #   to ensure that we aren't creating cyclic dependencies
-    deps <- list()
-    cohort <- setdiff(cohort, resource@package)
-    deps$Depends <- c("R", sample(cohort, min(rpois(1, 0.5), length(cohort))))
-    cohort <- setdiff(cohort, deps$Depends)
-    deps$LinkingTo <- sample(cohort, min(rpois(1, 0.5), length(cohort)))
-    cohort <- setdiff(cohort, deps$LinkingTo)
-    deps$Imports <- sample(cohort, min(rpois(1, 2), length(cohort)))
-    cohort <- setdiff(cohort, deps$Imports)
-    deps$Suggests <- sample(cohort, min(rpois(1, 2), length(cohort)))
-
-    desc$set_deps(data.frame(
-      type = rep(names(deps), times = viapply(deps, length)),
-      package = unlist(deps, use.names = FALSE),
-      version = "*"
-    ))
+    if (!is.null(deps)) {
+      desc$set_deps(deps)
+    }
 
     desc
   }
