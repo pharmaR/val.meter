@@ -2,6 +2,8 @@ fmt <- function(..., .envir = parent.frame()) {
   cli::format_inline(..., .envir = .envir)
 }
 
+#' Create a cli-formatted badge
+#' 
 #' @param style A `list` of arguments to pass to the ellipsis arguments of
 #'   [`cli::make_ansi_style()`].
 cli_tag <- function(

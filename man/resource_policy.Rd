@@ -176,17 +176,18 @@ resource_policy(
     }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
     (value) 
  {
-     if (length(value) != 1L || is.na(value) || !file.exists(value)) 
-   
-         "invalid path"
- }, default = NA_character_), class = "S7_property")), abstract =
-    TRUE, constructor = function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_, path = NA_character_) 
+     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
+  
+          "invalid path"
+     }
+ }, default = NA_character_), class = "S7_property")),
+    abstract = TRUE, constructor = function (id = next_id(), md5 = NA_character_, package
+    = NA_character_, version = NA_character_, path = NA_character_) 
  {
      id
      md5
-  
-      package
+
+        package
      version
      path
      new_object(S7_object(), id = id, md5 = md5,
@@ -254,21 +255,22 @@ resource_policy(
     }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
     (value) 
  {
-     if (length(value) != 1L || is.na(value) || !file.exists(value)) 
-   
-         "invalid path"
- }, default = NA_character_), class = "S7_property")), abstract =
-    FALSE, constructor = function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_, path = NA_character_) 
+     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
+  
+          "invalid path"
+     }
+ }, default = NA_character_), class = "S7_property")),
+    abstract = FALSE, constructor = function (id = next_id(), md5 = NA_character_,
+    package = NA_character_, version = NA_character_, path = NA_character_) 
  {
      id
-     md5
-  
-      package
+ 
+       md5
+     package
      version
      path
-     new_object(S7_object(), id = id, md5 = md5,
-    package = package, version = version, path = path)
+     new_object(S7_object(), id = id, md5
+    = md5, package = package, version = version, path = path)
  }, class = c("S7_class",
     "S7_object")), structure(function (id = next_id(), md5 = NA_character_, package =
     NA_character_, version = NA_character_, path = NA_character_) 
@@ -453,17 +455,18 @@ resource_policy(
     }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
     (value) 
  {
-     if (length(value) != 1L || is.na(value) || !file.exists(value)) 
-   
-         "invalid path"
- }, default = NA_character_), class = "S7_property")), abstract =
-    TRUE, constructor = function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_, path = NA_character_) 
+     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
+  
+          "invalid path"
+     }
+ }, default = NA_character_), class = "S7_property")),
+    abstract = TRUE, constructor = function (id = next_id(), md5 = NA_character_, package
+    = NA_character_, version = NA_character_, path = NA_character_) 
  {
      id
      md5
-  
-      package
+
+        package
      version
      path
      new_object(S7_object(), id = id, md5 = md5,
@@ -531,17 +534,18 @@ resource_policy(
     }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
     (value) 
  {
-     if (length(value) != 1L || is.na(value) || !file.exists(value)) 
-   
-         "invalid path"
- }, default = NA_character_), class = "S7_property")), abstract =
-    TRUE, constructor = function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_, path = NA_character_) 
+     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
+  
+          "invalid path"
+     }
+ }, default = NA_character_), class = "S7_property")),
+    abstract = TRUE, constructor = function (id = next_id(), md5 = NA_character_, package
+    = NA_character_, version = NA_character_, path = NA_character_) 
  {
      id
      md5
-  
-      package
+
+        package
      version
      path
      new_object(S7_object(), id = id, md5 = md5,
@@ -609,21 +613,22 @@ resource_policy(
     }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
     (value) 
  {
-     if (length(value) != 1L || is.na(value) || !file.exists(value)) 
-   
-         "invalid path"
- }, default = NA_character_), class = "S7_property")), abstract =
-    FALSE, constructor = function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_, path = NA_character_) 
+     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
+  
+          "invalid path"
+     }
+ }, default = NA_character_), class = "S7_property")),
+    abstract = FALSE, constructor = function (id = next_id(), md5 = NA_character_,
+    package = NA_character_, version = NA_character_, path = NA_character_) 
  {
      id
-     md5
-  
-      package
+ 
+       md5
+     package
      version
      path
-     new_object(S7_object(), id = id, md5 = md5,
-    package = package, version = version, path = path)
+     new_object(S7_object(), id = id, md5
+    = md5, package = package, version = version, path = path)
  }, class = c("S7_class",
     "S7_object")), structure(function (id = next_id(), md5 = NA_character_, package =
     NA_character_, version = NA_character_, path = NA_character_) 
@@ -795,17 +800,18 @@ resource_policy(
     }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
     (value) 
  {
-     if (length(value) != 1L || is.na(value) || !file.exists(value)) 
-   
-         "invalid path"
- }, default = NA_character_), class = "S7_property")), abstract =
-    TRUE, constructor = function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_, path = NA_character_) 
+     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
+  
+          "invalid path"
+     }
+ }, default = NA_character_), class = "S7_property")),
+    abstract = TRUE, constructor = function (id = next_id(), md5 = NA_character_, package
+    = NA_character_, version = NA_character_, path = NA_character_) 
  {
      id
      md5
-  
-      package
+
+        package
      version
      path
      new_object(S7_object(), id = id, md5 = md5,
@@ -873,21 +879,22 @@ resource_policy(
     }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
     (value) 
  {
-     if (length(value) != 1L || is.na(value) || !file.exists(value)) 
-   
-         "invalid path"
- }, default = NA_character_), class = "S7_property")), abstract =
-    FALSE, constructor = function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_, path = NA_character_) 
+     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
+  
+          "invalid path"
+     }
+ }, default = NA_character_), class = "S7_property")),
+    abstract = FALSE, constructor = function (id = next_id(), md5 = NA_character_,
+    package = NA_character_, version = NA_character_, path = NA_character_) 
  {
      id
-     md5
-  
-      package
+ 
+       md5
+     package
      version
      path
-     new_object(S7_object(), id = id, md5 = md5,
-    package = package, version = version, path = path)
+     new_object(S7_object(), id = id, md5
+    = md5, package = package, version = version, path = path)
  }, class = c("S7_class",
     "S7_object"))),
   source_resources = list(structure(function (id = next_id(), md5 = NA_character_,

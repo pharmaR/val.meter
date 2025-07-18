@@ -1,4 +1,4 @@
-#' @include trait_pkg_data.R
+#' @include impl_data.R
 
 impl_data(
   "r_cmd_check",
@@ -17,6 +17,7 @@ impl_data(
   function(pkg, resource, ..., quiet = opt("quiet")) {
     # suppress messages to avoid stdout output from subprocess
     # (eg warnings about latex availability not suppressed by rcmdcheck)
+
     wrapper <- if (quiet) {
       function(...) capture.output(..., type = "message")
     } else {
@@ -36,19 +37,21 @@ impl_data(
 )
 
 impl_data(
-  "r_cmd_check_errors_count",
+  "r_cmd_check_error_count",
   metric = TRUE,
   class = class_integer,
   tags = c("execution"),
   permissions = c(),
-  description = "the number of errors produced when running R CMD check",
+  title = "R CMD check Error Count",
+  description =
+    "the number of errors produced when running \\code{R CMD check}",
   function(pkg, resource, ...) {
     length(pkg$r_cmd_check$errors)
   }
 )
 
 impl_data(
-  "r_cmd_check_errors_count",
+  "r_cmd_check_error_count",
   for_resource = mock_resource,
   function(...) rpois(1, 0.2)
 )

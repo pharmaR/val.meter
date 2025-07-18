@@ -1,4 +1,4 @@
-#' @include trait_pkg_data.R
+#' @include impl_data.R
 
 impl_data(
   "desc",
@@ -19,7 +19,6 @@ impl_data(
 
 impl_data(
   "name",
-  class = class_character,
   for_resource = repo_resource,
   function(pkg, resource, ...) {
     resource@package
@@ -36,7 +35,6 @@ impl_data(
 
 impl_data(
   "version",
-  class = class_character,
   for_resource = repo_resource,
   function(pkg, resource, ...) {
     resource@version
@@ -49,6 +47,7 @@ impl_data(
   metric = TRUE,
   tags = c("best practice"),
   permissions = c(),
+  title = "Dependency Count",
   description = "the number of required dependencies",
   function(pkg, resource, ...) {
     sum(pkg$desc$get_deps()$type %in% c("Depends", "Imports", "LinkingTo"))
@@ -61,7 +60,6 @@ impl_data(
   function(pkg, resource, ..., deps = NULL) {
     # mock a desc::desc object given a package cohort, generating data
     # dependencies
-
     desc <- desc::description$new("!new")
     desc$set("Package", resource@package)
     desc$set("Version", resource@version)

@@ -46,10 +46,9 @@ pkg <- class_pkg <- new_class(
 
 #' @export
 random_pkg <- function(
-  package = random_pkg_name(),
-  version = random_pkg_version(),
-  ...
-) {
+    package = random_pkg_name(),
+    version = random_pkg_version(),
+    ...) {
   resource <- mock_resource(
     package = package,
     version = version,
@@ -85,10 +84,16 @@ random_pkgs <- function(n = 100, ...) {
     pkg@metrics
   }
 
-  pkgs
+  structure(pkgs, class = c("list_of_pkgs", class(pkgs)))
 }
 
 get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
+  # RStudio, when trying to produce completions,will try to evaluate our lazy
+  # list elements. Intercept those calls and return only the existing values.
+  if (is_rs_rpc_get_completions_call()) {
+    return(as.list(x@data))
+  }
+
   if (!exists(name, envir = x@data)) {
     # upon computing subsequent data dependencies, raise their errors so that
     # they can be captured and annotated as dependency errors
@@ -107,11 +112,13 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
     }
   }
 
-  if (.raise && inherits(x@data[[name]], cnd_type())) new_err(
-    class = "derive_dependency",
-    data = list(field = name),
-    "field depends on field '{name}' that threw an error during derivation"
-  )
+  if (.raise && inherits(x@data[[name]], cnd_type())) {
+    new_err(
+      class = "derive_dependency",
+      data = list(field = name),
+      "field depends on field '{name}' that threw an error during derivation"
+    )
+  }
 
   x@data[[name]]
 }
@@ -136,14 +143,21 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
   }
 
   if (is.logical(index)) {
-    if (length(index) != 1)
+    if (length(index) != 1) {
       new_err("pkg objects can only be indexed with scalar logical values")
+    }
     return(x[names(metrics(all = all))])
   }
 
   new_err("pkg objects don't know how to index with class {.cls index}")
 }
 
+#' @export
+method(names, class_pkg) <- function(x, ...) {
+  get_data_derive_field_names()
+}
+
+#' @export
 method(print, class_pkg) <- function(x, ...) {
   class_header <- paste0("<", class(x)[[1]], ">")
 
@@ -189,7 +203,11 @@ method(print, class_pkg) <- function(x, ...) {
 }
 
 #' @include utils_dcf.R
-#' @export
+method(to_dcf, new_S3_class("list_of_pkgs")) <- function(x, ...) {
+  paste(collapse = "\n\n", vcapply(x, to_dcf))
+}
+
+#' @include utils_dcf.R
 method(to_dcf, class_pkg) <- function(x, ...) {
   paste(collapse = "\n", c(
     to_dcf(x$desc),
@@ -207,12 +225,37 @@ pkg_from_dcf <- function(x, ...) {
 #' @include utils_dcf.R
 #' @export
 pkgs_from_dcf <- function(x, ...) {
-  parts <- strsplit(x, "\n\n")
-  lapply(parts, from_dcf, to = class_pkg)
+  parts <- strsplit(x, "\n\n")[[1]]
+  structure(lapply(parts, from_dcf, to = class_pkg), class = "list_of_pkg")
+}
+
+
+#' @exportS3Method as.data.frame list_of_pkg
+as.data.frame.list_of_pkg <- function(x, ...) {
+  # extract all package data types
+  datas <- lapply(x, function(i) as.list(i@data))
+  all_names <- unique(unlist(lapply(datas, names)))
+
+  # build data frame
+  df <- data.frame(
+    package = vcapply(x, function(xi) xi@resource@package),
+    version = vcapply(x, function(xi) xi@resource@version),
+    md5 = vcapply(x, function(xi) xi@resource@md5)
+  )
+
+  # populate with data
+  for (name in all_names) {
+    df[[name]] <- simplify2array(lapply(x, function(xi) {
+      data <- xi@data[[name]]
+      is_err <- inherits(data, cnd_type())
+      if (is_err) NA else data
+    }))
+  }
+
+  df
 }
 
 #' @include utils_dcf.R
-#' @export
 method(from_dcf, list(class_character, class_pkg)) <-
   function(x, to, ...) {
     dcf <- from_dcf(x, class_any)
@@ -226,7 +269,19 @@ method(from_dcf, list(class_character, class_pkg)) <-
     prefix <- "Metric/"
     for (name in colnames(dcf)[startsWith(colnames(dcf), prefix)]) {
       field <- sub(prefix, "", name)
-      data[[field]] <- dcf[[1, name]]
+      info <- pkg_data_info(field)
+      val <- dcf[[1, name]]
+
+      # special case for integers without trailing "L"
+      if (identical(info@data_class, class_integer) && is(val, class_numeric)) {
+        val <- as.integer(val)
+      }
+
+      if (!inherits(val, cnd_type())) {
+        val <- convert(val, info@data_class)
+      }
+
+      data[[field]] <- val
     }
 
     pkg <- pkg(resource)

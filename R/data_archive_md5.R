@@ -1,4 +1,4 @@
-#' @include trait_pkg_data.R
+#' @include impl_data.R
 
 impl_data(
   "archive_md5",
@@ -11,7 +11,6 @@ impl_data(
 
 impl_data(
   "archive_md5",
-  class = class_character,
   function(pkg, resource, ...) {
     resource@md5
   }

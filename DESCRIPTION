@@ -1,8 +1,9 @@
 Package: val.meter
 Title:
-    Measures packages for common best practices, adoption, and code execution
+    validation-ready package quantification supporting regulatory use of R
 Version: 0.0.0.9000
-Authors@R: c(
+Authors@R:
+    c(
       person(
         "Doug", "Kelkhoff",
         email = "doug.kelkhoff@gmail.com",
@@ -22,21 +23,31 @@ Description:
     activities like selecting mature packages and reporting on risk-based
     software decision-making.
 License: MIT + file LICENSE
+URL: 
+    https://pharmar.github.io/val.meter,
+    https://github.com/pharmar/val.meter,
+    https://pharmar.org/
+BugReports:
+    https://github.com/pharmar/val.meter
 Imports:
     cli,
     desc,
     options,
     S7,
+    tools,
     utils,
     jsonlite
 Suggests:
     rcmdcheck,
-    igraph
+    igraph,
+    knitr,
+    rmarkdown
 Config/Needs/data:
     tidytext
 Collate:
     'utils_enum_vector.R'
     'class_tags.R'
+    'class_suggests.R'
     'class_permissions.R'
     'class_data_info.R'
     'utils_s7.R'
@@ -47,17 +58,20 @@ Collate:
     'utils_err.R'
     'utils_assertions.R'
     'utils.R'
-    'trait_pkg_data_s3.R'
-    'utils_s7_convert.R'
-    'trait_pkg_data.R'
+    'utils_pkg_data_dispatch.R'
+    'generic_pkg_data_info.R'
+    'generic_pkg_data_derive.R'
+    'impl_data.R'
     'data_archive_md5.R'
     'data_desc.R'
-    'data_downloads_grand_total.R'
+    'data_downloads_total.R'
     'data_r_cmd_check.R'
     'utils_cli.R'
     'options.R'
     'package.R'
     'utils_rand.R'
+    'utils_rd.R'
+    'utils_rstudio.R'
     'utils_tmp.R'
     'zzz.R'
 Encoding: UTF-8
@@ -66,3 +80,4 @@ RoxygenNote: 7.3.2
 Depends: 
     R (>= 3.5)
 LazyData: true
+VignetteBuilder: knitr

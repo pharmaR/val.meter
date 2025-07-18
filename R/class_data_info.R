@@ -1,17 +1,162 @@
+#' Various helpers for using a field name for method dispatch
+#'
+#' Given a field as a name, for example `"desc"`, we want to dispatch to the
+#' right derivation method for this piece of data. To do this, we need to
+#' convert this field name into an object that has a class that we can use
+#' for method dispatch. These functions are helpers for standardizing this
+#' conversion so that we don't need to concern ourselves with consistent
+#' class names throughout this package.
+#'
+#' In most cases, to dispatch to a method for a field, one would
+#'
+#'     fn(as_pkg_data("field_name"), ...)
+#'
+#' Which creates an `S3` object with a corresponding class. For generics in this
+#' package that might be dispatched by field name, they often have default
+#' methods already implemented so that you can simplify this to:
+#'
+#'     fn("field_name", ...)
+#'
+#' And it will implicitly dispatch to the appropriate method.
+#'
+#' @keywords internal
+#' @name pkg_data_dispatch
+NULL
+
+#' Discover implemented data fields
+#'
+#' This is used for finding all available metrics for use in [`metrics()`], as
+#' well as for tab completions for `<pkg>$ <TAB>` to auto-populate a list of
+#' available metrics.
+#'
+#' @param ... A list of [`S7`] classes. Not used if `args` is provided.
+#' @param args A list of [`S7`] classes, by default, collects the elements of
+#'   `...`.
+#'
+#' @returns A `character` vector of field names.
+#'
+#' @keywords internal
+#' @name pkg_data_dispatch
+get_data_derive_field_names <- function(..., args = list(...)) {
+  if (length(args) == 0L) args <- list(class_pkg, class_resource)
+  signature_prefix <- "pkg_data_field_"
+
+  all_methods <- function(x) {
+    if (is.function(x) && inherits(x, "S7_generic")) {
+      all_methods(x@methods)
+    } else if (is.environment(x)) {
+      unlist(recursive = FALSE, use.names = FALSE, lapply(x, all_methods))
+    } else {
+      x
+    }
+  }
+
+  # retrieve all methods
+  methods <- all_methods(pkg_data_derive)
+  signatures <- lapply(methods, attr, "signature")
+  valid_signatures <- Filter(x = signatures, function(signature) {
+    for (i in seq_along(args)) {
+      if (!is_subclass(signature[[i]], args[[i]])) {
+        return(FALSE)
+      }
+    }
+
+    TRUE
+  })
+
+  # extract fields for which derivation is implemented given dispatch args
+  signature_types <- unique(as.character(Filter(
+    Negate(is.null),
+    lapply(signatures, function(signature) {
+      signature[[3]]$class[[1]]
+    })
+  )))
+
+  # subset for only methods which dispatch on [`pkg_data()`] types
+  is_pkg_data <- startsWith(signature_types, signature_prefix)
+  signature_types <- signature_types[is_pkg_data]
+
+  # remove prefix for completions, return only those that match pattern
+  substring(signature_types, nchar(signature_prefix) + 1L)
+}
+
+#' Package Data and Metadata
+#'
+#' Package data is any information that can be derived about a package. Some of
+#' these data are classified as "metrics" -- data that is structured, regular
+#' and useful for systematic decision-making about packages. Metrics come with
+#' additional constraints which ensure that data is calculated uniformly.
+#'
+#' @family data
+#'
 #' @include class_permissions.R
+#' @include class_suggests.R
 #' @include class_tags.R
 data_info <- class_data_info <- new_class(
   "data_info",
   properties = list(
+    #' @field metric `logical(1L)` a flag indicating whether the data is a
+    #'   metric -- a piece of structured, regular package metadata useful for
+    #'   decision-making about package use.
     metric = class_logical,
-    description = class_character,
-    tags = tags,
-    type = new_property(class_any, validator = function(value) {
+
+    #' @field title `character(1L)` a descriptive title.
+    title = class_character,
+
+    #' @field description `Rd` a short description about the data.
+    #'   Should provide enough context to support effective decision-making.
+    #'   Can use Rd formatting for rich text.
+    description = new_property(
+      S7::new_S3_class("Rd"),
+      default = structure(list(), class = "Rd"),
+      setter = function(self, value) {
+        if (!inherits(value, "Rd")) {
+          self@description <- tools::parse_Rd(
+            textConnection(value),
+            fragment = TRUE,
+            permissive = TRUE
+          )
+        } else {
+          self@description <- value
+        }
+
+        self
+      }
+    ),
+
+    #' @field tags [`val.meter::class_tags()`] a set of tags, used for
+    #'   classifying metrics into categories.
+    tags = new_property(
+      class_tags,
+      default = class_tags()
+    ),
+
+    #' @field data_class an object that can be converted into an `S7_class`
+    #'   using [`S7::as_class()`], used for enforcing a return class on data
+    #'   derivations.
+    data_class = new_property(class_any, validator = function(value) {
       res <- tryCatch(S7::as_class(value), error = function(e) e)
       if (inherits(res, "error")) res$message
     }),
-    suggests = class_character,
-    scopes = permissions
+
+    #' @field suggests `character(n)` a vector of suggested packages needed
+    #'   for deriving a piece of data. If the package is not available, the
+    #'   metric will not be derived.
+    suggests = new_property(
+      class_suggests,
+      getter = function(self) {
+        # expose internal data, allows subsetting disabled for S7 classes
+        S7_data(self@suggests)
+      },
+      setter = function(self, value) {
+        self@suggests <- value
+        self
+      }
+    ),
+
+    #' @field scopes [`permissions()`] a vector of enumerated permissions
+    #'   that must be granted before this piece of data will be derived.
+    scopes = class_permissions
   )
 )
 
@@ -23,16 +168,14 @@ data_info <- class_data_info <- new_class(
 #
 local({
   method(format, data_info) <-
-    function(
-      x,
-      ...,
-      permissions = opt("permissions"),
-      tags = opt("tags")
-    ) {
-      type <- if (S7::S7_inherits(x@type)) {  # nolint: object_usage_linter.
-        x@type@name
+    function(x,
+             ...,
+             permissions = opt("permissions"),
+             tags = opt("tags")) {
+      class <- if (S7::S7_inherits(x@data_class)) { # nolint: object_usage_linter.
+        x@data_class@name
       } else {
-        S7:::class_desc(x@type)
+        S7:::class_desc(x@data_class)
       }
 
       is_installed <- vlapply(x@suggests, requireNamespace, quietly = TRUE)
@@ -40,33 +183,43 @@ local({
 
       c(
         # data type
-        fmt(style_dim("{type}")),
+        fmt(style_dim("{class}")),
+        if (any_tags) "\n",
+        if (any_tags) {
+          paste(collapse = " ", c(
+            # tags
+            vcapply(x@tags, function(tag) {
+              color <- if (tag %in% tags) "blue" else "red"
+              fmt(cli_tag(tag, scope = "", color = color))
+            }),
 
-        if (any_tags) paste(collapse = " ", c(
-          # tags
-          vcapply(x@tags, function(tag) {
-            color <- if (tag %in% tags) "blue" else "red"
-            fmt(cli_tag(tag, scope = "", color = color))
-          }),
+            # permissions
+            vcapply(x@scopes, function(scope) {
+              color <- if (scope %in% permissions) "green" else "red"
+              fmt(cli_tag(scope, scope = "req", color = color))
+            }),
 
-          # permissions
-          vcapply(x@scopes, function(scope) {
-            color <- if (scope %in% permissions) "green" else "red"
-            fmt(cli_tag(scope, scope = "req", color = color))
-          }),
-
-          # suggests dependencies
-          vcapply(seq_along(x@suggests), function(i) {
-            color <- if (is_installed[[i]]) "green" else "red"
-            fmt(cli_tag(scope = "dep", x@suggests[[i]], color = color))
-          })
-        )),
+            # suggests dependencies
+            vcapply(seq_along(x@suggests), function(i) {
+              color <- if (is_installed[[i]]) "green" else "red"
+              fmt(cli_tag(scope = "dep", x@suggests[[i]], color = color))
+            })
+          ))
+        },
 
         # description
-        if (nchar(x@description) > 0L) fmt(style_italic("{x@description}"))
+        if (length(x@description) > 0L) {
+          description <- tools::Rd2txt(x@description, fragment = TRUE)
+          fmt(style_italic("{description}"))
+        }
       )
     }
 })
+
+#' Retrieve package data field metadata, provided a character field name
+#' @noRd
+method(convert, list(class_character, data_info)) <-
+  function(from, to) pkg_data_info(from)
 
 # NOTE:
 #   required to avoid odd interaction when same external S3 generic is defined
@@ -76,13 +229,11 @@ local({
 #
 local({
   method(print, data_info) <-
-    function(
-      x,
-      permissions = opt("permissions"),
-      tags = opt("tags"),
-      ...
-    ) {
-      cat(paste(collapse = "\n", format(x, ...)), "\n")
+    function(x,
+             permissions = opt("permissions"),
+             tags = opt("tags"),
+             ...) {
+      cat(paste(collapse = "", format(x, ...)), "\n")
 
       if (!all(x@scopes %in% permissions) || !all(x@tags %in% tags)) {
         cli_inform(
@@ -115,11 +266,17 @@ print.val_meter_error <- function(x, ...) {
   cat(format(x, ...), "\n")
 }
 
-method(convert, list(class_character, data_info)) <-
-  function(from, to) pkg_data_info(from)
 
+#' A list of package data information
+#'
+#' This class is largely superficial. It's primary purpose is the
+#' pretty-printing of package data metadata.
+#'
+#' @keywords internal
 data_info_list <- new_class("data_info_list", parent = class_list)
 
+#' Support pretty-printing by implementing `print` method
+#' @noRd
 method(print, data_info_list) <- function(x, ...) {
   msgs <- list()
 
@@ -149,8 +306,21 @@ method(print, data_info_list) <- function(x, ...) {
   invisible(res)
 }
 
+#' Package metric data
+#'
+#' @param x Optionally, an object to retrieve metrics from. When `NULL` (the
+#'   default), a listing of metric metadata is returned.
+#' @param ... Additional arguments unused.
+#' @param all If `TRUE`, include non-metric package data. These are often
+#'   intermediate data used in the calculation of package metrics.
+#'
+#' @returns A `list` of calculated values or metadata, in the cases where an
+#'   object is or is not provided respectively.
+#'
+#' @evalRd tools::toRd(metrics())
+#'
 #' @export
-metrics <- function(all = FALSE) {
+metrics <- function(x, ..., all = FALSE) {
   fields <- get_data_derive_field_names()
   names(fields) <- fields
   fields <- lapply(fields, convert, to = data_info)

@@ -4,9 +4,19 @@
 \name{val.meter-package}
 \alias{val.meter}
 \alias{val.meter-package}
-\title{val.meter: Measures packages for common best practices, adoption, and code execution}
+\title{val.meter: validation-ready package quantification supporting regulatory use of R}
 \description{
 Measures packages for common best practices, adoption and code execution. Built with regulated industries in mind, supporting the surveying of packages and aggregating findings into a portable format to support activities like selecting mature packages and reporting on risk-based software decision-making.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://pharmar.github.io/val.meter}
+  \item \url{https://github.com/pharmar/val.meter}
+  \item \url{https://pharmar.org/}
+  \item Report bugs at \url{https://github.com/pharmar/val.meter}
+}
+
 }
 \author{
 \strong{Maintainer}: Doug Kelkhoff \email{doug.kelkhoff@gmail.com}

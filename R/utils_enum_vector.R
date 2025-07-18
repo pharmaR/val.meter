@@ -5,7 +5,7 @@ enum_vector <- function(name, ..., enum = c(), error) {
     error <- "{.cls name} values must be one of accepted values: {.str {enum}}"
   }
 
-  new_class(
+  cls <- new_class(
     name = name,
     ...,
     constructor = function(...) {
@@ -22,4 +22,10 @@ enum_vector <- function(name, ..., enum = c(), error) {
       if (!all(self %in% enum)) fmt(error)
     }
   )
+  
+  method(convert, list(NULL, cls)) <- function(from, to) to(from)
+  method(convert, list(class_logical, cls)) <- function(from, to) to(from)
+  method(convert, list(class_character, cls)) <- function(from, to) to(from)
+  
+  cls
 }

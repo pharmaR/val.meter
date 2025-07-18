@@ -1,3 +1,21 @@
+#' Package data derivation error handling
+#'
+#' Because we aim to capture errors that are raised when evaluating packages, 
+#' there is a fair bit of machinery to raise relevant errors when package
+#' assertions fail and capture errors during data execution.
+#'
+#' @keywords internal
+#' @name errors
+NULL
+
+#' @describeIn errors
+#' Global error raising flags
+#' 
+#' This flag is used to determine when errors during execution should be
+#' captured or thrown to the evaluating environment. When data is being
+#' derived for the first time, we want to capture any errors, but when errors
+#' arrive during other uses of that data, we want to raise them to the user.
+#' 
 .state <- local({
   raise <- FALSE
 
@@ -9,6 +27,8 @@
   environment()
 })
 
+#' @describeIn errors
+#' Used to reset global state after a top level callback completes
 once_on_task_callback <- function(name, expr, envir = parent.frame()) {
   addTaskCallback(
     name = paste0(packageName(), "-clear-trace-", name),
@@ -19,6 +39,10 @@ once_on_task_callback <- function(name, expr, envir = parent.frame()) {
   )
 }
 
+#' @describeIn errors
+#' Walk the call stack to find the last call before the package boundary. This
+#' allows us to raise the most relevant parts of error messages back to users
+#' without exposing them to the internal non-standard evaluation calls.
 get_package_boundary_call <- function(calls = sys.calls()) {
   for (i in seq_len(sys.nframe())) {
     if (identical(parent.env(sys.frame(i)), topenv())) {
@@ -29,6 +53,8 @@ get_package_boundary_call <- function(calls = sys.calls()) {
   sys.frame()
 }
 
+#' @describeIn errors
+#' Create a condition type
 cnd_type <- function(class = NULL, cnd = "error") {
   prefix <- gsub(".", "_", packageName(), fixed = TRUE)
   c(
@@ -37,12 +63,21 @@ cnd_type <- function(class = NULL, cnd = "error") {
   )
 }
 
+#' @describeIn errors
+#' Extract a condition class from a type
 cnd_class_from_type <- function(type, cnd = "error") {
   prefix <- gsub(".", "_", packageName(), fixed = TRUE)
   re <- paste0("^", prefix, "_", "(.*)", "_", cnd, "$")
   gsub(re, "\\1", type)
 }
 
+#' @describeIn errors
+#' Create a new error
+#' 
+#' This function is a wrapper around [`cli::cli_abort()`], but with defaults
+#' that make typical use within this package more interpretable to end-users.
+#' 
+#' Used predominately by [`err()`]
 new_err <- function(
   ...,
   data = list(),
@@ -68,6 +103,8 @@ new_err <- function(
   do.call(cli::cli_abort, args)
 }
 
+#' @describeIn errors
+#' Raise a new error, using one of a set of known error types
 err <- list(
   disallowed_scopes = function(...) {
     data <- list(...)

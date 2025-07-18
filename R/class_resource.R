@@ -38,11 +38,7 @@ mock_resource <- class_mock_resource <- new_class(
 
 unknown_resource <- class_unknown_resource <- new_class(
   "unknown_resource",
-  parent = resource,
-  properties = list(
-    package = class_character,
-    version = class_character
-  )
+  parent = resource
 )
 
 multi_resource <- class_multi_resource <- new_class(
@@ -52,8 +48,9 @@ multi_resource <- class_multi_resource <- new_class(
     resources = new_property(
       class_list,
       validator = function(value) {
-        if (!all(vlapply(value, S7_inherits, resource)))
+        if (!all(vlapply(value, S7_inherits, resource))) {
           "can only be constructed from a list of resources"
+        }
       }
     )
   )
@@ -80,8 +77,9 @@ local_resource <- class_local_resource <- new_class(
       class_character,
       default = NA_character_,
       validator = function(value) {
-        if (length(value) != 1L || is.na(value) || !file.exists(value))
+        if (length(value) != 1L || is.na(value) || !file.exists(value)) {
           "invalid path"
+        }
       }
     )
   )
@@ -179,7 +177,9 @@ method(convert, list(class_character, class_resource)) <-
     add_resource <- function(resource) {
       resource_type_name <- class_desc(S7::S7_class(resource))
       idx <- match(resource_type_name, all_resource_type_names)
-      if (is.na(idx) || !is.null(resources[[idx]])) return()
+      if (is.na(idx) || !is.null(resources[[idx]])) {
+        return()
+      }
       resources[[idx]] <<- resource
       idx
     }
@@ -264,8 +264,8 @@ method(convert, list(class_resource, class_resource)) <-
     if (S7::S7_inherits(from, class = to)) {
       return(from)
     }
-    from_str <- S7:::class_desc(from_class)  # nolint
-    to_str <- S7:::class_desc(to)  # nolint
+    from_str <- S7:::class_desc(from_class) # nolint
+    to_str <- S7:::class_desc(to) # nolint
     stop(fmt("{from_str} cannot be cast into a {to_str}"))
   }
 
@@ -273,8 +273,8 @@ method(convert, list(class_resource, class_resource)) <-
 method(convert, list(class_resource, class_any)) <-
   function(from, to) {
     from_class <- attr(from, "S7_class")
-    from_str <- S7:::class_desc(from_class)  # nolint
-    to_str <- S7:::class_desc(to)  # nolint
+    from_str <- S7:::class_desc(from_class) # nolint
+    to_str <- S7:::class_desc(to) # nolint
     stop(fmt("Unable to convert from {from_str} to {to_str}"))
   }
 
@@ -421,6 +421,11 @@ method(convert, list(class_local_source_resource, class_install_resource)) <-
     )
   }
 
+method(convert, list(class_resource, class_unknown_resource)) <-
+  function(from, to) {
+    set_props(to(), props(from, names(to@properties)))
+  }
+
 method(to_dcf, class_resource) <- function(x, ...) {
   new_err("Resource {.cls x} cannot be encoded for output to a DCF file.")
 }
@@ -451,7 +456,7 @@ method(to_dcf, class_multi_resource) <- function(x, ...) {
     }
   }
 
-  cls <- class(x)[[1]]  # nolint
+  cls <- class(x)[[1]] # nolint
   new_err("Resource {.cls {cls}} has no resources which produce a DCF output.")
 }
 

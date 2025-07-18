@@ -1,0 +1,16 @@
+development:
+  mode: auto
+
+url: https://pharmar.github.io/val.meter
+template:
+  bootstrap: 5
+  theme: arrow-light
+  theme-dark: arrow-dark
+  light-switch: true
+  bslib: 
+    border-color: transparent
+    border-radius: 0.15rem
+    btn-border-radius: 0.25rem
+
+navbar:
+  bg: primary
