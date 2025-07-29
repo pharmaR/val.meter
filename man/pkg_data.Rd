@@ -13,7 +13,8 @@ impl_data(
   for_resource = resource,
   ...,
   metric = FALSE,
-  overwrite = FALSE
+  overwrite = FALSE,
+  quiet = FALSE
 )
 
 impl_data_info(
@@ -25,10 +26,11 @@ impl_data_info(
   permissions = class_permissions(character(0L)),
   suggests = class_suggests(character(0L)),
   metric = FALSE,
-  overwrite = FALSE
+  overwrite = FALSE,
+  quiet = FALSE
 )
 
-impl_data_derive(name, fn, resource)
+impl_data_derive(name, fn, resource, overwrite = FALSE, quiet = FALSE)
 }
 \description{
 Package data is feature of val.meter - it is the framework by which

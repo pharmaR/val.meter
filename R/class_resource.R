@@ -18,6 +18,9 @@ resource <- class_resource <- new_class(
   "resource",
   abstract = TRUE,
   properties = list(
+    package = new_property(class_character, default = NA_character_),
+    version = new_property(class_character, default = NA_character_),
+    
     #' @field optional id used for tracking resources throughout execution.
     #'   For example, the package source code from a [`repo_resource()`] may be
     #'   downloaded to add a [`archive_source_resource()`] and add it to a new
@@ -25,9 +28,7 @@ resource <- class_resource <- new_class(
     #'   they retain the same `id`. Primarily the `id` is used for
     #'   isolating temporary files.
     id = new_property(class_integer, default = quote(next_id())),
-    md5 = new_property(class_character, default = NA_character_),
-    package = new_property(class_character, default = NA_character_),
-    version = new_property(class_character, default = NA_character_)
+    md5 = new_property(class_character, default = NA_character_)
   )
 )
 
@@ -137,8 +138,30 @@ source_code_resource <- class_source_code_resource <- new_class(
 repo_resource <- class_repo_resource <- new_class(
   "repo_resource",
   parent = resource,
+  properties = list(repo = class_character)
+)
+
+#' Package CRAN Repository Resource Class
+#'
+#' A reference to a listing in CRAN.
+#'
+#' @export
+cran_repo_resource <- class_cran_repo_resource <- new_class(
+  "cran_repo_resource",
+  parent = repo_resource,
   properties = list(
-    repo = class_character
+    repo = new_property(
+      class_character,
+      validator = function(value) {
+        cran_mirrors <- getCRANmirrors(local.only = TRUE)
+        if (!value %in% cran_mirrors$URL) {
+          paste0(
+            "CRAN repo resources must be among the listed mirrors in", 
+            "`getCRANmirrors()`"
+          )
+        }
+      }
+    )
   )
 )
 

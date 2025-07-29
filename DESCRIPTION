@@ -28,7 +28,7 @@ URL:
     https://github.com/pharmar/val.meter,
     https://pharmar.org/
 BugReports:
-    https://github.com/pharmar/val.meter
+    https://github.com/pharmaR/val.meter/issues
 Imports:
     cli,
     desc,
@@ -41,7 +41,14 @@ Suggests:
     rcmdcheck,
     igraph,
     knitr,
-    rmarkdown
+    oysteR,
+    rmarkdown,
+    testthat (>= 3.0.0)
+Config/Needs/vignettes:
+    knitr,
+    rmarkdown,
+    oysteR,
+    testthat (>= 3.0.0)
 Config/Needs/data:
     tidytext
 Collate:
@@ -49,15 +56,18 @@ Collate:
     'class_tags.R'
     'class_suggests.R'
     'class_permissions.R'
-    'class_data_info.R'
+    'utils_rd.R'
     'utils_s7.R'
+    'class_data_info.R'
     'utils_dcf.R'
     'class_resource.R'
     'class_pkg.R'
     'class_resource_policy.R'
     'utils_err.R'
     'utils_assertions.R'
+    'utils_cli.R'
     'utils.R'
+    'options.R'
     'utils_pkg_data_dispatch.R'
     'generic_pkg_data_info.R'
     'generic_pkg_data_derive.R'
@@ -66,11 +76,8 @@ Collate:
     'data_desc.R'
     'data_downloads_total.R'
     'data_r_cmd_check.R'
-    'utils_cli.R'
-    'options.R'
     'package.R'
     'utils_rand.R'
-    'utils_rd.R'
     'utils_rstudio.R'
     'utils_tmp.R'
     'zzz.R'
@@ -81,3 +88,4 @@ Depends:
     R (>= 3.5)
 LazyData: true
 VignetteBuilder: knitr
+Config/testthat/edition: 3

@@ -2,6 +2,7 @@
 % Please edit documentation in R/utils_rd.R
 \name{utils-rd}
 \alias{utils-rd}
+\alias{rd_empty}
 \alias{rd_escape}
 \alias{rd_parse}
 \alias{rd_deparse}
@@ -9,6 +10,8 @@
 \alias{rd_badge}
 \title{Rd utilities}
 \usage{
+rd_empty()
+
 rd_escape(text)
 
 rd_parse(text, fragment = FALSE, permissive = TRUE, ...)
@@ -39,6 +42,8 @@ documented using \code{\link{pkg_data_info}} metadata objects.
 }
 \section{Functions}{
 \itemize{
+\item \code{rd_empty()}: Create an empty Rd object
+
 \item \code{rd_escape()}: Escape an Rd string
 
 \item \code{rd_parse()}: Parse text into an Rd format

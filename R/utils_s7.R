@@ -9,11 +9,11 @@
 #'
 #' @keywords internal
 #' @noRd
-is_implemented <- function(...) {
+is_implemented <- function(generic, class, ...) {
   tryCatch(
     {
-      S7::method(...)
-      TRUE
+      m <- S7::method(generic, class, ...)
+      identical(as_signature_vector(class), as_signature_vector(m@signature))
     },
     error = function(e, ...) {
       FALSE
@@ -21,6 +21,36 @@ is_implemented <- function(...) {
   )
 }
 
+#' Create a character representation of classes
+#' 
+#' @note Internally, `S7` uses character representations to handle dispatch.
+#'   When comparing the signatures of methods, classes themselves will not be
+#'   identical because they carry artifacts of their creation environment.
+#'   We can disregard these differences by comparing only the string
+#'   representation.
+#'   
+#' @keywords internal
+#' @noRd 
+as_signature_vector <- function(signature) {
+  # S7 classes are lists, we want a list of S7 classes
+  if (!identical(class(signature), "list")) {
+    signature <- list(signature)
+  }
+  
+  vcapply(signature, class_desc)
+}
+
+#' Suppress `S7` messages when overwriting an existing method implementation
+#' 
+#' @keywords internal
+#' @noRd
+suppress_method_overwrite <- function(expr) {
+  withCallingHandlers(expr, message = function(m) {
+    if (startsWith(tolower(m$message), "overwriting")) {
+      invokeRestart("muffleMessage")
+    }
+  })
+}
 
 #' Check whether an object inherits from a class
 #'
@@ -49,7 +79,6 @@ method(is, list(class_any, .s7_union)) <-
     }
   }
 
-
 #' Check whether a class inherits from another class
 #'
 #' @keywords internal
@@ -60,7 +89,10 @@ method(is_subclass, list(class_any, class_any)) <-
   function(subclass, class) FALSE
 
 method(is_subclass, list(.s7_base_class, .s7_base_class)) <-
-  function(subclass, class) identical(subclass, class)
+  function(subclass, class) {
+    # only compare class name, ignore constructor which binds environment
+    identical(subclass$class, class$class)
+  }
 
 method(is_subclass, list(.s7_class, .s7_class)) <-
   function(subclass, class) {
@@ -75,12 +107,10 @@ method(is_subclass, list(class_any, .s7_union)) <-
     any(vlapply(class$classes, subclass = subclass, is_subclass))
   }
 
-
-
 #' lifted from S7:::class_desc
 #'
 #' @keywords internal
 #' @noRd
 class_desc <- function(x) {
-  paste(c(attr(x, "package"), attr(x, "name")), collapse = "::")
+  getNamespace("S7")$class_desc(x)
 }

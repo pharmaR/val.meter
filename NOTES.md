@@ -1,3 +1,5 @@
 TODO:
 
-- suggests error is not pretty (running download counts with cranlogs dep)
+- avoid using top level callback, instead use on.exit?
+- improve method not found error
+- 

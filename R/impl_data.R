@@ -43,23 +43,27 @@ impl_data <- function(
   fn,
   for_resource = resource,
   ...,
-  metric = FALSE,
-  overwrite = FALSE
+  overwrite = FALSE,
+  quiet = FALSE
 ) {
   is_info_impl <- is_implemented(pkg_data_info, pkg_data_class(name))
-  if (is_info_impl && ...length() && !overwrite) {
-    stop(
-      "data info for '", name, "' is already implemented. Use ",
-      "overwrite=TRUE to modify."
+  if (!is_info_impl || ...length()) {
+    impl_data_info(
+      name = name,
+      ...,
+      overwrite = overwrite,
+      quiet = quiet
     )
   }
   
-  if (!is_info_impl || overwrite) {
-    impl_data_info(name = name, ..., metric = metric, overwrite = overwrite)
-  }
-  
   if (!missing(fn)) {
-    impl_data_derive(name = name, fn = fn, resource = for_resource)
+    impl_data_derive(
+      name = name,
+      fn = fn,
+      resource = for_resource,
+      overwrite = overwrite,
+      quiet = quiet
+    )
   }
 }
 
@@ -79,41 +83,66 @@ impl_data_info <- function(
   permissions = class_permissions(character(0L)),
   suggests = class_suggests(character(0L)),
   metric = FALSE,
-  overwrite = FALSE
+  overwrite = FALSE,
+  quiet = FALSE
 ) {
   tags <- convert(tags, class_tags)
   suggests <- convert(suggests, class_suggests)
-  description <- convert(description, class_character)
   permissions <- convert(permissions, class_permissions)
 
   if (is.character(class)) {
     class <- S7::new_S3_class(class)
   }
+  
+  is_info_impl <- is_implemented(pkg_data_info, pkg_data_class(name))
+  if (is_info_impl && !overwrite) {
+    stop(
+      "data info for '", name, "' is already implemented. Use ",
+      "overwrite=TRUE to modify."
+    )
+  }
 
-  class <- S7::as_class(class)
-
-  method(pkg_data_info, pkg_data_class(name)) <-
-    function(field) {
-      data_info(
-        metric = metric,
-        title = title,
-        description = description,
-        tags = tags,
-        data_class = class,
-        suggests = suggests,
-        scopes = permissions
-      )
-    }
+  data_class <- S7::as_class(class)
+  handler <- if (quiet) suppress_method_overwrite else identity
+  
+  info <- data_info(
+    metric = metric,
+    title = title,
+    description = description,
+    tags = tags,
+    data_class = data_class,
+    suggests = suggests,
+    scopes = permissions
+  )
+  
+  handler(method(pkg_data_info, pkg_data_class(name)) <- function(field) info)
 }
 
 #' @describeIn pkg_data
 #' Register a derivation function for a data field and package resource.
 #'
 #' @include utils.R
+#' @include utils_cli.R
 #' @include utils_assertions.R
 #' @export
-impl_data_derive <- function(name, fn, resource) {
-  method(pkg_data_derive, list(pkg, resource, pkg_data_class(name))) <-
+impl_data_derive <- function(
+  name,
+  fn,
+  resource,
+  overwrite = FALSE,
+  quiet = FALSE
+) {
+  dispatch_classes <- list(pkg, resource, pkg_data_class(name))
+  is_derive_impl <- is_implemented(pkg_data_derive, dispatch_classes)
+  if (is_derive_impl && !overwrite) {
+    stop(fmt(
+      "'{name}' data derive method already implemented for ",
+      "{.cls {class_desc(resource)}}. Use overwrite=TRUE to replace."
+    ))
+  }
+  
+  handler <- if (quiet) suppress_method_overwrite else identity
+  handler(method(pkg_data_derive, dispatch_classes) <-
     function(pkg, resource, field, ...) {
       info <- pkg_data_info(field)
       required_scopes <- info@scopes
@@ -127,5 +156,5 @@ impl_data_derive <- function(name, fn, resource) {
       }
       
       data
-    }
+    })
 }

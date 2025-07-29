@@ -89,6 +89,8 @@ get_data_derive_field_names <- function(..., args = list(...)) {
 #'
 #' @family data
 #'
+#' @include utils_s7.R
+#' @include utils_rd.R
 #' @include class_permissions.R
 #' @include class_suggests.R
 #' @include class_tags.R
@@ -108,14 +110,18 @@ data_info <- class_data_info <- new_class(
     #'   Can use Rd formatting for rich text.
     description = new_property(
       S7::new_S3_class("Rd"),
-      default = structure(list(), class = "Rd"),
+      default = rd_empty(),
       setter = function(self, value) {
         if (!inherits(value, "Rd")) {
-          self@description <- tools::parse_Rd(
-            textConnection(value),
-            fragment = TRUE,
-            permissive = TRUE
-          )
+          if (is.character(value) && sum(nchar(value)) == 0L) {
+            self@description <- rd_empty()
+          } else {
+            self@description <- tools::parse_Rd(
+              textConnection(value),
+              fragment = TRUE,
+              permissive = TRUE
+            )
+          }
         } else {
           self@description <- value
         }
@@ -134,10 +140,21 @@ data_info <- class_data_info <- new_class(
     #' @field data_class an object that can be converted into an `S7_class`
     #'   using [`S7::as_class()`], used for enforcing a return class on data
     #'   derivations.
-    data_class = new_property(class_any, validator = function(value) {
-      res <- tryCatch(S7::as_class(value), error = function(e) e)
-      if (inherits(res, "error")) res$message
-    }),
+    data_class = new_property(
+      class_any,
+      setter = function(self, value) {
+        if (self@metric && !is_subclass(value, class_atomic)) {
+          stop("metric data must have an atomic data class")
+        }
+        
+        self@data_class <- value
+        self
+      },
+      validator = function(value) {
+        res <- tryCatch(S7::as_class(value), error = function(e) e)
+        if (inherits(res, "error")) res$message
+      }
+    ),
 
     #' @field suggests `character(n)` a vector of suggested packages needed
     #'   for deriving a piece of data. If the package is not available, the
@@ -168,10 +185,12 @@ data_info <- class_data_info <- new_class(
 #
 local({
   method(format, data_info) <-
-    function(x,
-             ...,
-             permissions = opt("permissions"),
-             tags = opt("tags")) {
+    function(
+      x,
+      ...,
+      permissions = opt("permissions"),
+      tags = opt("tags")
+    ) {
       class <- if (S7::S7_inherits(x@data_class)) { # nolint: object_usage_linter.
         x@data_class@name
       } else {
@@ -182,8 +201,25 @@ local({
       any_tags <- length(x@tags) + length(x@scopes) + length(x@suggests) > 0
 
       c(
+        # title
+        if (length(x@title) > 0L) {
+          fmt(style_bold("{x@title} "))
+        },
+        
+        
         # data type
         fmt(style_dim("{class}")),
+        
+        # description
+        if (length(x@description) > 0L) {
+          description <- paste0(
+            collapse = " ",
+            rd_to_txt(x@description, fragment = TRUE)
+          )
+          
+          fmt(style_italic("\n{description}"))
+        },
+        
         if (any_tags) "\n",
         if (any_tags) {
           paste(collapse = " ", c(
@@ -205,12 +241,6 @@ local({
               fmt(cli_tag(scope = "dep", x@suggests[[i]], color = color))
             })
           ))
-        },
-
-        # description
-        if (length(x@description) > 0L) {
-          description <- tools::Rd2txt(x@description, fragment = TRUE)
-          fmt(style_italic("{description}"))
         }
       )
     }
@@ -229,12 +259,13 @@ method(convert, list(class_character, data_info)) <-
 #
 local({
   method(print, data_info) <-
-    function(x,
-             permissions = opt("permissions"),
-             tags = opt("tags"),
-             ...) {
+    function(
+      x,
+      permissions = opt("permissions"),
+      tags = opt("tags"),
+      ...
+    ) {
       cat(paste(collapse = "", format(x, ...)), "\n")
-
       if (!all(x@scopes %in% permissions) || !all(x@tags %in% tags)) {
         cli_inform(
           paste0(
@@ -249,6 +280,29 @@ local({
       invisible(x)
     }
 })
+
+#' @include utils_rd.R
+method(toRd, data_info) <- function(x, ...) {
+  has_tags <- length(x@tags) > 0
+  requires_suggests <- length(x@suggests) > 0
+  requires_permissions <- length(x@scopes) > 0
+  
+  class <- if (S7::S7_inherits(x@data_class)) {
+    x@data_class@name
+  } else {
+    S7:::class_desc(x@data_class)
+  }
+  
+  paste0(
+    "\\code{", class, "} ",
+    rd_deparse(x@description),
+    "\n",
+    toRd(x@scopes), " ",
+    toRd(class_suggests(x@suggests)), " ",
+    "\n\n",
+    toRd(x@tags)
+  )
+}
 
 #' @export
 format.val_meter_error <- function(x, ...) {
@@ -277,33 +331,51 @@ data_info_list <- new_class("data_info_list", parent = class_list)
 
 #' Support pretty-printing by implementing `print` method
 #' @noRd
-method(print, data_info_list) <- function(x, ...) {
-  msgs <- list()
-
-  to_print <- x
-  class(to_print) <- NULL
-  attributes(to_print) <- NULL
-  names(to_print) <- names(x)
-
-  res <- withCallingHandlers(
-    print(to_print),
-    message = function(m) {
-      if (inherits(m, cnd_type(cnd = "message"))) {
-        msgs <<- append(msgs, list(m))
-        invokeRestart("muffleMessage")
+local({
+  method(print, data_info_list) <- function(x, ...) {
+    msgs <- list()
+  
+    # use individual element print methods
+    to_print <- x
+    class(to_print) <- NULL
+    attributes(to_print) <- NULL
+    names(to_print) <- names(x)
+  
+    res <- withCallingHandlers(
+      print(to_print),
+      message = function(m) {
+        if (inherits(m, cnd_type(cnd = "message"))) {
+          msgs <<- append(msgs, list(m))
+          invokeRestart("muffleMessage")
+        }
       }
+    )
+  
+    if (length(msgs) > 0L) {
+      cli_alert_info("Some metrics will not be evaluated")
     }
+  
+    for (msg in unique(msgs)) {
+      cli_text(style_dim(msg$message))
+    }
+  
+    invisible(res)
+  }
+})
+
+#' @include utils_rd.R
+method(toRd, data_info_list) <- function(x, ...) {
+  item_names <- vcapply(x, prop, "title")
+  item_names <- ifelse(!is.na(item_names), item_names, names(x))
+  pkg <- packageName()
+  paste0(
+    "\\section{Metrics}{",
+    "The following metrics are provided by \\code{\\link{", pkg, "}}.",
+    paste(collapse = "", "\n", vcapply(seq_along(x), function(i) {
+      paste0("\\subsection{", item_names[[i]], "}{", toRd(x[[i]]), "}")
+    })),
+    "}"
   )
-
-  if (length(msgs) > 0L) {
-    cli_alert_info("Some metrics will not be evaluated")
-  }
-
-  for (msg in unique(msgs)) {
-    cli_text(style_dim(msg$message))
-  }
-
-  invisible(res)
 }
 
 #' Package metric data
@@ -323,7 +395,7 @@ method(print, data_info_list) <- function(x, ...) {
 metrics <- function(x, ..., all = FALSE) {
   fields <- get_data_derive_field_names()
   names(fields) <- fields
-  fields <- lapply(fields, convert, to = data_info)
+  fields <- lapply(fields, pkg_data_info)
   is_metric <- vlapply(fields, S7::prop, "metric")
   if (!all) fields <- fields[is_metric]
   data_info_list(fields)

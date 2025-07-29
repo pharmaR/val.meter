@@ -1,6 +1,6 @@
 #' Package data derivation error handling
 #'
-#' Because we aim to capture errors that are raised when evaluating packages, 
+#' Because we aim to capture errors that are raised when evaluating packages,
 #' there is a fair bit of machinery to raise relevant errors when package
 #' assertions fail and capture errors during data execution.
 #'
@@ -10,12 +10,12 @@ NULL
 
 #' @describeIn errors
 #' Global error raising flags
-#' 
+#'
 #' This flag is used to determine when errors during execution should be
 #' captured or thrown to the evaluating environment. When data is being
 #' derived for the first time, we want to capture any errors, but when errors
 #' arrive during other uses of that data, we want to raise them to the user.
-#' 
+#'
 .state <- local({
   raise <- FALSE
 
@@ -34,7 +34,7 @@ once_on_task_callback <- function(name, expr, envir = parent.frame()) {
     name = paste0(packageName(), "-clear-trace-", name),
     f = function(...) {
       eval(expr, envir = envir)
-      FALSE  # don't persist after next callback
+      FALSE # don't persist after next callback
     }
   )
 }
@@ -67,16 +67,16 @@ cnd_type <- function(class = NULL, cnd = "error") {
 #' Extract a condition class from a type
 cnd_class_from_type <- function(type, cnd = "error") {
   prefix <- gsub(".", "_", packageName(), fixed = TRUE)
-  re <- paste0("^", prefix, "_", "(.*)", "_", cnd, "$")
+  re <- paste0("^", prefix, "_?", "(.*)", "_", cnd, "$")
   gsub(re, "\\1", type)
 }
 
 #' @describeIn errors
 #' Create a new error
-#' 
+#'
 #' This function is a wrapper around [`cli::cli_abort()`], but with defaults
 #' that make typical use within this package more interpretable to end-users.
-#' 
+#'
 #' Used predominately by [`err()`]
 new_err <- function(
   ...,
@@ -96,9 +96,9 @@ new_err <- function(
   args$message <- as.character(list(...))
   args$call <- get_package_boundary_call()
   args$class <- cnd_type(class)
-  args$.envir <- .envir
   args$trace <- trace
   args$call <- call
+  args$.envir <- .envir
   args$.trace_bottom <- sys.frames()[[topenv_frame_idx]]
   do.call(cli::cli_abort, args)
 }
@@ -106,13 +106,10 @@ new_err <- function(
 #' @describeIn errors
 #' Raise a new error, using one of a set of known error types
 err <- list(
-  disallowed_scopes = function(...) {
+  disallowed_scopes = function(scopes, ...) {
     data <- list(...)
-
-    stopifnot(
-      "scopes" %in% names(data),
-      is.character("scopes")
-    )
+    data$scopes <- scopes
+    stopifnot(is.character("scopes"))
 
     new_err(
       class = "disallowed_scopes",
@@ -120,14 +117,10 @@ err <- list(
       "data derivation requires disallowed scopes: {.str {data$scopes}}"
     )
   },
-
-  missing_suggests = function(...) {
+  missing_suggests = function(suggests, ...) {
     data <- list(...)
-
-    stopifnot(
-      "suggests" %in% names(data),
-      is.character(data$suggests)
-    )
+    data$suggests <- suggests
+    stopifnot(is.character(data$suggests))
 
     new_err(
       class = "missing_suggests",
@@ -135,13 +128,12 @@ err <- list(
       "data derivation requires suggests: {.pkg {data$suggests}}"
     )
   },
-
   metric_not_atomic = function(...) {
     data <- list(...)
     new_err(
       class = "metric_not_atomic",
       data = list(data = data),
-      "metric computation did not produce an atomic value",
+      "metric computation did not produce an atomic value"
     )
   }
 )
@@ -151,7 +143,7 @@ err <- list(
 #' @note This function is not intended for developers.
 #'
 #' This function uses an error class to build an error object. It intentionally
-#' produces incomplete error objects, lacking the error backtracer
+#' produces incomplete error objects, lacking the error backtrace
 #' call.
 #'
 #' For signalling errors internal to the package, see [`err()`]. This function
@@ -159,7 +151,7 @@ err <- list(
 #' are parsed using this function back into their respective error objects.
 #'
 #' @export
-error <- function(type, ...) {  # nolint: object_usage_linter, object_name_linter, line_length_linter.
+error <- function(type, ...) { # nolint: object_usage_linter
   cnd <- tryCatch(do.call(err[[type]], list(...)), error = identity)
   cnd$trace <- NULL
   cnd$call <- NULL

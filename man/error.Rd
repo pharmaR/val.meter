@@ -13,7 +13,7 @@ Build an error from an error type and data attributes
 This function is not intended for developers.
 
 This function uses an error class to build an error object. It intentionally
-produces incomplete error objects, lacking the error backtracer
+produces incomplete error objects, lacking the error backtrace
 call.
 
 For signalling errors internal to the package, see \code{\link[=err]{err()}}. This function

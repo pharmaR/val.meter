@@ -8,12 +8,28 @@
 NULL
 
 #' @describeIn utils-rd
+#' Create an empty Rd object
+rd_empty <- function() {
+  structure(list(), class = "Rd")
+}
+
+#' @describeIn utils-rd
 #' Escape an Rd string
 rd_escape <- function(text) {
   text <- gsub(strrep("\\", 2), strrep("\\", 4), text)
   text <- gsub("\"", "\\\"", text)
   text <- gsub("%", "\\%", text, fixed = TRUE)
   text
+}
+
+#' @describeIn utils-rd
+#' Convert Rd to text-formatted character vector
+rd_to_txt <- function(...) {
+  out <- character(0L)
+  con <- textConnection("out", open = "w", local = TRUE)
+  on.exit(close(con))
+  tools::Rd2txt(..., out = con)
+  out
 }
 
 #' @describeIn utils-rd
@@ -231,40 +247,4 @@ method(toRd, class_suggests) <- function(x, ...) {
         .(suggests_badge(suggest, "red"))
     ))
   }))
-}
-
-method(toRd, data_info) <- function(x, ...) {
-  has_tags <- length(x@tags) > 0
-  requires_suggests <- length(x@suggests) > 0
-  requires_permissions <- length(x@scopes) > 0
-  
-  class <- if (S7::S7_inherits(x@data_class)) {
-    x@data_class@name
-  } else {
-    S7:::class_desc(x@data_class)
-  }
-  
-  paste0(
-    "\\code{", class, "} ",
-    rd_deparse(x@description),
-    "\n",
-    toRd(x@scopes), " ",
-    toRd(class_suggests(x@suggests)), " ",
-    "\n\n",
-    toRd(x@tags)
-  )
-}
-
-method(toRd, data_info_list) <- function(x, ...) {
-  item_names <- vcapply(x, prop, "title")
-  item_names <- ifelse(!is.na(item_names), item_names, names(x))
-  pkg <- packageName()
-  paste0(
-    "\\section{Metrics}{",
-    "The following metrics are provided by \\code{\\link{", pkg, "}}.",
-    paste(collapse = "", "\n", vcapply(seq_along(x), function(i) {
-      paste0("\\subsection{", item_names[[i]], "}{", toRd(x[[i]]), "}")
-    })),
-    "}"
-  )
 }

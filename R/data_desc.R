@@ -11,6 +11,7 @@ impl_data(
 
 impl_data(
   "name",
+  title = "Package name",
   class = class_character,
   function(pkg, resource, ...) {
     pkg$desc$get_field("Package")
