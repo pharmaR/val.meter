@@ -273,7 +273,8 @@ method(from_dcf, list(class_character, class_pkg)) <-
       val <- dcf[[1, name]]
 
       # special case for integers without trailing "L"
-      if (identical(info@data_class, class_integer) && is(val, class_numeric)) {
+      is_int_expected <- is_subclass(info@data_class, class_integer)
+      if (is_int_expected && is(val, class_numeric)) {
         val <- as.integer(val)
       }
 

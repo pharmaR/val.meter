@@ -14,7 +14,7 @@ Useful links:
   \item \url{https://pharmar.github.io/val.meter}
   \item \url{https://github.com/pharmar/val.meter}
   \item \url{https://pharmar.org/}
-  \item Report bugs at \url{https://github.com/pharmar/val.meter}
+  \item Report bugs at \url{https://github.com/pharmaR/val.meter/issues}
 }
 
 }

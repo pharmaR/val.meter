@@ -23,6 +23,16 @@ object is or is not provided respectively.
 Package metric data
 }
 \section{Metrics}{The following metrics are provided by \code{\link{val.meter}}.
+ \subsection{R CMD check Error Count}{\code{<integer>} the number of errors produced when running \code{R CMD check}
+
+  
+
+\link[val.meter:tags]{\ifelse{html}{\figure{badge-execution-x-flat-square-blue.svg}{options: alt='[execution]'}}{\strong{[execution]}}}}
+ \subsection{Total Downloads}{\code{<integer>} total number of lifetime downloads, as reported by the Posit CRAN mirror through the \href{https://cranlogs.rpkg.org}{cranlogs} API
+
+\Sexpr[stage=render,results=rd]{if (!is.na(match("network", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-green.svg}{options: alt='[network]'}}{\\\\strong{[req::network]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-red.svg}{options: alt='[network]'}}{\\\\strong{[req::network]}}"}  
+
+\link[val.meter:tags]{\ifelse{html}{\figure{badge-adoption-x-flat-square-blue.svg}{options: alt='[adoption]'}}{\strong{[adoption]}}} \link[val.meter:tags]{\ifelse{html}{\figure{badge-transient-x-flat-square-blue.svg}{options: alt='[transient]'}}{\strong{[transient]}}} \link[val.meter:tags]{\ifelse{html}{\figure{badge-version--independent-x-flat-square-blue.svg}{options: alt='[version-independent]'}}{\strong{[version-independent]}}}}
  \subsection{Dependency Count}{\code{<integer>} the number of required dependencies
 
   

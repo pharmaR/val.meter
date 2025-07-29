@@ -5,665 +5,40 @@
 \title{Package Resource Policy Class}
 \usage{
 resource_policy(
-  accepted_resources = list(structure(function (id = next_id(), md5 = NA_character_,
-    package = NA_character_, version = NA_character_, path = NA_character_) 
+  accepted_resources = list(structure(function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
  {
-     id
- 
-       md5
-     package
+    
+    package
      version
+     id
+     md5
      path
-     new_object(S7_object(), id = id, md5
-    = md5, package = package, version = version, path = path)
+     new_object(S7_object(), package
+    = package, version = version, id = id, md5 = md5, path = path)
  }, name =
-    "source_archive_resource", parent = structure(function (id = next_id(), md5 =
-    NA_character_, package = NA_character_, version = NA_character_, path =
-    NA_character_) 
- {
-     id
-     md5
-     package
-     version
-     path
-    
-    new_object(S7_object(), id = id, md5 = md5, package = package, version = version,
-    path = path)
- }, name = "local_resource", parent = structure(function (id =
-    next_id(), md5 = NA_character_, package = NA_character_, version = NA_character_) 
+    "source_archive_resource", parent = structure(function (package = NA_character_,
+    version = NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
 
     {
-     id
-     md5
      package
      version
-     new_object(S7_object(), id = id,
-    md5 = md5, package = package, version = version)
- }, name = "resource", parent =
-    structure(function () 
- {
-     .Call(S7_object_)
- }, name = "S7_object", properties =
-    list(), abstract = FALSE, constructor = function () 
- {
-     .Call(S7_object_)
- },
-    validator = function (self) 
- {
-     if (!is_S7_type(self)) {
-        
-    "Underlying data is corrupt"
-     }
- }, class = c("S7_class", "S7_object")), package
-    = "val.meter", properties = list(id = structure(list(name = "id", class =
-    structure(list(class = "integer", constructor_name = "integer", constructor =
-    function (.data = integer(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
-    structure(list(class = "character", constructor_name = "character", constructor =
-    function (.data = character(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), package = structure(list(name = "package",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), version = structure(list(name = "version",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property")), abstract = TRUE, constructor = function
-    (id = next_id(), md5 = NA_character_, package = NA_character_, version =
-    NA_character_) 
- {
      id
      md5
-     package
-     version
-    
-    new_object(S7_object(), id = id, md5 = md5, package = package, version = version)
- },
-    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(id =
-    structure(list(name = "id", class = structure(list(class = "integer",
-    constructor_name = "integer", constructor = function (.data = integer(0)) 
- .data,
-    validator = function (object) 
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
-    structure(list(class = "character", constructor_name = "character", constructor =
-    function (.data = character(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), package = structure(list(name = "package",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), version = structure(list(name = "version",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), path = structure(list(name = "path", class
-    = structure(list(class = "character", constructor_name = "character", constructor =
-    function (.data = character(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
-    (value) 
- {
-     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
-  
-          "invalid path"
-     }
- }, default = NA_character_), class = "S7_property")),
-    abstract = TRUE, constructor = function (id = next_id(), md5 = NA_character_, package
-    = NA_character_, version = NA_character_, path = NA_character_) 
- {
-     id
-     md5
-
-        package
-     version
      path
-     new_object(S7_object(), id = id, md5 = md5,
-    package = package, version = version, path = path)
- }, class = c("S7_class",
-    "S7_object")), package = "val.meter", properties = list(id = structure(list(name =
-    "id", class = structure(list(class = "integer", constructor_name = "integer",
-    constructor = function (.data = integer(0)) 
- .data, validator = function (object) 
-
-    {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
-    structure(list(class = "character", constructor_name = "character", constructor =
-    function (.data = character(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), package = structure(list(name = "package",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), version = structure(list(name = "version",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), path = structure(list(name = "path", class
-    = structure(list(class = "character", constructor_name = "character", constructor =
-    function (.data = character(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
-    (value) 
- {
-     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
-  
-          "invalid path"
-     }
- }, default = NA_character_), class = "S7_property")),
-    abstract = FALSE, constructor = function (id = next_id(), md5 = NA_character_,
-    package = NA_character_, version = NA_character_, path = NA_character_) 
- {
-     id
- 
-       md5
-     package
-     version
-     path
-     new_object(S7_object(), id = id, md5
-    = md5, package = package, version = version, path = path)
- }, class = c("S7_class",
-    "S7_object")), structure(function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_, path = NA_character_) 
- {
-     id
-     md5
-  
-      package
-     version
-     path
-     new_object(S7_object(), id = id, md5 = md5,
-    package = package, version = version, path = path)
- }, name = "source_code_resource",
-    parent = structure(function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_, path = NA_character_) 
- {
-     id
-     md5
-  
-      package
-     version
-     path
-     new_object(S7_object(), id = id, md5 = md5,
-    package = package, version = version, path = path)
+     new_object(S7_object(),
+    package = package, version = version, id = id, md5 = md5, path = path)
  }, name =
-    "local_source_resource", parent = structure(function (id = next_id(), md5 =
-    NA_character_, package = NA_character_, version = NA_character_, path =
-    NA_character_) 
+    "local_resource", parent = structure(function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_) 
  {
-     id
-     md5
      package
      version
-     path
-    
-    new_object(S7_object(), id = id, md5 = md5, package = package, version = version,
-    path = path)
- }, name = "local_resource", parent = structure(function (id =
-    next_id(), md5 = NA_character_, package = NA_character_, version = NA_character_) 
-
-    {
+   
      id
      md5
-     package
-     version
-     new_object(S7_object(), id = id,
-    md5 = md5, package = package, version = version)
- }, name = "resource", parent =
-    structure(function () 
- {
-     .Call(S7_object_)
- }, name = "S7_object", properties =
-    list(), abstract = FALSE, constructor = function () 
- {
-     .Call(S7_object_)
- },
-    validator = function (self) 
- {
-     if (!is_S7_type(self)) {
-        
-    "Underlying data is corrupt"
-     }
- }, class = c("S7_class", "S7_object")), package
-    = "val.meter", properties = list(id = structure(list(name = "id", class =
-    structure(list(class = "integer", constructor_name = "integer", constructor =
-    function (.data = integer(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
-    structure(list(class = "character", constructor_name = "character", constructor =
-    function (.data = character(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), package = structure(list(name = "package",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), version = structure(list(name = "version",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property")), abstract = TRUE, constructor = function
-    (id = next_id(), md5 = NA_character_, package = NA_character_, version =
-    NA_character_) 
- {
-     id
-     md5
-     package
-     version
-    
-    new_object(S7_object(), id = id, md5 = md5, package = package, version = version)
- },
-    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(id =
-    structure(list(name = "id", class = structure(list(class = "integer",
-    constructor_name = "integer", constructor = function (.data = integer(0)) 
- .data,
-    validator = function (object) 
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
-    structure(list(class = "character", constructor_name = "character", constructor =
-    function (.data = character(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), package = structure(list(name = "package",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), version = structure(list(name = "version",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), path = structure(list(name = "path", class
-    = structure(list(class = "character", constructor_name = "character", constructor =
-    function (.data = character(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
-    (value) 
- {
-     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
-  
-          "invalid path"
-     }
- }, default = NA_character_), class = "S7_property")),
-    abstract = TRUE, constructor = function (id = next_id(), md5 = NA_character_, package
-    = NA_character_, version = NA_character_, path = NA_character_) 
- {
-     id
-     md5
-
-        package
-     version
-     path
-     new_object(S7_object(), id = id, md5 = md5,
-    package = package, version = version, path = path)
- }, class = c("S7_class",
-    "S7_object")), package = "val.meter", properties = list(id = structure(list(name =
-    "id", class = structure(list(class = "integer", constructor_name = "integer",
-    constructor = function (.data = integer(0)) 
- .data, validator = function (object) 
-
-    {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
-    structure(list(class = "character", constructor_name = "character", constructor =
-    function (.data = character(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), package = structure(list(name = "package",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), version = structure(list(name = "version",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), path = structure(list(name = "path", class
-    = structure(list(class = "character", constructor_name = "character", constructor =
-    function (.data = character(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
-    (value) 
- {
-     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
-  
-          "invalid path"
-     }
- }, default = NA_character_), class = "S7_property")),
-    abstract = TRUE, constructor = function (id = next_id(), md5 = NA_character_, package
-    = NA_character_, version = NA_character_, path = NA_character_) 
- {
-     id
-     md5
-
-        package
-     version
-     path
-     new_object(S7_object(), id = id, md5 = md5,
-    package = package, version = version, path = path)
- }, class = c("S7_class",
-    "S7_object")), package = "val.meter", properties = list(id = structure(list(name =
-    "id", class = structure(list(class = "integer", constructor_name = "integer",
-    constructor = function (.data = integer(0)) 
- .data, validator = function (object) 
-
-    {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
-    structure(list(class = "character", constructor_name = "character", constructor =
-    function (.data = character(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), package = structure(list(name = "package",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), version = structure(list(name = "version",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), path = structure(list(name = "path", class
-    = structure(list(class = "character", constructor_name = "character", constructor =
-    function (.data = character(0)) 
- .data, validator = function (object) 
- {
-     if
-    (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
-    (value) 
- {
-     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
-  
-          "invalid path"
-     }
- }, default = NA_character_), class = "S7_property")),
-    abstract = FALSE, constructor = function (id = next_id(), md5 = NA_character_,
-    package = NA_character_, version = NA_character_, path = NA_character_) 
- {
-     id
- 
-       md5
-     package
-     version
-     path
-     new_object(S7_object(), id = id, md5
-    = md5, package = package, version = version, path = path)
- }, class = c("S7_class",
-    "S7_object")), structure(function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_, path = NA_character_) 
- {
-     id
-     md5
-  
-      package
-     version
-     path
-     new_object(S7_object(), id = id, md5 = md5,
-    package = package, version = version, path = path)
- }, name = "install_resource",
-    parent = structure(function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_, path = NA_character_) 
- {
-     id
-     md5
-  
-      package
-     version
-     path
-     new_object(S7_object(), id = id, md5 = md5,
-    package = package, version = version, path = path)
- }, name = "local_resource",
-    parent = structure(function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_) 
- {
-     id
-     md5
-     package
-    
-    version
-     new_object(S7_object(), id = id, md5 = md5, package = package, version =
-    version)
+     new_object(S7_object(), package = package, version = version, id =
+    id, md5 = md5)
  }, name = "resource", parent = structure(function () 
  {
     
@@ -679,13 +54,37 @@ resource_policy(
          "Underlying data is corrupt"
      }
  },
-    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(id =
-    structure(list(name = "id", class = structure(list(class = "integer",
-    constructor_name = "integer", constructor = function (.data = integer(0)) 
- .data,
-    validator = function (object) 
+    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(package
+    = structure(list(name = "package", class = structure(list(class = "character",
+    constructor_name = "character", constructor = function (.data = character(0)) 
+
+    .data, validator = function (object) 
  {
      if (base_class(object) != name) {
+     
+       sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+    
+    }
+ }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL,
+    default = NA_character_), class = "S7_property"), version = structure(list(name =
+    "version", class = structure(list(class = "character", constructor_name =
+    "character", constructor = function (.data = character(0)) 
+ .data, validator =
+    function (object) 
+ {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), id = structure(list(name = "id", class =
+    structure(list(class = "integer", constructor_name = "integer", constructor =
+    function (.data = integer(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
         
     sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
      }
@@ -698,53 +97,53 @@ resource_policy(
  {
      if
     (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), package = structure(list(name = "package",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), version = structure(list(name = "version",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
         
     sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
      }
 
     }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
     = NA_character_), class = "S7_property")), abstract = TRUE, constructor = function
-    (id = next_id(), md5 = NA_character_, package = NA_character_, version =
+    (package = NA_character_, version = NA_character_, id = next_id(), md5 =
     NA_character_) 
  {
-     id
-     md5
      package
      version
+     id
+     md5
     
-    new_object(S7_object(), id = id, md5 = md5, package = package, version = version)
+    new_object(S7_object(), package = package, version = version, id = id, md5 = md5)
  },
-    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(id =
-    structure(list(name = "id", class = structure(list(class = "integer",
-    constructor_name = "integer", constructor = function (.data = integer(0)) 
- .data,
-    validator = function (object) 
+    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(package
+    = structure(list(name = "package", class = structure(list(class = "character",
+    constructor_name = "character", constructor = function (.data = character(0)) 
+
+    .data, validator = function (object) 
  {
      if (base_class(object) != name) {
+     
+       sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+    
+    }
+ }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL,
+    default = NA_character_), class = "S7_property"), version = structure(list(name =
+    "version", class = structure(list(class = "character", constructor_name =
+    "character", constructor = function (.data = character(0)) 
+ .data, validator =
+    function (object) 
+ {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), id = structure(list(name = "id", class =
+    structure(list(class = "integer", constructor_name = "integer", constructor =
+    function (.data = integer(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
         
     sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
      }
@@ -757,30 +156,6 @@ resource_policy(
  {
      if
     (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), package = structure(list(name = "package",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), version = structure(list(name = "version",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
         
     sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
      }
@@ -805,25 +180,189 @@ resource_policy(
           "invalid path"
      }
  }, default = NA_character_), class = "S7_property")),
-    abstract = TRUE, constructor = function (id = next_id(), md5 = NA_character_, package
-    = NA_character_, version = NA_character_, path = NA_character_) 
+    abstract = TRUE, constructor = function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
  {
+    
+    package
+     version
      id
      md5
-
-        package
-     version
      path
-     new_object(S7_object(), id = id, md5 = md5,
-    package = package, version = version, path = path)
- }, class = c("S7_class",
-    "S7_object")), package = "val.meter", properties = list(id = structure(list(name =
-    "id", class = structure(list(class = "integer", constructor_name = "integer",
-    constructor = function (.data = integer(0)) 
+     new_object(S7_object(), package
+    = package, version = version, id = id, md5 = md5, path = path)
+ }, class =
+    c("S7_class", "S7_object")), package = "val.meter", properties = list(package =
+    structure(list(name = "package", class = structure(list(class = "character",
+    constructor_name = "character", constructor = function (.data = character(0)) 
+
+    .data, validator = function (object) 
+ {
+     if (base_class(object) != name) {
+     
+       sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+    
+    }
+ }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL,
+    default = NA_character_), class = "S7_property"), version = structure(list(name =
+    "version", class = structure(list(class = "character", constructor_name =
+    "character", constructor = function (.data = character(0)) 
+ .data, validator =
+    function (object) 
+ {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), id = structure(list(name = "id", class =
+    structure(list(class = "integer", constructor_name = "integer", constructor =
+    function (.data = integer(0)) 
  .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
+    structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), path = structure(list(name = "path", class
+    = structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
+    (value) 
+ {
+     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
+  
+          "invalid path"
+     }
+ }, default = NA_character_), class = "S7_property")),
+    abstract = FALSE, constructor = function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
+ {
+    
+    package
+     version
+     id
+     md5
+     path
+     new_object(S7_object(), package
+    = package, version = version, id = id, md5 = md5, path = path)
+ }, class =
+    c("S7_class", "S7_object")), structure(function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
+ {
+    
+    package
+     version
+     id
+     md5
+     path
+     new_object(S7_object(), package
+    = package, version = version, id = id, md5 = md5, path = path)
+ }, name =
+    "source_code_resource", parent = structure(function (package = NA_character_, version
+    = NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
+ {
+    
+    package
+     version
+     id
+     md5
+     path
+     new_object(S7_object(), package
+    = package, version = version, id = id, md5 = md5, path = path)
+ }, name =
+    "local_source_resource", parent = structure(function (package = NA_character_,
+    version = NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
 
     {
+     package
+     version
+     id
+     md5
+     path
+     new_object(S7_object(),
+    package = package, version = version, id = id, md5 = md5, path = path)
+ }, name =
+    "local_resource", parent = structure(function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_) 
+ {
+     package
+     version
+   
+     id
+     md5
+     new_object(S7_object(), package = package, version = version, id =
+    id, md5 = md5)
+ }, name = "resource", parent = structure(function () 
+ {
+    
+    .Call(S7_object_)
+ }, name = "S7_object", properties = list(), abstract = FALSE,
+    constructor = function () 
+ {
+     .Call(S7_object_)
+ }, validator = function (self)
+    
+ {
+     if (!is_S7_type(self)) {
+         "Underlying data is corrupt"
+     }
+ },
+    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(package
+    = structure(list(name = "package", class = structure(list(class = "character",
+    constructor_name = "character", constructor = function (.data = character(0)) 
+
+    .data, validator = function (object) 
+ {
      if (base_class(object) != name) {
+     
+       sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+    
+    }
+ }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL,
+    default = NA_character_), class = "S7_property"), version = structure(list(name =
+    "version", class = structure(list(class = "character", constructor_name =
+    "character", constructor = function (.data = character(0)) 
+ .data, validator =
+    function (object) 
+ {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), id = structure(list(name = "id", class =
+    structure(list(class = "integer", constructor_name = "integer", constructor =
+    function (.data = integer(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
         
     sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
      }
@@ -841,11 +380,34 @@ resource_policy(
      }
 
     }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), package = structure(list(name = "package",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
+    = NA_character_), class = "S7_property")), abstract = TRUE, constructor = function
+    (package = NA_character_, version = NA_character_, id = next_id(), md5 =
+    NA_character_) 
+ {
+     package
+     version
+     id
+     md5
     
+    new_object(S7_object(), package = package, version = version, id = id, md5 = md5)
+ },
+    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(package
+    = structure(list(name = "package", class = structure(list(class = "character",
+    constructor_name = "character", constructor = function (.data = character(0)) 
+
+    .data, validator = function (object) 
+ {
+     if (base_class(object) != name) {
+     
+       sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+    
+    }
+ }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL,
+    default = NA_character_), class = "S7_property"), version = structure(list(name =
+    "version", class = structure(list(class = "character", constructor_name =
+    "character", constructor = function (.data = character(0)) 
+ .data, validator =
+    function (object) 
  {
      if (base_class(object) != name) {
         
@@ -853,13 +415,25 @@ resource_policy(
      }
 
     }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), version = structure(list(name = "version",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
+    = NA_character_), class = "S7_property"), id = structure(list(name = "id", class =
+    structure(list(class = "integer", constructor_name = "integer", constructor =
+    function (.data = integer(0)) 
+ .data, validator = function (object) 
  {
-     if (base_class(object) != name) {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
+    structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
         
     sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
      }
@@ -884,41 +458,465 @@ resource_policy(
           "invalid path"
      }
  }, default = NA_character_), class = "S7_property")),
-    abstract = FALSE, constructor = function (id = next_id(), md5 = NA_character_,
-    package = NA_character_, version = NA_character_, path = NA_character_) 
+    abstract = TRUE, constructor = function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
  {
-     id
- 
-       md5
-     package
+    
+    package
      version
+     id
+     md5
      path
-     new_object(S7_object(), id = id, md5
-    = md5, package = package, version = version, path = path)
- }, class = c("S7_class",
-    "S7_object"))),
-  source_resources = list(structure(function (id = next_id(), md5 = NA_character_,
-    package = NA_character_, version = NA_character_, repo = character(0)) 
+     new_object(S7_object(), package
+    = package, version = version, id = id, md5 = md5, path = path)
+ }, class =
+    c("S7_class", "S7_object")), package = "val.meter", properties = list(package =
+    structure(list(name = "package", class = structure(list(class = "character",
+    constructor_name = "character", constructor = function (.data = character(0)) 
+
+    .data, validator = function (object) 
  {
-     id
+     if (base_class(object) != name) {
+     
+       sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+    
+    }
+ }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL,
+    default = NA_character_), class = "S7_property"), version = structure(list(name =
+    "version", class = structure(list(class = "character", constructor_name =
+    "character", constructor = function (.data = character(0)) 
+ .data, validator =
+    function (object) 
+ {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), id = structure(list(name = "id", class =
+    structure(list(class = "integer", constructor_name = "integer", constructor =
+    function (.data = integer(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
+    structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), path = structure(list(name = "path", class
+    = structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
+    (value) 
+ {
+     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
   
-      md5
+          "invalid path"
+     }
+ }, default = NA_character_), class = "S7_property")),
+    abstract = TRUE, constructor = function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
+ {
+    
+    package
+     version
+     id
+     md5
+     path
+     new_object(S7_object(), package
+    = package, version = version, id = id, md5 = md5, path = path)
+ }, class =
+    c("S7_class", "S7_object")), package = "val.meter", properties = list(package =
+    structure(list(name = "package", class = structure(list(class = "character",
+    constructor_name = "character", constructor = function (.data = character(0)) 
+
+    .data, validator = function (object) 
+ {
+     if (base_class(object) != name) {
+     
+       sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+    
+    }
+ }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL,
+    default = NA_character_), class = "S7_property"), version = structure(list(name =
+    "version", class = structure(list(class = "character", constructor_name =
+    "character", constructor = function (.data = character(0)) 
+ .data, validator =
+    function (object) 
+ {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), id = structure(list(name = "id", class =
+    structure(list(class = "integer", constructor_name = "integer", constructor =
+    function (.data = integer(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
+    structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), path = structure(list(name = "path", class
+    = structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
+    (value) 
+ {
+     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
+  
+          "invalid path"
+     }
+ }, default = NA_character_), class = "S7_property")),
+    abstract = FALSE, constructor = function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
+ {
+    
+    package
+     version
+     id
+     md5
+     path
+     new_object(S7_object(), package
+    = package, version = version, id = id, md5 = md5, path = path)
+ }, class =
+    c("S7_class", "S7_object")), structure(function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
+ {
+    
+    package
+     version
+     id
+     md5
+     path
+     new_object(S7_object(), package
+    = package, version = version, id = id, md5 = md5, path = path)
+ }, name =
+    "install_resource", parent = structure(function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
+ {
+    
+    package
+     version
+     id
+     md5
+     path
+     new_object(S7_object(), package
+    = package, version = version, id = id, md5 = md5, path = path)
+ }, name =
+    "local_resource", parent = structure(function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_) 
+ {
      package
      version
+   
+     id
+     md5
+     new_object(S7_object(), package = package, version = version, id =
+    id, md5 = md5)
+ }, name = "resource", parent = structure(function () 
+ {
+    
+    .Call(S7_object_)
+ }, name = "S7_object", properties = list(), abstract = FALSE,
+    constructor = function () 
+ {
+     .Call(S7_object_)
+ }, validator = function (self)
+    
+ {
+     if (!is_S7_type(self)) {
+         "Underlying data is corrupt"
+     }
+ },
+    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(package
+    = structure(list(name = "package", class = structure(list(class = "character",
+    constructor_name = "character", constructor = function (.data = character(0)) 
+
+    .data, validator = function (object) 
+ {
+     if (base_class(object) != name) {
+     
+       sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+    
+    }
+ }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL,
+    default = NA_character_), class = "S7_property"), version = structure(list(name =
+    "version", class = structure(list(class = "character", constructor_name =
+    "character", constructor = function (.data = character(0)) 
+ .data, validator =
+    function (object) 
+ {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), id = structure(list(name = "id", class =
+    structure(list(class = "integer", constructor_name = "integer", constructor =
+    function (.data = integer(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
+    structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property")), abstract = TRUE, constructor = function
+    (package = NA_character_, version = NA_character_, id = next_id(), md5 =
+    NA_character_) 
+ {
+     package
+     version
+     id
+     md5
+    
+    new_object(S7_object(), package = package, version = version, id = id, md5 = md5)
+ },
+    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(package
+    = structure(list(name = "package", class = structure(list(class = "character",
+    constructor_name = "character", constructor = function (.data = character(0)) 
+
+    .data, validator = function (object) 
+ {
+     if (base_class(object) != name) {
+     
+       sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+    
+    }
+ }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL,
+    default = NA_character_), class = "S7_property"), version = structure(list(name =
+    "version", class = structure(list(class = "character", constructor_name =
+    "character", constructor = function (.data = character(0)) 
+ .data, validator =
+    function (object) 
+ {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), id = structure(list(name = "id", class =
+    structure(list(class = "integer", constructor_name = "integer", constructor =
+    function (.data = integer(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
+    structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), path = structure(list(name = "path", class
+    = structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
+    (value) 
+ {
+     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
+  
+          "invalid path"
+     }
+ }, default = NA_character_), class = "S7_property")),
+    abstract = TRUE, constructor = function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
+ {
+    
+    package
+     version
+     id
+     md5
+     path
+     new_object(S7_object(), package
+    = package, version = version, id = id, md5 = md5, path = path)
+ }, class =
+    c("S7_class", "S7_object")), package = "val.meter", properties = list(package =
+    structure(list(name = "package", class = structure(list(class = "character",
+    constructor_name = "character", constructor = function (.data = character(0)) 
+
+    .data, validator = function (object) 
+ {
+     if (base_class(object) != name) {
+     
+       sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+    
+    }
+ }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL,
+    default = NA_character_), class = "S7_property"), version = structure(list(name =
+    "version", class = structure(list(class = "character", constructor_name =
+    "character", constructor = function (.data = character(0)) 
+ .data, validator =
+    function (object) 
+ {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), id = structure(list(name = "id", class =
+    structure(list(class = "integer", constructor_name = "integer", constructor =
+    function (.data = integer(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = next_id()), class = "S7_property"), md5 = structure(list(name = "md5", class =
+    structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), path = structure(list(name = "path", class
+    = structure(list(class = "character", constructor_name = "character", constructor =
+    function (.data = character(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = function
+    (value) 
+ {
+     if (length(value) != 1L || is.na(value) || !file.exists(value)) {
+  
+          "invalid path"
+     }
+ }, default = NA_character_), class = "S7_property")),
+    abstract = FALSE, constructor = function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_, path = NA_character_) 
+ {
+    
+    package
+     version
+     id
+     md5
+     path
+     new_object(S7_object(), package
+    = package, version = version, id = id, md5 = md5, path = path)
+ }, class =
+    c("S7_class", "S7_object"))),
+  source_resources = list(structure(function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_, repo = character(0)) 
+ {
+    
+    package
+     version
+     id
+     md5
      repo
-     new_object(S7_object(), id = id, md5 =
-    md5, package = package, version = version, repo = repo)
- }, name = "repo_resource",
-    parent = structure(function (id = next_id(), md5 = NA_character_, package =
-    NA_character_, version = NA_character_) 
+     new_object(S7_object(), package
+    = package, version = version, id = id, md5 = md5, repo = repo)
+ }, name =
+    "repo_resource", parent = structure(function (package = NA_character_, version =
+    NA_character_, id = next_id(), md5 = NA_character_) 
  {
+     package
+     version
+   
      id
      md5
-     package
-    
-    version
-     new_object(S7_object(), id = id, md5 = md5, package = package, version =
-    version)
+     new_object(S7_object(), package = package, version = version, id =
+    id, md5 = md5)
  }, name = "resource", parent = structure(function () 
  {
     
@@ -934,13 +932,37 @@ resource_policy(
          "Underlying data is corrupt"
      }
  },
-    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(id =
-    structure(list(name = "id", class = structure(list(class = "integer",
-    constructor_name = "integer", constructor = function (.data = integer(0)) 
- .data,
-    validator = function (object) 
+    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(package
+    = structure(list(name = "package", class = structure(list(class = "character",
+    constructor_name = "character", constructor = function (.data = character(0)) 
+
+    .data, validator = function (object) 
  {
      if (base_class(object) != name) {
+     
+       sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+    
+    }
+ }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL,
+    default = NA_character_), class = "S7_property"), version = structure(list(name =
+    "version", class = structure(list(class = "character", constructor_name =
+    "character", constructor = function (.data = character(0)) 
+ .data, validator =
+    function (object) 
+ {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), id = structure(list(name = "id", class =
+    structure(list(class = "integer", constructor_name = "integer", constructor =
+    function (.data = integer(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
         
     sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
      }
@@ -953,53 +975,53 @@ resource_policy(
  {
      if
     (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), package = structure(list(name = "package",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), version = structure(list(name = "version",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
         
     sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
      }
 
     }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
     = NA_character_), class = "S7_property")), abstract = TRUE, constructor = function
-    (id = next_id(), md5 = NA_character_, package = NA_character_, version =
+    (package = NA_character_, version = NA_character_, id = next_id(), md5 =
     NA_character_) 
  {
-     id
-     md5
      package
      version
+     id
+     md5
     
-    new_object(S7_object(), id = id, md5 = md5, package = package, version = version)
+    new_object(S7_object(), package = package, version = version, id = id, md5 = md5)
  },
-    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(id =
-    structure(list(name = "id", class = structure(list(class = "integer",
-    constructor_name = "integer", constructor = function (.data = integer(0)) 
- .data,
-    validator = function (object) 
+    class = c("S7_class", "S7_object")), package = "val.meter", properties = list(package
+    = structure(list(name = "package", class = structure(list(class = "character",
+    constructor_name = "character", constructor = function (.data = character(0)) 
+
+    .data, validator = function (object) 
  {
      if (base_class(object) != name) {
+     
+       sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+    
+    }
+ }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL,
+    default = NA_character_), class = "S7_property"), version = structure(list(name =
+    "version", class = structure(list(class = "character", constructor_name =
+    "character", constructor = function (.data = character(0)) 
+ .data, validator =
+    function (object) 
+ {
+     if (base_class(object) != name) {
+        
+    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
+     }
+
+    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
+    = NA_character_), class = "S7_property"), id = structure(list(name = "id", class =
+    structure(list(class = "integer", constructor_name = "integer", constructor =
+    function (.data = integer(0)) 
+ .data, validator = function (object) 
+ {
+     if
+    (base_class(object) != name) {
         
     sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
      }
@@ -1012,30 +1034,6 @@ resource_policy(
  {
      if
     (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), package = structure(list(name = "package",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
-        
-    sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
-     }
-
-    }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NA_character_), class = "S7_property"), version = structure(list(name = "version",
-    class = structure(list(class = "character", constructor_name = "character",
-    constructor = function (.data = character(0)) 
- .data, validator = function (object)
-    
- {
-     if (base_class(object) != name) {
         
     sprintf("Underlying data must be <\%s> not <\%s>", name, base_class(object))
      }
@@ -1053,17 +1051,17 @@ resource_policy(
      }
 
     }), class = "S7_base_class"), getter = NULL, setter = NULL, validator = NULL, default
-    = NULL), class = "S7_property")), abstract = FALSE, constructor = function (id =
-    next_id(), md5 = NA_character_, package = NA_character_, version = NA_character_,
-    repo = character(0)) 
+    = NULL), class = "S7_property")), abstract = FALSE, constructor = function (package =
+    NA_character_, version = NA_character_, id = next_id(), md5 = NA_character_, repo =
+    character(0)) 
  {
-     id
-     md5
      package
      version
+     id
+     md5
      repo
     
-    new_object(S7_object(), id = id, md5 = md5, package = package, version = version,
+    new_object(S7_object(), package = package, version = version, id = id, md5 = md5,
     repo = repo)
  }, class = c("S7_class", "S7_object"))),
   scopes = structure(character(0), class = c("val.meter::permissions", "character",

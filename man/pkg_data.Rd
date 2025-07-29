@@ -12,7 +12,6 @@ impl_data(
   fn,
   for_resource = resource,
   ...,
-  metric = FALSE,
   overwrite = FALSE,
   quiet = FALSE
 )

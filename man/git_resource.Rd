@@ -5,10 +5,10 @@
 \title{Package \code{git} Resource Class}
 \usage{
 git_resource(
-  id = next_id(),
-  md5 = NA_character_,
   package = NA_character_,
   version = NA_character_,
+  id = next_id(),
+  md5 = NA_character_,
   http_url = character(0)
 )
 }

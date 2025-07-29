@@ -2,7 +2,7 @@
 title: "Adding a Metric"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{adding-metric}
+  %\VignetteIndexEntry{adding-a-metric}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -95,7 +95,7 @@ implementation. Let's step through that process.
 
 The first thing we'll see is that data methods can't be naively overwritten.
 
-```{r}
+```{r, error = TRUE}
 impl_data(
   "name_character_count",
   title = "Package Name Character Count",
@@ -108,7 +108,7 @@ Following the suggestion in the error message, we see that we need to confirm
 that we want to overwrite our existing data. Generally this is only needed when
 you're developing a metric and want to iterate on the implementation.
 
-```{r}
+```{r, error = TRUE}
 impl_data(
   "name_character_count",
   title = "Package Name Character Count",
@@ -135,7 +135,7 @@ impl_data(
   "name_character_count",
   title = "Package Name Character Count",
   metric = TRUE,
-  class = class_integer,
+  class = S7::class_integer,
   overwrite = TRUE,
   function(pkg, ...) nchar(pkg$name)
 )
@@ -206,12 +206,7 @@ oysteR::audit("haven", version = "0.1.1", type = "cran")
 > As we all know, some regulated industries have a legacy of using proprietary
 > data formats. Because of their closed-source nature, the exact dissection of
 > these data must be reverse-engineered. `haven` goes through extreme lengths
-> to do this as rigorously as possible. The vulnerability (which has long been
-> resolved!) is no indication of the package's quality. 
->
-> If you have the means, `haven` (and perhaps more critically, the `ReadStat`
-> library on which it depends) deserves your support for continuing to enable
-> the migration to open source tools.
+> to do this as rigorously as possible.
 
 We can see from the output that `haven` historically had a few vulnerabilities
 reported. But we can also see a fair amount of information provided by `oysteR`.
@@ -263,7 +258,6 @@ from a `CRAN` resource
 ```{r}
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r, permissions("network"))
-
 p$oysteR_vulnerability_df
 ```
 
@@ -320,7 +314,7 @@ impl_data(
   title = "Number of Reported Vulnerabilities",
   description = "Number of vulnerabilities reported for this package version",
   metric = TRUE,
-  class = class_integer,
+  class = S7::class_integer,
   function(pkg, ...) {
     pkg$oysteR_vulnerability_df$no_of_vulnerabilities
   }
@@ -350,7 +344,7 @@ When attempting to calculate our count, we implicitly try to fetch the internal
 `oysteR_vulnerability_df`, which itself is limited to only CRAN repositories. We
 surface this error automatically when we try to calculate a dependent metric.
 
-## Contributing metrics
+# Contributing metrics
 
 If you got this far implementing a metric on your own, why not reach out to us
 so that we can share your work more broadly? The best place to start is by

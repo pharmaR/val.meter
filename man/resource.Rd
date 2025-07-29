@@ -5,10 +5,10 @@
 \title{Resource Class}
 \usage{
 resource(
-  id = next_id(),
-  md5 = NA_character_,
   package = NA_character_,
-  version = NA_character_
+  version = NA_character_,
+  id = next_id(),
+  md5 = NA_character_
 )
 }
 \description{
