@@ -2,7 +2,7 @@
 title: "Adding a Metric"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{adding_metric}
+  %\VignetteIndexEntry{adding-metric}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -350,4 +350,22 @@ When attempting to calculate our count, we implicitly try to fetch the internal
 `oysteR_vulnerability_df`, which itself is limited to only CRAN repositories. We
 surface this error automatically when we try to calculate a dependent metric.
 
-## 
+## Contributing metrics
+
+If you got this far implementing a metric on your own, why not reach out to us
+so that we can share your work more broadly? The best place to start is by
+heading to our issues tracker, easily accessed by running
+`utils::bug.report(package = "val.meter")`.
+
+We welcome all suggestions, even in a nascent state. We'll work together to
+decide exactly what should be distributed with `val.meter`. We'll often
+consider things like
+
+- Whether we should be more restrictive about which resources can calculate
+  this metric.
+- Whether other resource types should get their own implementations
+- If the metric requires additional dependencies, whether they are slim enough
+  to be merely suggested, or whether they come with enough of a footprint to
+  warrant a separate supporting package.
+
+Looking forward to hearing what you come up with!
