@@ -14,6 +14,12 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{css}
+[data-bs-theme="dark"] main img {
+  filter: invert(1);
+}
+```
+
 ```{r setup, include = FALSE}
 library(val.meter)
 ```
@@ -35,7 +41,7 @@ collection of packages.
 
 ```{r rnd}
 p <- random_pkg(scopes = permissions(TRUE))
-p@metrics
+metrics(p)
 ```
 
 ```{r rnds}
@@ -123,6 +129,11 @@ df$package[df$dependency_percentile > 0.95]
 ```
 
 ```{r analysis-2}
+#| fig.alt: >
+#|   An example of dependency counts distributed over their percentiles,
+#|   showcasing a mostly linear character. The plot is randomly generated, so
+#|   exact characteristics may vary.
+
 options(scipen = 10)
 plot(
   xlab = "Percently",

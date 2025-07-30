@@ -21,6 +21,11 @@ API. `val.meter` gives full control over how you define package sources and
 which permissions are enabled when evaluating the package to make this process
 as reproducible as possible.
 
+```r
+rpkg <- random_pkg()
+metrics(rpkg)
+```
+
 ## Features
 
 ### Exploring metrics
@@ -75,11 +80,10 @@ pkg(resrc)
 #### Calculating metrics
 
 Once we have declared _what_ we want to assess, we can then start calculating
-metrics. The easiest way to grab all metrics is from the `@metrics` property
-from our package object
+metrics.
 
 ```r
-p@metrics
+metrics(p)
 ```
 
 In this case, you'll notice that some metric calculations raised errors during
@@ -103,5 +107,5 @@ permissive scopes. We pass `permissions(TRUE)` to grant blanket permission
 to all capabilities.
 
 ```r
-pkg("../val.meter", scopes = permissions(TRUE))@metrics
+metrics(pkg("../val.meter", scopes = permissions(TRUE)))
 ```

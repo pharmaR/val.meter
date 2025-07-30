@@ -2,7 +2,7 @@
 % Please edit documentation in R/class_pkg.R
 \name{pkg}
 \alias{pkg}
-\title{Package Class}
+\title{Create a new package object to start measuring package heuristics}
 \usage{
 pkg(x, scopes = opt("permissions"))
 }
@@ -18,8 +18,6 @@ When working with a \code{\link{pkg}} object, you may prefer to use the \code{[[
 \code{$} operators for accessing data in this environment, which will also
 prompt any necessary data dependencies to be evaluated.}
 
-\item{\code{metrics}}{Return calculated listing of all metrics}
-
 \item{\code{resource}}{A \code{\link{resource}} (often a \code{\link{multi_resource}}), providing
 the resources to be used for deriving packages data. If a
 \code{\link{multi_resource}}, the order of resources determines the precedence
@@ -29,3 +27,4 @@ multiple sources, the first source is prioritized.}
 \item{\code{scopes}}{Permissible scopes for deriving data.}
 }}
 
+\keyword{workflow}

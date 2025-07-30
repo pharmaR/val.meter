@@ -12,40 +12,88 @@
 #' a reference may populate a local directory with the source code of the
 #' package.
 #'
+#' @family resources
 #' @export
 #' @name resource
 resource <- class_resource <- new_class(
   "resource",
   abstract = TRUE,
   properties = list(
+    #' @param package `character(1L)` Package name. Optional, but should be
+    #'   provided if possible.
     package = new_property(class_character, default = NA_character_),
+    
+    #' @param version `character(1L)` Package version, provided as a string. 
     version = new_property(class_character, default = NA_character_),
     
-    #' @field optional id used for tracking resources throughout execution.
-    #'   For example, the package source code from a [`repo_resource()`] may be
-    #'   downloaded to add a [`archive_source_resource()`] and add it to a new
-    #'   [`multi_resource()`]. Because all of these represent the same package,
-    #'   they retain the same `id`. Primarily the `id` is used for
-    #'   isolating temporary files.
+    #' @param id `integer(1L)` optional id used for tracking resources
+    #'   throughout execution. Generally not provided directly, as new objects
+    #'   automatically get a unique identifier. For example, the package source
+    #'   code from a [`repo_resource()`] may be downloaded to add a
+    #'   [`archive_source_resource()`] and add it to a new [`multi_resource()`].
+    #'   Because all of these represent the same package, they retain the same
+    #'   `id`. Primarily the `id` is used for isolating temporary files.
     id = new_property(class_integer, default = quote(next_id())),
+    
+    #' @param md5 `character(1L)` md5 digest of the package source code tarball.
+    #'   This is not generally provided directly, but is instead derived when
+    #'   acquiring resources.
     md5 = new_property(class_character, default = NA_character_)
   )
 )
 
+#' Mocked Package Resource
+#' 
+#' The mocked resource is not intended to be used for deriving real package
+#' data. Its purpose is as a signal to internals that we want to generate
+#' fake, or "mocked", package data. The only practical place where a mocked
+#' resource is needed is when adding your own data implementations and adding
+#' a custom data simulation method.
+#'
+#' @family resources 
+#' @export
 mock_resource <- class_mock_resource <- new_class(
   "mock_resource",
+  #' @inheritParams resource
   parent = resource
 )
 
+#' Unknown Package Resource
+#' 
+#' Used as a placeholder when the exact source of metrics is unknown. Most,
+#' commonly when a package object is reconstructed from a `PACKAGES` file.
+#' 
+#' @family resources
+#' @keywords internal
 unknown_resource <- class_unknown_resource <- new_class(
   "unknown_resource",
+  #' @inheritParams resource
   parent = resource
 )
 
+#' A Resource Collection
+#' 
+#' The [`multi_resource`] can be used to permit sourcing package information
+#' from multiple resources.
+#' 
+#' Most prominently, these are exposed when a [`pkg()`] is assumed from a
+#' character value. With only a package name, `val.meter` will search for
+#' resources from acceptable sources according to your [`resource_policy`]. If
+#' more than one acceptable resource is discovered, they are combined into
+#' a [`multi_resource`]. 
+#' 
+#' During data derivation, each of the bundled resources is used to attempt
+#' to derive package data. The package only raises an error when no resource
+#' can successfully derive the expected data.
+#' 
+#' @family resources
+#' @export
 multi_resource <- class_multi_resource <- new_class(
   "multi_resource",
+  #' @inheritParams resource
   parent = resource,
   properties = list(
+    #' @param resources `list` of [`resources`]
     resources = new_property(
       class_list,
       validator = function(value) {
@@ -57,23 +105,21 @@ multi_resource <- class_multi_resource <- new_class(
   )
 )
 
-#' Package Source Code Resource Class
+#' Abstract Class for Local Package Resources
 #'
-#' Note that in some cases, this is distinct from the source code extracted
-#' from a package archive, as some files are sometimes excluded from package
-#' builds (uploaded to repositories). This can include additional development-
-#' related metadata files, but can sometimes include additional tests that take
-#' too long to run by automated systems by the repository host.
+#' This abstract class represents any type of package resource that is derived
+#' from files locally on the filesystem.
 #'
-#' Commonly, this may mean omitting tests to avoid failures on CRAN's automated
-#' build systems.
-#'
+#' @family resources
 #' @export
 local_resource <- class_local_resource <- new_class(
   "local_resource",
+  #' @inheritParams resource
   parent = resource,
   abstract = TRUE,
   properties = list(
+    #' @param path `character(1L)` file system path to the local package
+    #'   resource.
     path = new_property(
       class_character,
       default = NA_character_,
@@ -86,17 +132,33 @@ local_resource <- class_local_resource <- new_class(
   )
 )
 
+#' Abstract Class for Remote Package Resources
+#' 
+#' @family resources
 #' @export
 remote_source_resource <- class_remote_source_resource <- new_class(
   "remote_source_resource",
   abstract = TRUE,
+  #' @inheritParams resource
   parent = resource
 )
 
+#' Abstract Class for Local Package Resources
+#' 
+#' Local source code is distinct from other local sources because it carries the
+#' assumption that all files needed to fully reproduce the original package are
+#' bundled alongside.
+#' 
+#' Unlike package archives that might be distributed or local installs, source
+#' code contains all tests and files which may be ignored as part of the build
+#' process, yet may be informative for metric assessment.
+#' 
+#' @family resources
 #' @export
 local_source_resource <- class_local_source_resource <- new_class(
   "local_source_resource",
   abstract = TRUE,
+  #' @inheritParams local_resource
   parent = local_resource
 )
 
@@ -104,9 +166,11 @@ local_source_resource <- class_local_source_resource <- new_class(
 #'
 #' The extracted source code from a package's build archive.
 #'
+#' @family resources
 #' @export
 source_archive_resource <- class_source_archive_resource <- new_class(
   "source_archive_resource",
+  #' @inheritParams local_resource
   parent = local_resource,
 )
 
@@ -114,9 +178,11 @@ source_archive_resource <- class_source_archive_resource <- new_class(
 #'
 #' An installed version of a package, as would be found in a package library.
 #'
+#' @family resources
 #' @export
 install_resource <- class_install_resource <- new_class(
   "install_resource",
+  #' @inheritParams local_resource
   parent = local_resource
 )
 
@@ -124,9 +190,11 @@ install_resource <- class_install_resource <- new_class(
 #'
 #' A union of all package resource classes that have local source code.
 #'
+#' @family resources
 #' @export
 source_code_resource <- class_source_code_resource <- new_class(
   "source_code_resource",
+  #' @inheritParams local_source_resource
   parent = local_source_resource
 )
 
@@ -134,20 +202,30 @@ source_code_resource <- class_source_code_resource <- new_class(
 #'
 #' A reference to a listing in an R package repository.
 #'
+#' @family resources
 #' @export
 repo_resource <- class_repo_resource <- new_class(
   "repo_resource",
+  #' @inheritParams resource
   parent = resource,
-  properties = list(repo = class_character)
+  properties = list(
+    #' @param repo `character(1L)` The repository url from which the package 
+    #'   is to be sourced.
+    repo = class_character
+  )
 )
 
 #' Package CRAN Repository Resource Class
 #'
-#' A reference to a listing in CRAN.
+#' A reference to a listing in CRAN. CRAN Resources must be from one of the
+#' repositories listed in [`getCRANmirrors()`]. To assert that a new url is
+#' also a CRAN mirror, please follow instructions in [`?getCRANmirrors()`].
 #'
+#' @family resources
 #' @export
 cran_repo_resource <- class_cran_repo_resource <- new_class(
   "cran_repo_resource",
+  #' @inheritParams repo_resource
   parent = repo_resource,
   properties = list(
     repo = new_property(
@@ -169,11 +247,14 @@ cran_repo_resource <- class_cran_repo_resource <- new_class(
 #'
 #' A reference to a listing in an R package git source code repository.
 #'
+#' @family resources
 #' @export
 git_resource <- class_git_resource <- new_class(
   "git_resource",
+  #' @inheritParams remote_source_resource
   parent = remote_source_resource,
   properties = list(
+    #' @param http_url The git repository url
     http_url = class_character
   )
 )

@@ -14,7 +14,7 @@
 \format{
 An object of class \code{environment} of length 2.
 
-An object of class \code{list} of length 3.
+An object of class \code{list} of length 5.
 }
 \usage{
 .state
@@ -33,6 +33,7 @@ new_err(
   class = NULL,
   call = .envir,
   trace = NULL,
+  capture = FALSE,
   .envir = parent.frame()
 )
 
@@ -72,5 +73,24 @@ Used predominately by \code{\link[=err]{err()}}
 \item \code{err}: Raise a new error, using one of a set of known error types
 
 }}
+\section{Fields}{
+
+\describe{
+\item{\code{disallowed_scopes}}{Create an error indicating that a data derivation
+requires scopes that were not permitted at execution time.}
+
+\item{\code{missing_suggests}}{Create an error indicating that a dependency that
+is required for a specific data derivation is not available.}
+
+\item{\code{metric_not_atomic}}{Create an error indicating that a metric was
+derived but did not conform to its anticipated atomic return type.}
+
+\item{\code{derive_dependency}}{Create an error that is raised when a dependent
+data field threw an error during execution.}
+
+\item{\code{data_not_implemented}}{Create an error indicating that data could not
+be derived because it is not implemented for this resource.}
+}}
+
 \keyword{datasets}
 \keyword{internal}

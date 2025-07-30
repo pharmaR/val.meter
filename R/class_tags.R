@@ -3,6 +3,7 @@
 #' A enumeration of tags that can be applied to a metric, to capture metadata
 #' more effectively.
 #'
+#' @keywords safeguard
 #' @include utils_enum_vector.R
 #' @export
 tags <- class_tags <- enum_vector(

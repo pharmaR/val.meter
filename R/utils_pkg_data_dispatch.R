@@ -25,15 +25,29 @@ NULL
 
 #' @describeIn pkg_data_dispatch
 #' Convert a field name into an S3 class name for dispatch
-pkg_data_s3_class <- function(field_name = NULL) {
+pkg_data_s3_class <- function(field_name = NULL, mock = FALSE) {
   base <- "pkg_data_field"
+  if (mock) base <- paste0(base, "_mock")
   c(sprintf("%s_%s", base, field_name), base)
 }
 
 #' @describeIn pkg_data_dispatch
 #' Convert a field name into an S7 S3 class object for dispatch
-pkg_data_class <- function(field_name = NULL) {
-  S7::new_S3_class(pkg_data_s3_class(field_name))
+pkg_data_class <- function(...) {
+  S7::new_S3_class(pkg_data_s3_class(...))
+}
+
+#' @describeIn pkg_data_dispatch
+#' Parse a data field name from its S3 class. The inverse of 
+#'   [`pkg_data_s3_class`].
+pkg_data_name_from_s3_class <- function(class_name) {
+  signature_prefix <- "pkg_data_field_"
+  is_pkg_data_class <- startsWith(class_name, signature_prefix)
+  ifelse(
+    is_pkg_data_class,
+    sub(paste0(signature_prefix, "(mock_)?"), "", class_name),
+    NA_character_
+  )
 }
 
 #' @describeIn pkg_data_dispatch
@@ -58,7 +72,6 @@ as_pkg_data <- function(field_name) {
 #' @name pkg_data_dispatch
 get_data_derive_field_names <- function(..., args = list(...)) {
   if (length(args) == 0L) args <- list(class_pkg, class_resource)
-  signature_prefix <- "pkg_data_field_"
   
   all_methods <- function(x) {
     if (is.function(x) && inherits(x, "S7_generic")) {
@@ -89,10 +102,6 @@ get_data_derive_field_names <- function(..., args = list(...)) {
     })
   )))
   
-  # subset for only methods which dispatch on [`pkg_data()`] types
-  is_pkg_data <- startsWith(signature_types, signature_prefix)
-  signature_types <- signature_types[is_pkg_data]
-  
-  # remove prefix for completions, return only those that match pattern
-  substring(signature_types, nchar(signature_prefix) + 1L)
+  # extract parsed data field names from class names
+  Filter(Negate(is.na), pkg_data_name_from_s3_class(signature_types))
 }

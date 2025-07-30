@@ -1,8 +1,9 @@
-#' Package Class
+#' Create a new package object to start measuring package heuristics
 #'
 #' Aggregates package information, surveying metadata from discovered
 #' resources.
 #'
+#' @keywords workflow
 #' @include class_resource.R
 #' @export
 pkg <- class_pkg <- new_class(
@@ -13,12 +14,6 @@ pkg <- class_pkg <- new_class(
     #' `$` operators for accessing data in this environment, which will also
     #' prompt any necessary data dependencies to be evaluated.
     data = class_environment,
-
-    #' @field metrics Return calculated listing of all metrics
-    metrics = new_property(
-      class_any,
-      getter = function(self) self[TRUE]
-    ),
 
     #' @field resource A [`resource`] (often a [`multi_resource`]), providing
     #' the resources to be used for deriving packages data. If a
@@ -32,6 +27,9 @@ pkg <- class_pkg <- new_class(
   ),
   constructor = function(x, scopes = opt("permissions")) {
     is_mocked <- S7::S7_inherits(x, class_mock_resource)
+    
+    # handle anything that can be converted into a resource - especially
+    # useful for character shorthands
     if (!is_mocked) x <- convert(x, resource)
 
     new_object(
@@ -54,7 +52,7 @@ random_pkg <- function(
     version = version,
     md5 = tools::md5sum(bytes = charToRaw(paste0(package, " v", version)))
   )
-
+  
   pkg(resource, ...)
 }
 
@@ -62,7 +60,7 @@ random_pkg <- function(
 random_pkgs <- function(n = 100, ...) {
   pkg_names <- random_pkg_name(n = n)
   pkgs <- lapply(pkg_names, random_pkg, ...)
-
+  
   pkg_deps <- if (requireNamespace("igraph", quietly = TRUE)) {
     pkg_graph <- random_pkg_graph(pkg_names)
     function(pkg_name, ...) random_pkg_igraph_deps(pkg_graph, pkg_name)
@@ -71,29 +69,52 @@ random_pkgs <- function(n = 100, ...) {
       "package cohort may have cyclic dependencies. install {.pkg igraph} to",
       "ensure acyclic relationship"
     )
-
+    
     function(pkg_name) random_pkg_naive_deps(pkg_name, cohort = pkg_names)
   }
-
+  
   # generate mock metrics
   for (i in seq_along(pkgs)) {
     # provide cohort of package names to desc for generating dependencies
     pkg_name <- pkg_names[[i]]
     pkg <- pkgs[[i]]
     get_pkg_data(pkg, "desc", deps = pkg_deps(pkg_name))
-    pkg@metrics
+    metrics(pkg)
   }
-
-  structure(pkgs, class = c("list_of_pkgs", class(pkgs)))
+  
+  structure(pkgs, class = c("list_of_pkg", class(pkgs)))
 }
 
+#' Get [`pkg`] object data
+#' 
+#' This methods handles the error handling and propagation of deriving package
+#' data. It is the primary interface by which a [`pkg`] object should be 
+#' deriving data. In contrast to [`pkg_data_derive`], which is the method that
+#' individual data implements to register it as a field, this function wraps
+#' the execution in appropriate error handling for user presentation. This
+#' function should not throw errors, but instead should capture errors for
+#' communication back to the user.
+#' 
+#' @param x [`pkg`] object to derive data for
+#' @param name `character(1L)` field name for the data to derive
+#' @param ... Additional arguments unused
+#' @param .raise `logical(1L)` flag indicating whether errors should be raised
+#'   or captured. This flag is not intended to be set directly, it is exposed
+#'   so that recursive calls can raise lower-level errors while capturing them
+#'   at the surface.
+#'   
+#' @returns the derived data, using the method of [`pkg_data_derive`] dispatched
+#'   on field `name`.
+#' 
+#' @keywords internal
+#' @include utils_err.R
 get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
   # RStudio, when trying to produce completions,will try to evaluate our lazy
   # list elements. Intercept those calls and return only the existing values.
   if (is_rs_rpc_get_completions_call()) {
     return(as.list(x@data))
   }
-
+  
   if (!exists(name, envir = x@data)) {
     # upon computing subsequent data dependencies, raise their errors so that
     # they can be captured and annotated as dependency errors
@@ -101,26 +122,38 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
       .state$raise_derive_errors()
       on.exit(.state$raise_derive_errors(FALSE))
     }
-
+    
     x@data[[name]] <- tryCatch(
       pkg_data_derive(pkg = x, field = name, ...),
-      error = identity
+      error = function(e, ...) convert(e, class_val_meter_error)
     )
-
+    
     if (.raise && inherits(x@data[[name]], "error")) {
       stop(x@data[[name]])
     }
   }
-
+  
   if (.raise && inherits(x@data[[name]], cnd_type())) {
-    new_err(
-      class = "derive_dependency",
-      data = list(field = name),
-      "field depends on field '{name}' that threw an error during derivation"
-    )
+    err$derive_dependency(field = name)
   }
-
+  
   x@data[[name]]
+}
+
+get_pkg_datas <- function(x, index, ..., all = FALSE) {
+  if (is.character(index)) {
+    names(index) <- index
+    return(lapply(index, get_pkg_data, x = x))
+  }
+  
+  if (is.logical(index)) {
+    if (length(index) != 1) {
+      new_err("pkg objects can only be indexed with scalar logical values")
+    }
+    return(x[names(metrics(all = all))])
+  }
+  
+  new_err("pkg objects don't know how to index with class {.cls index}")
 }
 
 #' @exportS3Method ".DollarNames" "val.meter::pkg"
@@ -136,21 +169,7 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
 `[[.val.meter::pkg` <- get_pkg_data
 
 #' @exportS3Method "[" "val.meter::pkg"
-`[.val.meter::pkg` <- function(x, index, ..., all = FALSE) {
-  if (is.character(index)) {
-    names(index) <- index
-    return(lapply(index, function(i) x[[i]]))
-  }
-
-  if (is.logical(index)) {
-    if (length(index) != 1) {
-      new_err("pkg objects can only be indexed with scalar logical values")
-    }
-    return(x[names(metrics(all = all))])
-  }
-
-  new_err("pkg objects don't know how to index with class {.cls index}")
-}
+`[.val.meter::pkg` <- get_pkg_datas
 
 #' @export
 method(names, class_pkg) <- function(x, ...) {
@@ -160,14 +179,14 @@ method(names, class_pkg) <- function(x, ...) {
 #' @export
 method(print, class_pkg) <- function(x, ...) {
   class_header <- paste0("<", class(x)[[1]], ">")
-
+  
   fields <- get_data_derive_field_names()
   names(fields) <- fields
   fields <- lapply(fields, convert, to = data_info)
   is_metric <- vlapply(fields, S7::prop, "metric")
   fields <- fields[order(!is_metric)]
   is_metric <- is_metric[order(!is_metric)]
-
+  
   out <- paste0(
     class_header, "\n",
     "@resource", "\n",
@@ -198,12 +217,12 @@ method(print, class_pkg) <- function(x, ...) {
       })
     )
   )
-
+  
   cat(out, "\n")
 }
 
 #' @include utils_dcf.R
-method(to_dcf, new_S3_class("list_of_pkgs")) <- function(x, ...) {
+method(to_dcf, new_S3_class("list_of_pkg")) <- function(x, ...) {
   paste(collapse = "\n\n", vcapply(x, to_dcf))
 }
 
@@ -212,7 +231,7 @@ method(to_dcf, class_pkg) <- function(x, ...) {
   paste(collapse = "\n", c(
     to_dcf(x$desc),
     if (!is.na(x@resource@md5)) paste0("MD5: ", x@resource@md5),
-    paste0("Metric/", names(x@metrics), "@R: ", vcapply(x@metrics, to_dcf))
+    paste0("Metric/", names(metrics(x)), "@R: ", vcapply(metrics(x), to_dcf))
   ))
 }
 

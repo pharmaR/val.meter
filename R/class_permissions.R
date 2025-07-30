@@ -9,6 +9,7 @@
 #' Given a policy, only assessments which conform to all enabled flags will be
 #' assessed.
 #'
+#' @keywords safeguard
 #' @include utils_enum_vector.R
 #' @export
 permissions <- class_permissions <- enum_vector(

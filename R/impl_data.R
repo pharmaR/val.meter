@@ -115,7 +115,10 @@ impl_data_info <- function(
     scopes = permissions
   )
   
-  handler(method(pkg_data_info, pkg_data_class(name)) <- function(field) info)
+  handler({
+    method(pkg_data_info, pkg_data_class(name)) <- 
+      function(field) info
+  })
 }
 
 #' @describeIn pkg_data
@@ -142,19 +145,21 @@ impl_data_derive <- function(
   }
   
   handler <- if (quiet) suppress_method_overwrite else identity
-  handler(method(pkg_data_derive, dispatch_classes) <-
-    function(pkg, resource, field, ...) {
-      info <- pkg_data_info(field)
-      required_scopes <- info@scopes
-      required_suggests <- info@suggests
-      assert_scopes(required_scopes, pkg@scopes)
-      assert_suggests(required_suggests)
-      
-      data <- fn(pkg, resource, field, ...)
-      if (!identical(info@data_class, class_any)) {
-        data <- convert(data, info@data_class)
+  handler({
+    method(pkg_data_derive, dispatch_classes) <-
+      function(pkg, resource, field, ...) {
+        info <- pkg_data_info(field)
+        required_scopes <- info@scopes
+        required_suggests <- info@suggests
+        assert_scopes(required_scopes, pkg@scopes)
+        assert_suggests(required_suggests)
+        
+        data <- fn(pkg, resource, field, ...)
+        if (!identical(info@data_class, class_any)) {
+          data <- convert(data, info@data_class)
+        }
+        
+        data
       }
-      
-      data
-    })
+  })
 }

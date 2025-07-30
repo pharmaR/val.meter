@@ -34,7 +34,10 @@ describe("cnd_class_from_type", {
 describe("err", {
   it("exposes constructors which produce expected error classes", {
     for (n in names(err)) {
-      e <- tryCatch(err[[n]](scopes = "a", suggests = "b"), error = identity)
+      # construct some dummy arguments to pass
+      args <- as.list(setdiff(formalArgs(err[[n]]), "..."))
+      names(args) <- args
+      e <- tryCatch(do.call(err[[n]], args), error = identity)
       expect_s3_class(e, "error")
       expect_s3_class(e, cnd_type(n))
     }

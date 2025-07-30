@@ -1,3 +1,7 @@
+#' A string formatting utility to apply `cli` formats without output to console
+#'
+#' @keywords internal
+#' @noRd
 fmt <- function(..., .envir = parent.frame()) {
   cli::format_inline(..., .envir = .envir)
 }
@@ -6,6 +10,9 @@ fmt <- function(..., .envir = parent.frame()) {
 #' 
 #' @param style A `list` of arguments to pass to the ellipsis arguments of
 #'   [`cli::make_ansi_style()`].
+#'   
+#' @keywords internal
+#' @noRd
 cli_tag <- function(
   ...,
   scope = NULL,

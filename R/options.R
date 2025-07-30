@@ -4,6 +4,7 @@ NULL
 #' Options As Parameters
 #' @eval options::as_params()
 #' @name options_params
+#' @keywords internal
 NULL
 
 #' @include utils_cli.R

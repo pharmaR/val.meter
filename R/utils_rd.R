@@ -4,6 +4,7 @@
 #' programmatically - most notably for documenting metrics that are already
 #' documented using [`pkg_data_info`] metadata objects.
 #'
+#' @keywords internal
 #' @name utils-rd
 NULL
 
@@ -48,7 +49,7 @@ rd_parse <- function(text, fragment = FALSE, permissive = TRUE, ...) {
     rds <- rds[seq_along(text) %% 2]
     attributes(rds) <- attrs
   }
-
+  
   rds
 }
 
@@ -61,10 +62,10 @@ rd_deparse <- function(rd, deparse = TRUE, ...) {
 #' @describeIn utils-rd
 #' Convert R code to an Rd \\Sexpr
 rd_sexpr <- function(
-  code, 
-  stage = c("build", "install", "render"),
-  results = c("text", "verbatim", "rd", "hide"),
-  quote = TRUE
+    code, 
+    stage = c("build", "install", "render"),
+    results = c("text", "verbatim", "rd", "hide"),
+    quote = TRUE
 ) {
   if (quote) code <- substitute(code)
   stage <- match.arg(stage)

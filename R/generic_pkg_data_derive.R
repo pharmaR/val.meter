@@ -123,14 +123,11 @@ method(
       pkg_data_derive(pkg, convert(resource, unknown_resource), field, ...),
 
       # propagate our own errors
-      val_meter_error = function(e, ...) {
-        browser()
-      },
+      val_meter_error = identity,
 
       # should that fail, generate using mocking rules
       error = function(e, ...) {
-        browser()
-        pkg_data_derive(pkg, resource, info@data_class, ...)
+        pkg_data_derive(pkg, resource, info@data_class, ..., field_name = field)
       }
     )
   }
@@ -154,15 +151,22 @@ method(
 #' @noRd
 method(
   pkg_data_derive,
-  list(class_any, class_mock_resource, new_union(.s7_class, .s7_base_class))
+  list(
+    class_any,
+    class_mock_resource,
+    new_union(.s7_class, .s7_base_class, .s7_s3_class)
+  )
 ) <-
-  function(pkg, resource, field, ...) {
+  function(pkg, resource, field, ..., field_name = field) {
     pkg_data_derive(
       pkg = pkg,
       resource = resource,
-      field = structure(list(), class = paste0(c("mock_", ""), field$class)),
+      field = structure(
+        list(), 
+        class = c(paste0("mock_", c(field$class, "data")), field$class)
+      ),
       ...,
-      field_name = field
+      field_name = field_name
     )
   }
 
@@ -177,6 +181,12 @@ method(
 #' pkg_data_derive(p, field = derive_field)
 #'
 #' @noRd
+method(
+  pkg_data_derive,
+  list(class_any, class_mock_resource, new_S3_class("mock_data"))
+) <-
+  function(pkg, resource, field, ...) NA
+
 method(
   pkg_data_derive,
   list(class_any, class_mock_resource, new_S3_class("mock_logical"))

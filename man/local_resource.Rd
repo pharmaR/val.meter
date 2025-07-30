@@ -2,7 +2,7 @@
 % Please edit documentation in R/class_resource.R
 \name{local_resource}
 \alias{local_resource}
-\title{Package Source Code Resource Class}
+\title{Abstract Class for Local Package Resources}
 \usage{
 local_resource(
   package = NA_character_,
@@ -12,14 +12,44 @@ local_resource(
   path = NA_character_
 )
 }
+\arguments{
+\item{package}{\code{character(1L)} Package name. Optional, but should be
+provided if possible.}
+
+\item{version}{\code{character(1L)} Package version, provided as a string.}
+
+\item{id}{\code{integer(1L)} optional id used for tracking resources
+throughout execution. Generally not provided directly, as new objects
+automatically get a unique identifier. For example, the package source
+code from a \code{\link[=repo_resource]{repo_resource()}} may be downloaded to add a
+\code{\link[=archive_source_resource]{archive_source_resource()}} and add it to a new \code{\link[=multi_resource]{multi_resource()}}.
+Because all of these represent the same package, they retain the same
+\code{id}. Primarily the \code{id} is used for isolating temporary files.}
+
+\item{md5}{\code{character(1L)} md5 digest of the package source code tarball.
+This is not generally provided directly, but is instead derived when
+acquiring resources.}
+
+\item{path}{\code{character(1L)} file system path to the local package
+resource.}
+}
 \description{
-Note that in some cases, this is distinct from the source code extracted
-from a package archive, as some files are sometimes excluded from package
-builds (uploaded to repositories). This can include additional development-
-related metadata files, but can sometimes include additional tests that take
-too long to run by automated systems by the repository host.
+This abstract class represents any type of package resource that is derived
+from files locally on the filesystem.
 }
-\details{
-Commonly, this may mean omitting tests to avoid failures on CRAN's automated
-build systems.
+\seealso{
+Other resources: 
+\code{\link{cran_repo_resource}()},
+\code{\link{git_resource}()},
+\code{\link{install_resource}()},
+\code{\link{local_source_resource}()},
+\code{\link{mock_resource}()},
+\code{\link{multi_resource}()},
+\code{\link{remote_source_resource}()},
+\code{\link{repo_resource}()},
+\code{\link{resource}()},
+\code{\link{source_archive_resource}()},
+\code{\link{source_code_resource}()},
+\code{\link{unknown_resource}()}
 }
+\concept{resources}

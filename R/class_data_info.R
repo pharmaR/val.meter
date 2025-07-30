@@ -23,63 +23,6 @@
 #' @name pkg_data_dispatch
 NULL
 
-#' Discover implemented data fields
-#'
-#' This is used for finding all available metrics for use in [`metrics()`], as
-#' well as for tab completions for `<pkg>$ <TAB>` to auto-populate a list of
-#' available metrics.
-#'
-#' @param ... A list of [`S7`] classes. Not used if `args` is provided.
-#' @param args A list of [`S7`] classes, by default, collects the elements of
-#'   `...`.
-#'
-#' @returns A `character` vector of field names.
-#'
-#' @keywords internal
-#' @name pkg_data_dispatch
-get_data_derive_field_names <- function(..., args = list(...)) {
-  if (length(args) == 0L) args <- list(class_pkg, class_resource)
-  signature_prefix <- "pkg_data_field_"
-
-  all_methods <- function(x) {
-    if (is.function(x) && inherits(x, "S7_generic")) {
-      all_methods(x@methods)
-    } else if (is.environment(x)) {
-      unlist(recursive = FALSE, use.names = FALSE, lapply(x, all_methods))
-    } else {
-      x
-    }
-  }
-
-  # retrieve all methods
-  methods <- all_methods(pkg_data_derive)
-  signatures <- lapply(methods, attr, "signature")
-  valid_signatures <- Filter(x = signatures, function(signature) {
-    for (i in seq_along(args)) {
-      if (!is_subclass(signature[[i]], args[[i]])) {
-        return(FALSE)
-      }
-    }
-
-    TRUE
-  })
-
-  # extract fields for which derivation is implemented given dispatch args
-  signature_types <- unique(as.character(Filter(
-    Negate(is.null),
-    lapply(signatures, function(signature) {
-      signature[[3]]$class[[1]]
-    })
-  )))
-
-  # subset for only methods which dispatch on [`pkg_data()`] types
-  is_pkg_data <- startsWith(signature_types, signature_prefix)
-  signature_types <- signature_types[is_pkg_data]
-
-  # remove prefix for completions, return only those that match pattern
-  substring(signature_types, nchar(signature_prefix) + 1L)
-}
-
 #' Package Data and Metadata
 #'
 #' Package data is any information that can be derived about a package. Some of
@@ -334,13 +277,13 @@ data_info_list <- new_class("data_info_list", parent = class_list)
 local({
   method(print, data_info_list) <- function(x, ...) {
     msgs <- list()
-  
+    
     # use individual element print methods
     to_print <- x
     class(to_print) <- NULL
     attributes(to_print) <- NULL
     names(to_print) <- names(x)
-  
+    
     res <- withCallingHandlers(
       print(to_print),
       message = function(m) {
@@ -350,15 +293,15 @@ local({
         }
       }
     )
-  
+    
     if (length(msgs) > 0L) {
       cli_alert_info("Some metrics will not be evaluated")
     }
-  
+    
     for (msg in unique(msgs)) {
       cli_text(style_dim(msg$message))
     }
-  
+    
     invisible(res)
   }
 })
@@ -378,7 +321,12 @@ method(toRd, data_info_list) <- function(x, ...) {
   )
 }
 
-#' Package metric data
+#' Catalog or calculate package metrics
+#' 
+#' When no object is passed, returns a list of possible metrics. When a [`pkg`]
+#' object is provided, return metrics calculated for that package. Metrics are
+#' a subset of all the data calculated over the course of assessing a package.
+#' For access to _all_ the internally calculated data, pass `all = TRUE`.
 #'
 #' @param x Optionally, an object to retrieve metrics from. When `NULL` (the
 #'   default), a listing of metric metadata is returned.
@@ -391,8 +339,11 @@ method(toRd, data_info_list) <- function(x, ...) {
 #'
 #' @evalRd tools::toRd(metrics())
 #'
+#' @keywords workflow
 #' @export
 metrics <- function(x, ..., all = FALSE) {
+  if (!missing(x)) return(get_pkg_datas(x, index = TRUE, ..., all = all))
+  
   fields <- get_data_derive_field_names()
   names(fields) <- fields
   fields <- lapply(fields, pkg_data_info)

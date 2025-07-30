@@ -24,3 +24,4 @@ directory. (Defaults to \code{ns_tmp_root()}, overwritable using option 'val.met
 \description{
 Options As Parameters
 }
+\keyword{internal}

@@ -2,17 +2,18 @@
 % Please edit documentation in R/class_data_info.R, R/utils_pkg_data_dispatch.R
 \name{pkg_data_dispatch}
 \alias{pkg_data_dispatch}
-\alias{get_data_derive_field_names}
 \alias{pkg_data_s3_class}
 \alias{pkg_data_class}
+\alias{pkg_data_name_from_s3_class}
 \alias{as_pkg_data}
+\alias{get_data_derive_field_names}
 \title{Various helpers for using a field name for method dispatch}
 \usage{
-get_data_derive_field_names(..., args = list(...))
+pkg_data_s3_class(field_name = NULL, mock = FALSE)
 
-pkg_data_s3_class(field_name = NULL)
+pkg_data_class(...)
 
-pkg_data_class(field_name = NULL)
+pkg_data_name_from_s3_class(class_name)
 
 as_pkg_data(field_name)
 
@@ -26,8 +27,6 @@ get_data_derive_field_names(..., args = list(...))
 }
 \value{
 A \code{character} vector of field names.
-
-A \code{character} vector of field names.
 }
 \description{
 Given a field as a name, for example \code{"desc"}, we want to dispatch to the
@@ -36,10 +35,6 @@ convert this field name into an object that has a class that we can use
 for method dispatch. These functions are helpers for standardizing this
 conversion so that we don't need to concern ourselves with consistent
 class names throughout this package.
-
-This is used for finding all available metrics for use in \code{\link[=metrics]{metrics()}}, as
-well as for tab completions for \verb{<pkg>$ <TAB>} to auto-populate a list of
-available metrics.
 
 Given a field as a name, for example \code{"name"}, we want to dispatch to the
 right derivation method for this piece of data. To do this, we need to
@@ -86,6 +81,9 @@ And it will implicitly dispatch to the appropriate method.
 \item \code{pkg_data_s3_class()}: Convert a field name into an S3 class name for dispatch
 
 \item \code{pkg_data_class()}: Convert a field name into an S7 S3 class object for dispatch
+
+\item \code{pkg_data_name_from_s3_class()}: Parse a data field name from its S3 class. The inverse of
+\code{\link{pkg_data_s3_class}}.
 
 \item \code{as_pkg_data()}: Convert a field name an object with appropriate class for dispatch
 

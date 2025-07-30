@@ -10,3 +10,4 @@ tags(...)
 A enumeration of tags that can be applied to a metric, to capture metadata
 more effectively.
 }
+\keyword{safeguard}

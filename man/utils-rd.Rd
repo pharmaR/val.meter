@@ -61,3 +61,4 @@ documented using \code{\link{pkg_data_info}} metadata objects.
 html output.
 
 }}
+\keyword{internal}

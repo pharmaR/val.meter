@@ -2,7 +2,7 @@
 title: "Adding a Metric"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{adding-a-metric}
+  %\VignetteIndexEntry{Adding a Metric}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -12,6 +12,12 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+```
+
+```{css, echo = FALSE}
+[data-bs-theme="dark"] main img {
+  filter: invert(1);
+}
 ```
 
 ```{r setup}
@@ -343,6 +349,78 @@ p$vulnerability_count
 When attempting to calculate our count, we implicitly try to fetch the internal
 `oysteR_vulnerability_df`, which itself is limited to only CRAN repositories. We
 surface this error automatically when we try to calculate a dependent metric.
+
+## Simulating metrics
+
+For developers, we appreciate being able to simulate reasonably realistic
+packages for the purposes of examples, demonstration and expediting development.
+
+Already, we can take a look at what a simulated vulnerability count might look
+like!
+
+```{r}
+rpkg <- random_pkg()
+rpkg$vulnerability_count
+```
+
+Depending on the declared data type of metrics, we simulate data with some
+simple default rules. We can take a look at what is being generated over a
+sampling of random packages.
+
+```{r}
+#| fig.alt: >
+#|   A histogram of the default integer generating process, showing that nearly
+#|   all packages show at least one vulnerability.
+
+rpkgs <- random_pkgs(n = 100)
+rpkgs_df <- as.data.frame(rpkgs)
+
+hist(
+  rpkgs_df$vulnerability_count,
+  main = "Vulnerability Counts Tally",
+  xlab = "Number of Vulnerabilities"
+)
+```
+
+Well this would be alarming! A majority of packages come with vulnerabilities.
+This is definitely not reflective of the R ecosystem, so maybe we want to tone
+that frequency down a bit.
+
+We can implement our own derivation using `impl_data` once again. This time, 
+we want to register a method for a very specific resource, the `mock_resource`.
+This resource is used for random packages and allows us to use the exact same
+dispatch mechanism to create a custom data-generating process.
+
+```{r}
+impl_data(
+  "vulnerability_count",
+  for_resource = mock_resource,
+  function(...) rpois(1, lambda = 0.1)
+)
+```
+
+If we again simulate some random packages and take a look at how many
+vulnerabilities are reported we get something that is a bit closer to reality.
+
+```{r}
+#| fig.alt: >
+#|   Another histogram of package vulnerabilities after implementing our own
+#|   simulation function. This time, the vast majority of packages have no
+#|   vulnerabilities with only a handful reporting one or more vulnerabilities.
+
+rpkgs <- random_pkgs(n = 100)
+rpkgs_df <- as.data.frame(rpkgs)
+
+hist(
+  rpkgs_df$vulnerability_count,
+  main = "Vulnerability Counts Tally",
+  xlab = "Number of Vulnerabilities"
+)
+```
+
+Still higher than out in the wild, but perhaps a nice balance between being
+reasonably frequent for the purpose of example, but still far less than the
+half that we were seeing before.
 
 # Contributing metrics
 

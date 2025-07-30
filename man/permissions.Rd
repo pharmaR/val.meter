@@ -17,3 +17,4 @@ policy will be derived.
 Given a policy, only assessments which conform to all enabled flags will be
 assessed.
 }
+\keyword{safeguard}

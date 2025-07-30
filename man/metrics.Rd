@@ -2,7 +2,7 @@
 % Please edit documentation in R/class_data_info.R
 \name{metrics}
 \alias{metrics}
-\title{Package metric data}
+\title{Catalog or calculate package metrics}
 \usage{
 metrics(x, ..., all = FALSE)
 }
@@ -20,8 +20,12 @@ A \code{list} of calculated values or metadata, in the cases where an
 object is or is not provided respectively.
 }
 \description{
-Package metric data
+When no object is passed, returns a list of possible metrics. When a \code{\link{pkg}}
+object is provided, return metrics calculated for that package. Metrics are
+a subset of all the data calculated over the course of assessing a package.
+For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 }
+\keyword{workflow}
 \section{Metrics}{The following metrics are provided by \code{\link{val.meter}}.
  \subsection{R CMD check Error Count}{\code{<integer>} the number of errors produced when running \code{R CMD check}
 
