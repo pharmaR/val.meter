@@ -22,22 +22,35 @@ pkg <- class_pkg <- new_class(
     #' multiple sources, the first source is prioritized.
     resource = S7::new_union(class_resource, class_mock_resource),
 
-    #' @field scopes Permissible scopes for deriving data.
-    scopes = permissions
+    #' @field permissions Granted permissions for deriving data.
+    permissions = class_permissions
   ),
-  constructor = function(x, scopes = opt("permissions")) {
+  constructor = function(
+    x,
+    permissions,
+    policy = opt("policy")
+  ) {
     is_mocked <- S7::S7_inherits(x, class_mock_resource)
     
     # handle anything that can be converted into a resource - especially
     # useful for character shorthands
-    if (!is_mocked) x <- convert(x, resource)
+    if (!is_mocked) {
+      # TODO: warn when we won't use the policy; when a resource is provided
+      x <- convert(x, resource, policy = policy)
+    }
+    
+    if (!missing(permissions)) {
+      permissions <- convert(permissions, class_permissions)
+    } else {
+      permissions <- policy@permissions
+    }
 
     new_object(
       .parent = S7::S7_object(),
       data = new.env(parent = emptyenv()),
       metrics = list(),
       resource = x,
-      scopes = scopes
+      permissions = permissions
     )
   }
 )
@@ -120,21 +133,19 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
     # they can be captured and annotated as dependency errors
     if (!.raise) {
       .state$raise_derive_errors()
-      on.exit(.state$raise_derive_errors(FALSE))
+      # on.exit(.state$raise_derive_errors(FALSE))
     }
     
     x@data[[name]] <- tryCatch(
       pkg_data_derive(pkg = x, field = name, ...),
-      error = function(e, ...) convert(e, class_val_meter_error)
+      error = function(e, ...) {
+        convert(e, class_val_meter_error, field = name)
+      }
     )
     
     if (.raise && inherits(x@data[[name]], "error")) {
       stop(x@data[[name]])
     }
-  }
-  
-  if (.raise && inherits(x@data[[name]], cnd_type())) {
-    err$derive_dependency(field = name)
   }
   
   x@data[[name]]
@@ -191,8 +202,8 @@ method(print, class_pkg) <- function(x, ...) {
     class_header, "\n",
     "@resource", "\n",
     paste0("  ", capture.output(x@resource), collapse = "\n"), "\n",
-    "@scopes", "\n",
-    paste0("  ", capture.output(x@scopes), collapse = "\n"), "\n",
+    "@permissions", "\n",
+    paste0("  ", capture.output(x@permissions), collapse = "\n"), "\n",
     paste0(
       collapse = "\n",
       "$", names(fields),

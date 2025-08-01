@@ -8,9 +8,6 @@
 #' @name errors
 NULL
 
-class_val_meter_error <- S7::new_S3_class("val_meter_error")
-class_error <- S7::new_S3_class("error")
-
 #' @describeIn errors
 #' Global error raising flags
 #'
@@ -52,7 +49,7 @@ get_package_boundary_call <- function(calls = sys.calls()) {
       return(sys.frame(i))
     }
   }
-
+  
   sys.frame()
 }
 
@@ -82,48 +79,57 @@ cnd_class_from_type <- function(type, cnd = "error") {
 #'
 #' Used predominately by [`err()`]
 new_err <- function(
-  ...,
-  data = list(),
-  class = NULL,
-  call = .envir,
-  trace = NULL,
-  capture = FALSE,
-  .envir = parent.frame()
+    ...,
+    data = list(),
+    class = NULL,
+    call = NULL,
+    trace = NULL,
+    parent = NULL,
+    capture = FALSE,
+    .envir = parent.frame()
 ) {
   topenv_frame_idx <- Position(
     function(frame) identical(frame, topenv()),
     sys.frames(),
     nomatch = sys.nframe()
   )
-
+  
   args <- list(data = data)
   args$message <- as.character(list(...))
-  args$call <- get_package_boundary_call()
+  call <- call %||% get_package_boundary_call()
   args$class <- cnd_type(class)
   args$trace <- trace
-  args$call <- call
   args$.envir <- .envir
   args$.trace_bottom <- sys.frames()[[topenv_frame_idx]]
   
   if (capture) {
-    return(tryCatch(do.call(cli::cli_abort, args), error = identity))
+    e <- tryCatch(do.call(cli::cli_abort, args), error = identity)
+    e$call <- call
+    return(e)
   }
   
+  # for some reason, adding a `call` argument breaks cli::cli_abort... only
+  # add afterwards
+  args$call <- call
   do.call(cli::cli_abort, args)
 }
 
 #' @describeIn errors
 #' Raise a new error, using one of a set of known error types
 err <- list(
-  #' @field disallowed_scopes Create an error indicating that a data derivation
-  #'   requires scopes that were not permitted at execution time.
-  disallowed_scopes = function(scopes, ...) {
-    data <- list(scopes = scopes)
-    stopifnot(is.character(data$scopes))
+  #' @field disallowed_permissions Create an error indicating that a data
+  #'   derivation requires permissions that were not permitted at execution
+  #'   time.
+  disallowed_permissions = function(permissions, ...) {
+    data <- list(permissions = permissions)
+    stopifnot(is.character(data$permissions))
     new_err(
-      class = "disallowed_scopes",
+      class = "disallowed_permissions",
       data = data,
-      "data derivation requires disallowed scopes: {.str {data$scopes}}",
+      paste0(
+        "data derivation was not granted permissions: ",
+        "{.str {data$permissions}}"
+      ),
       ...
     )
   },
@@ -134,7 +140,7 @@ err <- list(
     data <- list(suggests = suggests)
     data$suggests <- suggests
     stopifnot(is.character(data$suggests))
-
+    
     new_err(
       class = "missing_suggests",
       data = data,
@@ -163,8 +169,8 @@ err <- list(
       class = "derive_dependency",
       data = data,
       paste0(
-        "field depends on field {.str {data$field}} that threw an error during", 
-        "derivation"
+        "field depends on field {.str {data$field}} that threw an error ",
+        "during derivation"
       ),
       ...
     )
@@ -186,6 +192,36 @@ err <- list(
         "data field {.str {data$field}} could not be derived because it is ",
         "not implemented for resource {.cls {data$resource}}"
       ),
+      ...
+    )
+  },
+  
+  #' @field derive_error Wrap an error raised through data derivation in a package
+  #'   error type for communication.
+  derive = function(
+    field,
+    message = NULL,
+    ..., 
+    parent = NULL
+  ) {
+    if (is.null(message) && !missing(parent)) {
+      message <- parent$message
+    }
+    
+    data <- list(message = message)
+    if (!is.null(data$message)) {
+      stopifnot(is.character(data$message))
+    }
+    
+    data$field <- field
+    stopifnot(is.character(data$field))
+    
+    new_err(
+      class = "derive",
+      parent = parent,
+      data = data,
+      "when deriving field {.str {data$field}}", 
+      "{data$message}",
       ...
     )
   }
@@ -222,13 +258,22 @@ error <- function(type, ...) { # nolint: object_usage_linter
   cnd
 }
 
+class_val_meter_error <- S7::new_S3_class(cnd_type())
+class_val_meter_derive_error <- S7::new_S3_class(cnd_type("derive")[[1]])
+class_error <- S7::new_S3_class("error")
+
 method(
   convert, 
   list(new_S3_class("S7_error_method_not_found"), class_val_meter_error)
 ) <- 
-  function(from, to) {
+  function(from, to, ...) {
     # S7 error doesn't include data directly, must be parsed out
     msg <- strsplit(from$message, "\n")[[1]]
+    
+    # disregard method errors if no dispatch args are listed
+    if (length(msg) < 3L) return(from)
+    
+    # extract dispatch args
     msg_generic <- msg[[1]]
     msg_resource <- msg[[length(msg) - 1L]]  # second-to-last dispatch arg
     msg_field <- msg[[length(msg)]]  # last dispatch arg
@@ -251,10 +296,18 @@ method(
 
 method(
   convert, 
+  list(class_val_meter_derive_error, class_val_meter_error)
+) <- 
+  function(from, to, ...) {
+    err$derive_dependency(field = from$data$field, capture = TRUE)
+  }
+
+method(
+  convert, 
   list(class_error, class_val_meter_error)
 ) <- 
-  function(from, to) {
-    from
+  function(from, to, ..., field) {
+    err$derive(field = field, parent = from, capture = TRUE)
   }
 
 #' @include utils_dcf.R

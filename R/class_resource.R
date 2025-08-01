@@ -20,7 +20,7 @@ resource <- class_resource <- new_class(
   abstract = TRUE,
   properties = list(
     #' @param package `character(1L)` Package name. Optional, but should be
-    #'   provided if possible.
+    #'   provided if possible. 
     package = new_property(class_character, default = NA_character_),
     
     #' @param version `character(1L)` Package version, provided as a string. 
@@ -78,7 +78,7 @@ unknown_resource <- class_unknown_resource <- new_class(
 #' 
 #' Most prominently, these are exposed when a [`pkg()`] is assumed from a
 #' character value. With only a package name, `val.meter` will search for
-#' resources from acceptable sources according to your [`resource_policy`]. If
+#' resources from acceptable sources according to your [`policy`]. If
 #' more than one acceptable resource is discovered, they are combined into
 #' a [`multi_resource`]. 
 #' 
@@ -123,10 +123,11 @@ local_resource <- class_local_resource <- new_class(
     path = new_property(
       class_character,
       default = NA_character_,
+      setter = setter_try_from(),
       validator = function(value) {
-        if (length(value) != 1L || is.na(value) || !file.exists(value)) {
-          "invalid path"
-        }
+        # if (length(value) != 1L || is.na(value) || !file.exists(value)) {
+        #   "invalid path"
+        # }
       }
     )
   )
@@ -136,8 +137,8 @@ local_resource <- class_local_resource <- new_class(
 #' 
 #' @family resources
 #' @export
-remote_source_resource <- class_remote_source_resource <- new_class(
-  "remote_source_resource",
+remote_resource <- class_remote_resource <- new_class(
+  "remote_resource",
   abstract = TRUE,
   #' @inheritParams resource
   parent = resource
@@ -171,7 +172,7 @@ local_source_resource <- class_local_source_resource <- new_class(
 source_archive_resource <- class_source_archive_resource <- new_class(
   "source_archive_resource",
   #' @inheritParams local_resource
-  parent = local_resource,
+  parent = local_resource
 )
 
 #' Package Install Resource Class
@@ -207,7 +208,7 @@ source_code_resource <- class_source_code_resource <- new_class(
 repo_resource <- class_repo_resource <- new_class(
   "repo_resource",
   #' @inheritParams resource
-  parent = resource,
+  parent = remote_resource,
   properties = list(
     #' @param repo `character(1L)` The repository url from which the package 
     #'   is to be sourced.
@@ -252,7 +253,7 @@ cran_repo_resource <- class_cran_repo_resource <- new_class(
 git_resource <- class_git_resource <- new_class(
   "git_resource",
   #' @inheritParams remote_source_resource
-  parent = remote_source_resource,
+  parent = remote_resource,
   properties = list(
     #' @param http_url The git repository url
     http_url = class_character
@@ -337,7 +338,7 @@ method(convert, list(class_character, class_resource)) <-
 
       from_idx <- from_idx + 1L
     }
-
+    
     # filter out undiscovered resource types
     resources <- utils::head(resources, length(policy@accepted_resources))
     resources <- Filter(Negate(is.null), resources)
@@ -364,7 +365,7 @@ method(convert, list(class_character, class_resource)) <-
   }
 
 method(convert, list(class_resource, class_resource)) <-
-  function(from, to) {
+  function(from, to, ...) {
     if (S7::S7_inherits(from, class = to)) {
       return(from)
     }
@@ -375,7 +376,7 @@ method(convert, list(class_resource, class_resource)) <-
 
 # mask built-in convert up/down-casting conversions
 method(convert, list(class_resource, class_any)) <-
-  function(from, to) {
+  function(from, to, ...) {
     from_class <- attr(from, "S7_class")
     from_str <- S7:::class_desc(from_class) # nolint
     to_str <- S7:::class_desc(to) # nolint
@@ -383,8 +384,8 @@ method(convert, list(class_resource, class_any)) <-
   }
 
 method(convert, list(class_character, class_install_resource)) <-
-  function(from, to) {
-    if (file.exists(from) && file.exists(file.path(from, "INDEX"))) {
+  function(from, to, ...) {
+    if (dir.exists(from) && file.exists(file.path(from, "INDEX"))) {
       return(to(path = normalizePath(from)))
     } else if (length(paths <- find.package(from, quiet = TRUE)) > 0L) {
       return(convert(paths[[1]], to))
@@ -394,7 +395,7 @@ method(convert, list(class_character, class_install_resource)) <-
   }
 
 method(convert, list(class_character, class_source_archive_resource)) <-
-  function(from, to) {
+  function(from, to, ...) {
     if (file.exists(from) && endsWith(from, ".tar.gz")) {
       return(to(path = normalizePath(from)))
     }
@@ -403,20 +404,25 @@ method(convert, list(class_character, class_source_archive_resource)) <-
   }
 
 method(convert, list(class_character, class_source_code_resource)) <-
-  function(from, to) {
+  function(from, to, ...) {
     if (
       file.exists(from) &&
         !file.exists(file.path(from, "INDEX")) &&
-        file.exists(file.path(from, "DESCRIPTION"))
+        file.exists(desc_path <- file.path(from, "DESCRIPTION"))
     ) {
-      return(to(path = normalizePath(from)))
+      desc <- read.dcf(desc_path)[1,]
+      return(to(
+        package = desc[["Package"]],
+        version = desc[["Version"]],
+        path = normalizePath(from)
+      ))
     }
 
     stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }
 
 method(convert, list(class_character, class_repo_resource)) <-
-  function(from, to) {
+  function(from, to, ...) {
     ap <- available.packages()
     ap_idx <- Position(function(pkg) identical(from, pkg), ap[, "Package"])
 
@@ -434,7 +440,7 @@ method(convert, list(class_character, class_repo_resource)) <-
 
 method(convert, list(class_repo_resource, class_install_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
-    assert_scopes(c("network", "write"), policy@scopes)
+    assert_permissions(c("network", "write"), policy@permissions)
 
     # before creating install resource, get a new resource id for install path
     id <- next_id()
@@ -466,7 +472,7 @@ method(convert, list(class_repo_resource, class_install_resource)) <-
 
 method(convert, list(class_repo_resource, class_source_archive_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
-    assert_scopes("network", policy@scopes)
+    assert_permissions("network", policy@permissions)
 
     # before creating the resource, get resource id to specify download path
     id <- next_id()
@@ -495,7 +501,7 @@ method(convert, list(class_repo_resource, class_source_archive_resource)) <-
 
 method(convert, list(class_local_source_resource, class_install_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
-    assert_scopes("write", policy@scopes)
+    assert_permissions("write", policy@permissions)
 
     # before creating install resource, get a new resource id for install path
     id <- next_id()
@@ -526,7 +532,7 @@ method(convert, list(class_local_source_resource, class_install_resource)) <-
   }
 
 method(convert, list(class_resource, class_unknown_resource)) <-
-  function(from, to) {
+  function(from, to, ...) {
     set_props(to(), props(from, names(to@properties)))
   }
 

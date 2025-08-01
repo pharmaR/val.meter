@@ -40,13 +40,13 @@ generated packages and provide some heuristics across all of them.
 collection of packages.
 
 ```{r rnd}
-p <- random_pkg(scopes = permissions(TRUE))
+p <- random_pkg(permissions = TRUE)
 metrics(p)
 ```
 
 ```{r rnds}
 sapply(
-  random_pkgs(n = 3, scopes = permissions(TRUE)),
+  random_pkgs(n = 3, permissions = TRUE),
   function(pkg) pkg$name
 )
 ```
@@ -62,7 +62,7 @@ distribute a listing of packages and package data.
 requireNamespace("igraph")
 
 # generate some random packages
-ps <- random_pkgs(n = 3, scopes = permissions(TRUE))
+ps <- random_pkgs(n = 3, permissions = TRUE)
 
 # output DCF files
 dcf_str <- to_dcf(ps)
@@ -101,7 +101,7 @@ We'll start by re-simulating a larger cohort of packages so that our anlaysis
 produces something more interesting.
 
 ```{r analysis-sim}
-n100pkgs <- random_pkgs(n = 100, scopes = permissions(TRUE))
+n100pkgs <- random_pkgs(n = 100, permissions = TRUE)
 ```
 
 And just to show that we can derive this data from a representative `PACKAGES`

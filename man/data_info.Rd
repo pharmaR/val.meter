@@ -23,7 +23,7 @@ data_info(
          character(0L)
 
         else as.character(c(...))
-     new_object(value)
+     S7::new_object(value)
  }, name = "tags", parent =
     structure(list(class = "character", constructor_name = "character", constructor =
     function (.data = character(0)) 
@@ -49,17 +49,17 @@ data_info(
          character(0L)
      else
     as.character(c(...))
-     new_object(value)
+     S7::new_object(value)
  }, validator = function (self) 
  {
-    
-    if (!all(self \%in\% enum)) 
+ 
+       if (!all(self \%in\% enum)) 
          fmt(error)
  }, class = c("S7_class",
     "S7_object"))),
   data_class = NULL,
   suggests = suggests(),
-  scopes = permissions()
+  permissions = permissions()
 )
 }
 \description{
@@ -92,7 +92,7 @@ derivations.}
 for deriving a piece of data. If the package is not available, the
 metric will not be derived.}
 
-\item{\code{scopes}}{\code{\link[=permissions]{permissions()}} a vector of enumerated permissions
+\item{\code{permissions}}{\code{\link[=permissions]{permissions()}} a vector of enumerated permissions
 that must be granted before this piece of data will be derived.}
 }}
 

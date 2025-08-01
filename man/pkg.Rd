@@ -4,7 +4,7 @@
 \alias{pkg}
 \title{Create a new package object to start measuring package heuristics}
 \usage{
-pkg(x, scopes = opt("permissions"))
+pkg(x, permissions, policy = opt("policy"))
 }
 \description{
 Aggregates package information, surveying metadata from discovered
@@ -24,7 +24,7 @@ the resources to be used for deriving packages data. If a
 of information. If information about a package could be derived from
 multiple sources, the first source is prioritized.}
 
-\item{\code{scopes}}{Permissible scopes for deriving data.}
+\item{\code{permissions}}{Granted permissions for deriving data.}
 }}
 
 \keyword{workflow}

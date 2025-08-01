@@ -10,4 +10,15 @@ tags(...)
 A enumeration of tags that can be applied to a metric, to capture metadata
 more effectively.
 }
+\section{Accepted Values}{
+\itemize{
+\item \code{"adoption"}
+\item \code{"lifecycle management"}
+\item \code{"best practice"}
+\item \code{"execution"}
+\item \code{"transient"}
+\item \code{"version-independent"}
+}
+}
+
 \keyword{safeguard}

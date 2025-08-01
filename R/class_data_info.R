@@ -68,18 +68,18 @@ data_info <- class_data_info <- new_class(
         } else {
           self@description <- value
         }
-
+        
         self
       }
     ),
-
+    
     #' @field tags [`val.meter::class_tags()`] a set of tags, used for
     #'   classifying metrics into categories.
     tags = new_property(
       class_tags,
       default = class_tags()
     ),
-
+    
     #' @field data_class an object that can be converted into an `S7_class`
     #'   using [`S7::as_class()`], used for enforcing a return class on data
     #'   derivations.
@@ -98,7 +98,7 @@ data_info <- class_data_info <- new_class(
         if (inherits(res, "error")) res$message
       }
     ),
-
+    
     #' @field suggests `character(n)` a vector of suggested packages needed
     #'   for deriving a piece of data. If the package is not available, the
     #'   metric will not be derived.
@@ -113,10 +113,10 @@ data_info <- class_data_info <- new_class(
         self
       }
     ),
-
-    #' @field scopes [`permissions()`] a vector of enumerated permissions
+    
+    #' @field permissions [`permissions()`] a vector of enumerated permissions
     #'   that must be granted before this piece of data will be derived.
-    scopes = class_permissions
+    permissions = class_permissions
   )
 )
 
@@ -128,10 +128,10 @@ data_info <- class_data_info <- new_class(
 #
 local({
   method(format, data_info) <-
-    function(
+      function(
       x,
       ...,
-      permissions = opt("permissions"),
+      permissions = opt("policy")@permissions,
       tags = opt("tags")
     ) {
       class <- if (S7::S7_inherits(x@data_class)) { # nolint: object_usage_linter.
@@ -139,10 +139,11 @@ local({
       } else {
         S7:::class_desc(x@data_class)
       }
-
+      
       is_installed <- vlapply(x@suggests, requireNamespace, quietly = TRUE)
-      any_tags <- length(x@tags) + length(x@scopes) + length(x@suggests) > 0
-
+      n_tags <- length(x@tags) + length(x@permissions) + length(x@suggests)
+      any_tags <- n_tags > 0
+      
       c(
         # title
         if (length(x@title) > 0L) {
@@ -169,15 +170,15 @@ local({
             # tags
             vcapply(x@tags, function(tag) {
               color <- if (tag %in% tags) "blue" else "red"
-              fmt(cli_tag(tag, scope = "", color = color))
+              fmt(cli_tag(tag, color = color))
             }),
-
+            
             # permissions
-            vcapply(x@scopes, function(scope) {
-              color <- if (scope %in% permissions) "green" else "red"
-              fmt(cli_tag(scope, scope = "req", color = color))
+            vcapply(x@permissions, function(permission) {
+              color <- if (permission %in% permissions) "green" else "red"
+              fmt(cli_tag(permission, scope = "req", color = color))
             }),
-
+            
             # suggests dependencies
             vcapply(seq_along(x@suggests), function(i) {
               color <- if (is_installed[[i]]) "green" else "red"
@@ -192,7 +193,7 @@ local({
 #' Retrieve package data field metadata, provided a character field name
 #' @noRd
 method(convert, list(class_character, data_info)) <-
-  function(from, to) pkg_data_info(from)
+  function(from, to, ...) pkg_data_info(from)
 
 # NOTE:
 #   required to avoid odd interaction when same external S3 generic is defined
@@ -204,12 +205,13 @@ local({
   method(print, data_info) <-
     function(
       x,
-      permissions = opt("permissions"),
+      permissions = opt("policy")@permissions,
       tags = opt("tags"),
       ...
     ) {
-      cat(paste(collapse = "", format(x, ...)), "\n")
-      if (!all(x@scopes %in% permissions) || !all(x@tags %in% tags)) {
+      str <- format(x, ..., permissions = permissions, tags = tags)
+      cat(paste(collapse = "", str), "\n")
+      if (!all(x@permissions %in% permissions) || !all(x@tags %in% tags)) {
         cli_inform(
           paste0(
             "metric(s) will be disabled due to insufficient permissions or ",
@@ -219,7 +221,7 @@ local({
           class = cnd_type("options", cnd = "message")
         )
       }
-
+      
       invisible(x)
     }
 })
@@ -228,7 +230,7 @@ local({
 method(toRd, data_info) <- function(x, ...) {
   has_tags <- length(x@tags) > 0
   requires_suggests <- length(x@suggests) > 0
-  requires_permissions <- length(x@scopes) > 0
+  requires_permissions <- length(x@permissions) > 0
   
   class <- if (S7::S7_inherits(x@data_class)) {
     x@data_class@name
@@ -240,7 +242,7 @@ method(toRd, data_info) <- function(x, ...) {
     "\\code{", class, "} ",
     rd_deparse(x@description),
     "\n",
-    toRd(x@scopes), " ",
+    toRd(x@permissions), " ",
     toRd(class_suggests(x@suggests)), " ",
     "\n\n",
     toRd(x@tags)
@@ -283,9 +285,9 @@ local({
     class(to_print) <- NULL
     attributes(to_print) <- NULL
     names(to_print) <- names(x)
-    
+
     res <- withCallingHandlers(
-      print(to_print),
+      print(to_print, ...),
       message = function(m) {
         if (inherits(m, cnd_type(cnd = "message"))) {
           msgs <<- append(msgs, list(m))
@@ -342,7 +344,9 @@ method(toRd, data_info_list) <- function(x, ...) {
 #' @keywords workflow
 #' @export
 metrics <- function(x, ..., all = FALSE) {
-  if (!missing(x)) return(get_pkg_datas(x, index = TRUE, ..., all = all))
+  if (!missing(x)) {
+    return(get_pkg_datas(x, index = TRUE, ..., all = all))
+  }
   
   fields <- get_data_derive_field_names()
   names(fields) <- fields

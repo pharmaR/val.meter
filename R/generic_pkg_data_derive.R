@@ -33,7 +33,7 @@ method(
   pkg_data_derive,
   list(class_any, new_union(class_any, class_missing), class_character)
 ) <-
-  function(pkg, resource, field, ...) {
+  function(pkg, resource, field, ..., field_name) {
     pkg_data_derive(
       pkg,
       resource = NULL,
@@ -121,8 +121,8 @@ method(
       # first try to evaluate as though this is a proper package, leveraging
       # real derivation rules for data that is interrelated
       pkg_data_derive(pkg, convert(resource, unknown_resource), field, ...),
-
-      # propagate our own errors
+      
+      # don't fall back if we've already raised an expected error
       val_meter_error = identity,
 
       # should that fail, generate using mocking rules

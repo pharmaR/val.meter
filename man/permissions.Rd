@@ -2,7 +2,7 @@
 % Please edit documentation in R/class_permissions.R
 \name{permissions}
 \alias{permissions}
-\title{Package Data Scopes Class}
+\title{Package Data Permissions Class}
 \usage{
 permissions(...)
 }
@@ -17,4 +17,12 @@ policy will be derived.
 Given a policy, only assessments which conform to all enabled flags will be
 assessed.
 }
+\section{Accepted Values}{
+\itemize{
+\item \code{"write"}
+\item \code{"execution"}
+\item \code{"network"}
+}
+}
+
 \keyword{safeguard}

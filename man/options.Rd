@@ -21,17 +21,11 @@ options::opt(x, default, env = "val.meter")
 
 \describe{
 \item{policy}{\describe{
-Set the default \code{val.meter} package search policy.\item{default: }{\preformatted{resource_policy()}}
+Set the default \code{val.meter} policies, specifying how package
+resources will be discovered and what permissions are granted when
+calculating metrics.\item{default: }{\preformatted{policy()}}
 \item{option: }{val.meter.policy}
 \item{envvar: }{R_VAL_METER_POLICY (evaluated if possible, raw string otherwise)}
-}}
-
-\item{permissions}{\describe{
-Set the default \code{val.meter} data permissions policy. Permissions
-specify what capabilities are permitted when deriving package data. For more
-details, see \code{\link[=permissions]{permissions()}}.\item{default: }{\preformatted{permissions(FALSE)}}
-\item{option: }{val.meter.permissions}
-\item{envvar: }{R_VAL_METER_PERMISSIONS (evaluated if possible, raw string otherwise)}
 }}
 
 \item{tags}{\describe{

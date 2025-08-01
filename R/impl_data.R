@@ -112,7 +112,7 @@ impl_data_info <- function(
     tags = tags,
     data_class = data_class,
     suggests = suggests,
-    scopes = permissions
+    permissions = permissions
   )
   
   handler({
@@ -149,9 +149,9 @@ impl_data_derive <- function(
     method(pkg_data_derive, dispatch_classes) <-
       function(pkg, resource, field, ...) {
         info <- pkg_data_info(field)
-        required_scopes <- info@scopes
+        required_permissions <- info@permissions
         required_suggests <- info@suggests
-        assert_scopes(required_scopes, pkg@scopes)
+        assert_permissions(required_permissions, pkg@permissions)
         assert_suggests(required_suggests)
         
         data <- fn(pkg, resource, field, ...)

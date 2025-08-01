@@ -263,7 +263,7 @@ from a `CRAN` resource
 
 ```{r}
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
-p <- pkg(r, permissions("network"))
+p <- pkg(r, permissions = TRUE)
 p$oysteR_vulnerability_df
 ```
 
@@ -272,16 +272,16 @@ as intended as well.
 
 We can see that a generic repository will throw an error.
 
-```{r}
+```{r, error = TRUE}
 r <- repo_resource("haven", "0.1.1", repo = "https://fakecran.org/")
-p <- pkg(r, permissions("network"))
+p <- pkg(r, permissions = "network")
 p$oysteR_vulnerability_df
 ```
 
 And that not providing necessary permissions for network access will similarly
 throw an error.
 
-```{r}
+```{r, error = TRUE}
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r)
 p$oysteR_vulnerability_df
@@ -291,11 +291,11 @@ And similarly, if we didn't have `oysteR` installed we'd see something like
 
 ```{r, eval = FALSE}
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
-p <- pkg(r, permissions("network"))
+p <- pkg(r, permissions = "network")
 p$oysteR_vulnerability_df
 ```
 
-```{r, include = FALSE}
+```{r, echo = FALSE, error = TRUE}
 orig_require_namespace <- base::requireNamespace
 testthat::with_mocked_bindings(
   .package = "base",
@@ -305,7 +305,7 @@ testthat::with_mocked_bindings(
   },
   {
     r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
-    p <- pkg(r, permissions("network"))
+    p <- pkg(r, permissions = "network")
     p$oysteR_vulnerability_df
   }
 )
@@ -331,7 +331,7 @@ And if we try to use it, we'll find that we get
 
 ```{r}
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
-p <- pkg(r, permissions("network"))
+p <- pkg(r, permissions = "network")
 p$vulnerability_count
 ```
 
@@ -340,9 +340,9 @@ implement this metric for! By default, this means we're implementing it for
 _any_ package resource. Let's see what would happen if we tried it for a
 non-CRAN resource:
 
-```{r}
+```{r, error = TRUE}
 r <- repo_resource("haven", "0.1.1", repo = "https://fakecran.org/")
-p <- pkg(r, permissions("network"))
+p <- pkg(r, permissions = "network")
 p$vulnerability_count
 ```
 
@@ -371,6 +371,8 @@ sampling of random packages.
 #| fig.alt: >
 #|   A histogram of the default integer generating process, showing that nearly
 #|   all packages show at least one vulnerability.
+
+options(val.meter.policy = policy(permissions = TRUE))
 
 rpkgs <- random_pkgs(n = 100)
 rpkgs_df <- as.data.frame(rpkgs)

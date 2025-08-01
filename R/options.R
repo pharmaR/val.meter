@@ -9,13 +9,10 @@ NULL
 
 #' @include utils_cli.R
 define_options(
-  fmt("Set the default `{packageName()}` package search policy."),
-  policy = resource_policy(),
-
-  fmt("Set the default `{packageName()}` data permissions policy. Permissions
-    specify what capabilities are permitted when deriving package data. For more
-    details, see [`permissions()`]."),
-  permissions = permissions(FALSE),
+  fmt("Set the default `{packageName()}` policies, specifying how package 
+      resources will be discovered and what permissions are granted when
+      calculating metrics."),
+  policy = policy(),
 
   fmt("Set the default `{packageName()}` tags policy. Tags characterize the
     types of information various metrics contain. For more details, see

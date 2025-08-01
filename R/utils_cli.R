@@ -39,14 +39,9 @@ cli_tag <- function(
   tag_fg <- do.call(cli::make_ansi_style, tag_color)
   tag_bg <- do.call(cli::make_ansi_style, append(tag_color, list(bg = TRUE)))
 
-
   format_inline(
     .envir = .envir,
-    scope_fg(symbols$lbracket),
-    if (!is.null(scope)) {
-      col_black(scope_bg(" ", scope, tag_fg(symbols$rhalfblock)))
-    },
-    style_bold(col_black(tag_bg(..., " "))),
-    tag_fg(symbols$rbracket)
+    if (!is.null(scope)) col_black(scope_bg(" ", scope, " ")),
+    style_bold(col_black(tag_bg(" ", ..., " ")))
   )
 }

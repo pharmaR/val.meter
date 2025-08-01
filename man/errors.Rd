@@ -14,7 +14,7 @@
 \format{
 An object of class \code{environment} of length 2.
 
-An object of class \code{list} of length 5.
+An object of class \code{list} of length 6.
 }
 \usage{
 .state
@@ -31,8 +31,9 @@ new_err(
   ...,
   data = list(),
   class = NULL,
-  call = .envir,
+  call = NULL,
   trace = NULL,
+  parent = NULL,
   capture = FALSE,
   .envir = parent.frame()
 )
@@ -76,8 +77,9 @@ Used predominately by \code{\link[=err]{err()}}
 \section{Fields}{
 
 \describe{
-\item{\code{disallowed_scopes}}{Create an error indicating that a data derivation
-requires scopes that were not permitted at execution time.}
+\item{\code{disallowed_permissions}}{Create an error indicating that a data
+derivation requires permissions that were not permitted at execution
+time.}
 
 \item{\code{missing_suggests}}{Create an error indicating that a dependency that
 is required for a specific data derivation is not available.}
@@ -90,6 +92,9 @@ data field threw an error during execution.}
 
 \item{\code{data_not_implemented}}{Create an error indicating that data could not
 be derived because it is not implemented for this resource.}
+
+\item{\code{derive_error}}{Wrap an error raised through data derivation in a package
+error type for communication.}
 }}
 
 \keyword{datasets}

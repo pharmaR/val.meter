@@ -62,10 +62,10 @@ describe("impl_data", {
       expect_identical(info@description, rd_empty())
     })
     
-    it("initializes with empty tags, scopes and suggests", {
+    it("initializes with empty tags, permissions and suggests", {
       info <- pkg_data_info("name_character_count")
       expect_identical(info@tags, tags(character(0L)))
-      expect_identical(info@scopes, permissions(character(0L)))
+      expect_identical(info@permissions, permissions(character(0L)))
       expect_identical(info@suggests, character(0L))
     })
   })

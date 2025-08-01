@@ -39,7 +39,7 @@ from multiple resources.
 \details{
 Most prominently, these are exposed when a \code{\link[=pkg]{pkg()}} is assumed from a
 character value. With only a package name, \code{val.meter} will search for
-resources from acceptable sources according to your \code{\link{resource_policy}}. If
+resources from acceptable sources according to your \code{\link{policy}}. If
 more than one acceptable resource is discovered, they are combined into
 a \code{\link{multi_resource}}.
 
@@ -55,7 +55,7 @@ Other resources:
 \code{\link{local_resource}()},
 \code{\link{local_source_resource}()},
 \code{\link{mock_resource}()},
-\code{\link{remote_source_resource}()},
+\code{\link{remote_resource}()},
 \code{\link{repo_resource}()},
 \code{\link{resource}()},
 \code{\link{source_archive_resource}()},

@@ -1,4 +1,4 @@
-#' Package Data Scopes Class
+#' Package Data Permissions Class
 #'
 #' A descriptor of behaviors required for deriving package data. Each policy
 #' property is a [`logical`] flag, which may be either `TRUE` or `FALSE`.
@@ -8,6 +8,8 @@
 #'
 #' Given a policy, only assessments which conform to all enabled flags will be
 #' assessed.
+#' 
+#' `r roxygenize_enum_vector(permissions)`
 #'
 #' @keywords safeguard
 #' @include utils_enum_vector.R

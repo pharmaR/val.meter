@@ -45,7 +45,7 @@ Other resources:
 \code{\link{local_source_resource}()},
 \code{\link{mock_resource}()},
 \code{\link{multi_resource}()},
-\code{\link{remote_source_resource}()},
+\code{\link{remote_resource}()},
 \code{\link{resource}()},
 \code{\link{source_archive_resource}()},
 \code{\link{source_code_resource}()},

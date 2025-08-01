@@ -13,23 +13,6 @@ git_resource(
 )
 }
 \arguments{
-\item{package}{\code{character(1L)} Package name. Optional, but should be
-provided if possible.}
-
-\item{version}{\code{character(1L)} Package version, provided as a string.}
-
-\item{id}{\code{integer(1L)} optional id used for tracking resources
-throughout execution. Generally not provided directly, as new objects
-automatically get a unique identifier. For example, the package source
-code from a \code{\link[=repo_resource]{repo_resource()}} may be downloaded to add a
-\code{\link[=archive_source_resource]{archive_source_resource()}} and add it to a new \code{\link[=multi_resource]{multi_resource()}}.
-Because all of these represent the same package, they retain the same
-\code{id}. Primarily the \code{id} is used for isolating temporary files.}
-
-\item{md5}{\code{character(1L)} md5 digest of the package source code tarball.
-This is not generally provided directly, but is instead derived when
-acquiring resources.}
-
 \item{http_url}{The git repository url}
 }
 \description{
@@ -43,7 +26,7 @@ Other resources:
 \code{\link{local_source_resource}()},
 \code{\link{mock_resource}()},
 \code{\link{multi_resource}()},
-\code{\link{remote_source_resource}()},
+\code{\link{remote_resource}()},
 \code{\link{repo_resource}()},
 \code{\link{resource}()},
 \code{\link{source_archive_resource}()},

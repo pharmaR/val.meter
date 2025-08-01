@@ -14,12 +14,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(val.meter)
+```{css, echo = FALSE}
+[data-bs-theme="dark"] main img {
+  filter: invert(1);
+}
 ```
 
 Welcome to `val.meter`! If we're going to explore the internals of the package,
-the best place to start is the `/R` directory! If you take a peek in there
+the best place to start is the `./R` directory! If you take a peek in there
 you'll see a few common prefixes, so let's start by breaking those down.
 
 - `utils_*`: Supporting functions for making some other tailoring other packages
@@ -52,18 +54,42 @@ shortcomings did not outweigh the benefits it brings.
 data types of the package.
 
 ```{r}
+#| fig.height: 8
+#| fig.width: 8
+#| fig.alt: >
+#|   A class relationship graph, showcasing the various S7 classes used
+#|   throughout val.meter. There is a cluster of resource classes, showing the
+#|   hierarchy of resource classes (including abstract classes), as well as
+#|   a large set of standalone classes.
+
 library(igraph)
 
 # since we're all developers, don't mind me taking a peek behind the curtain
 val.meter <- getNamespace("val.meter")
 g <- val.meter$class_graph("val.meter")
 
+# do some slight class renaming to make them easier to read
+V(g)$label <- sapply(strsplit(V(g)$class, "_"), paste, collapse = "\n")
+
+par(mar = c(0, 0, 0, 0))
 plot(
   g,
-  vertex.label = V(g)$class,
-  vertex.label.dist = 1.5,
+  layout = layout_with_graphopt(
+    g, 
+    niter = 5000, 
+    charge = 0.2, 
+    spring.length = 4, 
+    spring.constant = 8
+  ),
+  vertex.size = 30,
+  vertex.frame.color = NA,
+  vertex.label = V(g)$label,
+  vertex.label.dist = 0,
+  vertex.label.degree = -pi/2,
   vertex.label.family = "sans-serif",
+  vertex.label.cex = 0.6,
   vertex.label.color = "grey8",
+  edge.arrow.size = 0.25,
   vertex.color = ifelse(V(g)$abstract, "grey", "lightblue"),
 )
 ```
@@ -82,11 +108,32 @@ need to concern ourselves with.
 - `data_info` and `data_info_list`: `data_info` is the more important one of
   the two, and is used to provide structure to package data metadata. 
   `data_info_list` is only used for formatting console output.
-- `resource_policy`: This class is a user-facing object used for specifying
+- `policy`: This class is a user-facing object used for specifying
   the policies for how resources are discovered and what capabilities execution
   should have.
 - And last but certainly not least, `pkg` is the workhorse of `val.meter`. It
   binds a set of resource for collecting data with the data they produced.
+  
+Since we'll be exploring the internals of `val.meter`, we're going to load our
+entire package namespace.
+
+```{r, echo = FALSE, message = FALSE}
+# this is a less robust way of loading a namespace, but sufficient for vignettes
+# we encourage developers to use `pkgload`, but want to avoid taking it as an
+# additional suggested dependency to reverse suggests for the purpose of
+# feature-enhancing suggested packages.
+
+# attach our internal namespace manually
+attach(getNamespace("val.meter"), name = "package:val.meter:dev")
+
+# load our data manually
+datasets <- data(package = "val.meter")
+data(list = datasets$results[, "Item"], package = "val.meter")
+```
+
+```{r, eval = FALSE}
+pkgload::load_all()
+```
 
 # `S7` Generics
 
@@ -115,8 +162,10 @@ pkg_data_derive(pkg = rpkg, field = "r_cmd_check_error_count")
 
 Let's see what code was needed to implement this
 
-```{r, echo = FALSE}
-method_env <- environment(S7::method(
+```{r, echo = FALSE, message = FALSE}
+library(S7)
+
+method_env <- environment(method(
   pkg_data_derive, 
   list(class_pkg, class_resource, pkg_data_class("r_cmd_check_error_count"))
 ))
@@ -202,7 +251,7 @@ allows us to dispatch to a unique function. We can take a look under the hood
 at exactly what code gets run:
 
 ```{r}
-S7::method(pkg_data_derive, list(class_pkg, class_any, class_character))
+method(pkg_data_derive, list(pkg, class_any, class_character))
 ```
 
 As you can see, we immediately recurse, but given a new `field` parameter: a
@@ -232,7 +281,13 @@ because of this data dependency.
 
 Let's see what it would look like if this were to occur.
 
-```{r, include = FALSE}
+```{r, eval = FALSE}
+r <- install_resource(path = find.package("val.meter"))
+p <- pkg(r)
+p$name
+```
+
+```{r, echo = FALSE, error = TRUE}
 testthat::with_mocked_bindings(
   .package = "desc",
   desc = function(...) stop("mocked error in desc::desc"),
@@ -244,16 +299,62 @@ testthat::with_mocked_bindings(
 )
 ```
 
-```{r, eval = FALSE}
-r <- install_resource(path = find.package("val.meter"))
-p <- pkg(r)
-p$name
-```
-
 Sure enough, we can see that we've evaluated the internal field, `"desc"`, which
 produced a (mocked) error and prevented us from completing calculation of our
 package name. We can confirm by looking at the internal `"desc"` data:
 
-```{r}
+```{r, error = TRUE}
 p$desc
 ```
+
+# Error types
+
+For consistency, internally most errors are raised through the pre-specified
+error types in `err$` (if you see anything that _could_ be generalized, please
+add the error type!). This has a few key benefits. The messaging is consistent
+across various errors, we can focus all the call stack handling in one place,
+and we can recreate errors easily when parsed back from a `PACKAGES` file.
+
+Robust error handling is key to good reporting, so we want to be sure to give
+errors a designated class and report errors in a way where they provide
+effective context for why the error was raised.
+
+You may discover the very conveniently named `error()` function. It would be
+reasonable to assume that this is how errors should be constructed. However,
+this function is intended only for serialization. When we write errors out to
+a `PACKAGES` file we want something succinct and reproducible. An error type
+such as
+
+```{r, echo = FALSE}
+err$missing_suggests("abc", capture = TRUE)
+```
+
+will be written out as:
+
+```dcf
+Metric/abc@R: error("missing_suggests", "abc")
+```
+
+When we parse this file back into a `pkg` object, we can easily re-construct
+our error (barring the original callstack) by simply evaluating this little
+snippet.
+
+```{r}
+eval(parse(text = 'error("missing_suggests", "abc")'))
+```
+
+Where `err$missing_suggets` captures additional information about the calling
+frame to provide an effective traceback, reproducing this error only
+reconstructs the messaging.
+
+# Data simulation
+
+In order to build effective mock packages for testing and example, we also
+provide features for generating convincing fake data. We leverage the same
+internals that we do for deriving all the real package data, but dispatch on
+a `mock_resource` which allows us to fall back to artificial data generating
+methods.
+
+We also bundle a dataset of package names derived from a word list of words with
+positive connotations and a handful of common R package naming convention
+patterns.

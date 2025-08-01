@@ -4,7 +4,7 @@ suggests <- class_suggests <- new_class(
 )
 
 method(convert, list(class_character, class_suggests)) <-
-  function(from, to) to(from)
+  function(from, to, ...) to(from)
 
 method(convert, list(NULL, class_suggests)) <-
-  function(from, to) convert(character(0L), to)
+  function(from, to, ...) convert(character(0L), to, ...)

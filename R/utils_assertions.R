@@ -2,9 +2,9 @@
 #' @include utils_err.R
 NULL
 
-assert_scopes <- function(required_scopes, provided_scopes) {
-  if (!all(required_scopes %in% provided_scopes)) {
-    err$disallowed_scopes(scopes = required_scopes)
+assert_permissions <- function(required_permissions, provided_permissions) {
+  if (!all(required_permissions %in% provided_permissions)) {
+    err$disallowed_permissions(permissions = required_permissions)
   }
 }
 

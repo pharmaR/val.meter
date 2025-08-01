@@ -59,9 +59,13 @@ reference:
   - subtitle: >
       `S7` Generics
   - contents:
-      - pkg_data
       - pkg_data_derive
       - pkg_data_info
+  
+  - subtitle: >
+      `S7` Method Implementation Helpers
+  - contents:
+      - pkg_data
       
   - subtitle: Accessing metric metadata
   - contents:

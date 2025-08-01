@@ -1,44 +1,46 @@
-#' Package Resource Policy Class
+#' Package Evaluation Policy Class
 #'
 #' A descriptor of how package resources should be discovered, indicating
 #' which types of package resources should be considered and how they must be
 #' used to produce consistently sourced information.
 #' 
-#' The resource policy takes effect when packages are passed to [`pkg()`],
-#' limiting how package resources can be discovered. A resource policy can
-#' be applied globally using provided [`val.meter::options`].
+#' The policy takes effect when packages are passed to [`pkg()`], limiting how
+#' package resources can be discovered. A policy can be applied globally using
+#' provided [`val.meter::options`].
 #'
 #' @usage
-#' resource_policy(
+#' policy(
 #'   accepted_resources = list(
 #'     source_archive_resource,
 #'     source_code_resource,
 #'     install_resource
-#'   ), 
+#'   ),
 #'   source_resources = list(repo_resource),
-#'   scopes = permissions(FALSE)
+#'   permissions = permissions(FALSE)
 #' )
-#' 
+#'
 #' @examples
-#' # discover our locally installed file path, create `pkg` from `local_resource`
+#' \dontrun{
+#' # discover locally installed file path, create `pkg` from `local_resource`
 #' pkg(find.package("val.meter"))
-#' 
+#'
 #' # disable local resource discovery
-#' options(val.meter.policy = resource_policy(
+#' options(val.meter.policy = policy(
 #'   accepted_resources = list(source_archive_resource)
 #' ))
-#' 
+#'
 #' # expect error - unable to discover resource
 #' tryCatch(
 #'   pkg(find.package("val.meter")),
 #'   error = function(error, ...) message(error$message)
 #' )
+#' }
 #'
 #' @export
 #' @keywords safeguard
-#' @name resource_policy
-resource_policy <- class_resource_policy <- new_class(
-  "resource_policy",
+#' @name policy
+policy <- class_policy <- new_class(
+  "policy",
   properties = list(
     #' @param accepted_resources A list of resources types to permit. Ordered by
     #'   priority, highest to lowest.
@@ -63,12 +65,14 @@ resource_policy <- class_resource_policy <- new_class(
       )
     ),
     
-    #' @param scopes Behavioral scopes provided for resource acquisition. For
-    #'   example, downloading and installing source code for more accurate
-    #'   metric evaluation requires the `"network"` and `"write"` scopes.
-    scopes = new_property(
+    #' @param permissions Behavioral permissions provided for resource
+    #'   acquisition. For example, downloading and installing source code for
+    #'   more accurate metric evaluation requires the `"network"` and `"write"`
+    #'   permissions.
+    permissions = new_property(
       class_permissions,
-      default = permissions(FALSE)
+      default = permissions(FALSE),
+      setter = setter_try_from()
     )
   )
 )

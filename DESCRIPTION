@@ -49,6 +49,8 @@ Config/Needs/vignettes:
     rmarkdown,
     oysteR,
     testthat (>= 3.0.0)
+Config/Needs/readme:
+    asciicast
 Config/Needs/data:
     tidytext
 Collate:
@@ -63,7 +65,7 @@ Collate:
     'utils_err.R'
     'class_resource.R'
     'class_pkg.R'
-    'class_resource_policy.R'
+    'class_policy.R'
     'utils_assertions.R'
     'utils_cli.R'
     'utils.R'
