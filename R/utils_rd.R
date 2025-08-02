@@ -184,7 +184,10 @@ rd_badge <- local({
         results = "rd",
         quote = FALSE,
         bquote(
-          if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {
+          if (
+            numeric_version(paste0(R.version$major, ".", R.version$minor)) <
+              "4.5.0"
+          ) {
             .(paste(collapse = "\n", rd_link(content, dest = dest)))
           } else {
             .(paste(collapse = "\n", content))
