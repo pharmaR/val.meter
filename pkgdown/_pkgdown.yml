@@ -67,10 +67,15 @@ reference:
   - contents:
       - pkg_data
       
-  - subtitle: Accessing metric metadata
+  - subtitle: >
+      Random package generation
   - contents:
-      - data_info
+      - random_pkg
+      - pkg_words
         
   - subtitle: Miscellaneous
   - contents:
+      - to_dcf
+      - from_dcf
+      - pkg_from_dcf
       - error

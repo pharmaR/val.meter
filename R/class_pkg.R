@@ -73,7 +73,7 @@ pkg <- class_pkg <- new_class(
 #' @param ... Additional arguments passed to `pkg` 
 #' 
 #' @export
-#' @name random-pkg
+#' @name random_pkg
 random_pkg <- function(
   package = random_pkg_name(),
   version = random_pkg_version(),
@@ -82,14 +82,14 @@ random_pkg <- function(
   resource <- mock_resource(
     package = package,
     version = version,
-    md5 = tools::md5sum(bytes = charToRaw(paste0(package, " v", version)))
+    md5 = md5sum(charToRaw(paste0(package, " v", version)))
   )
   
   pkg(resource, ...)
 }
 
 #' @export
-#' @name random-pkg
+#' @name random_pkg
 random_pkgs <- function(n = 100, ...) {
   pkg_names <- random_pkg_name(n = n)
   pkgs <- lapply(pkg_names, random_pkg, ...)

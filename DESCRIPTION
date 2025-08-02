@@ -80,6 +80,7 @@ Collate:
     'data_r_cmd_check.R'
     'options.R'
     'package.R'
+    'utils_backports.R'
     'utils_rand.R'
     'utils_rstudio.R'
     'utils_tmp.R'
