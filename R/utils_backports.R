@@ -2,10 +2,12 @@
 #' 
 #' @keywords internal
 #' @noRd
-md5sum <- function(bytes) {
+md5sum <- function(x) {
   if (packageVersion("tools") >= "4.5.1") {
-    tools::md5sum(bytes = bytes)
+    tools::md5sum(bytes = charToRaw(x))
   } else {
-    .Call(getNamespace("tools")[["C_Rmd5"]], bytes)
+    writeLines(x, f <- tempfile())
+    on.exit(file.remove(f))
+    tools::md5sum(files = f)
   }
 }

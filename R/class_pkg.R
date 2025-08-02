@@ -82,7 +82,7 @@ random_pkg <- function(
   resource <- mock_resource(
     package = package,
     version = version,
-    md5 = md5sum(charToRaw(paste0(package, " v", version)))
+    md5 = md5sum(paste0(package, " v", version))
   )
   
   pkg(resource, ...)
