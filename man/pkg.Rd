@@ -4,27 +4,23 @@
 \alias{pkg}
 \title{Create a new package object to start measuring package heuristics}
 \usage{
-pkg(x, permissions, policy = opt("policy"))
+pkg(resource, permissions, policy = opt("policy"))
+}
+\arguments{
+\item{resource}{\code{\link{resource}} (often a \code{\link{multi_resource}}), providing the
+resources to be used for deriving packages data. If a
+\code{\link{multi_resource}}, the order of resources determines the precedence of
+information. If information about a package could be derived from
+multiple sources, the first source is prioritized.}
+
+\item{permissions}{\code{\link{permissions}} granted for deriving data. If not
+provided, the default from \code{policy} will be used.}
+
+\item{policy}{\code{\link{policy}} to use when converting input to resources. Most
+commonly used for interpreting strings as resources.}
 }
 \description{
 Aggregates package information, surveying metadata from discovered
 resources.
 }
-\section{Fields}{
-
-\describe{
-\item{\code{data}}{A mutable environment, used to aggregate package meatadata.
-When working with a \code{\link{pkg}} object, you may prefer to use the \code{[[} and
-\code{$} operators for accessing data in this environment, which will also
-prompt any necessary data dependencies to be evaluated.}
-
-\item{\code{resource}}{A \code{\link{resource}} (often a \code{\link{multi_resource}}), providing
-the resources to be used for deriving packages data. If a
-\code{\link{multi_resource}}, the order of resources determines the precedence
-of information. If information about a package could be derived from
-multiple sources, the first source is prioritized.}
-
-\item{\code{permissions}}{Granted permissions for deriving data.}
-}}
-
 \keyword{workflow}

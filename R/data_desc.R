@@ -1,5 +1,6 @@
 #' @include impl_data.R
 
+#' @importFrom desc desc
 impl_data(
   "desc",
   class = c("description", "R6"),

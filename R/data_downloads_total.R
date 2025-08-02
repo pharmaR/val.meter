@@ -1,5 +1,6 @@
 #' @include impl_data.R
 
+#' @importFrom jsonlite read_json
 impl_data(
   "downloads_total",
   metric = TRUE,

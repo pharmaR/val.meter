@@ -29,7 +29,45 @@ impl_data_info(
   quiet = FALSE
 )
 
-impl_data_derive(name, fn, resource, overwrite = FALSE, quiet = FALSE)
+impl_data_derive(name, fn, for_resource, overwrite = FALSE, quiet = FALSE)
+}
+\arguments{
+\item{name}{\code{character(1L)} the data field name to implement.}
+
+\item{fn}{\code{function} to use when deriving the data for a \code{pkg}.}
+
+\item{for_resource}{\code{resource} classes that can use this method to derive
+data. Classes can also be \code{S7::new_union()}s or abstract classes to allow
+multiple resources to use the same method.}
+
+\item{...}{Additional arguments passed from \code{impl_data} to \code{impl_data_info}
+and are provided as metadata.}
+
+\item{overwrite}{\code{logical(1L)} flag indicating that the method should
+overwrite an existing method that uses the same dispatch arguments.}
+
+\item{quiet}{\code{logical(1L)} flag indicating that overwriting should be quiet,
+suppressing messages emitted during overwriting.}
+
+\item{class}{\code{S7::S7_class} or \code{character(n)}. A return type that is type
+checked after method evaluation. \code{character} values will be coerced into
+\code{S7} representations of \code{S3} classes.}
+
+\item{title}{\code{character(1L)} data title, used for user-facing communication
+about data derivation or purpose.}
+
+\item{description}{\code{character(n)} or \code{Rd} object used as longer-form
+documentation about the data.}
+
+\item{tags}{\code{tags()} associated with the data.}
+
+\item{permissions}{\code{permissions()} required to compute the data.}
+
+\item{suggests}{\code{character(n)} packages which must be installed in order to
+derive the data.}
+
+\item{metric}{\code{logical(1L)} flag indicating whether the data should be
+user-facing as a metric. When \code{TRUE}, \code{class} must be \code{\link{atomic}}.}
 }
 \description{
 Package data is feature of val.meter - it is the framework by which

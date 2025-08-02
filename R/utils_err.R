@@ -240,6 +240,11 @@ err <- list(
 #' is used to provide a readable syntax to exported `PACKAGES` files, which
 #' are parsed using this function back into their respective error objects.
 #'
+#' @param type `character(1L)` class type for error condition
+#' @param ... Additional arguments passed to specific error function.
+#'
+#' @return A error condition of class `type`
+#'
 #' @examples
 #' # given a DCF input such as
 #' 
@@ -252,7 +257,7 @@ err <- list(
 #'
 #' @export
 error <- function(type, ...) { # nolint: object_usage_linter
-  cnd <- tryCatch(do.call(err[[type]], list(...)), error = identity)
+  cnd <- err[[type]](..., capture = TRUE)
   cnd$trace <- NULL
   cnd$call <- NULL
   cnd

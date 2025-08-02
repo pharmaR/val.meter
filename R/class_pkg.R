@@ -9,34 +9,40 @@
 pkg <- class_pkg <- new_class(
   "pkg",
   properties = list(
-    #' @field data A mutable environment, used to aggregate package meatadata.
-    #' When working with a [`pkg`] object, you may prefer to use the `[[` and
-    #' `$` operators for accessing data in this environment, which will also
-    #' prompt any necessary data dependencies to be evaluated.
+    # data (not user-facing)
+    # A mutable environment, used to aggregate package metadata. When working
+    # with a [`pkg`] object, you may prefer to use the `[[` and `$` operators
+    # for accessing data in this environment, which will also prompt any
+    # necessary data dependencies to be evaluated.
     data = class_environment,
 
-    #' @field resource A [`resource`] (often a [`multi_resource`]), providing
-    #' the resources to be used for deriving packages data. If a
-    #' [`multi_resource`], the order of resources determines the precedence
-    #' of information. If information about a package could be derived from
-    #' multiple sources, the first source is prioritized.
+    #' @param resource [`resource`] (often a [`multi_resource`]), providing the
+    #'   resources to be used for deriving packages data. If a
+    #'   [`multi_resource`], the order of resources determines the precedence of
+    #'   information. If information about a package could be derived from
+    #'   multiple sources, the first source is prioritized.
     resource = S7::new_union(class_resource, class_mock_resource),
 
-    #' @field permissions Granted permissions for deriving data.
+    #' @param permissions [`permissions`] granted for deriving data. If not
+    #'   provided, the default from `policy` will be used.
     permissions = class_permissions
+    
+    #' @param policy [`policy`] to use when converting input to resources. Most
+    #'   commonly used for interpreting strings as resources.
   ),
+  
   constructor = function(
-    x,
+    resource,
     permissions,
     policy = opt("policy")
   ) {
-    is_mocked <- S7::S7_inherits(x, class_mock_resource)
+    is_mocked <- S7::S7_inherits(resource, class_mock_resource)
     
     # handle anything that can be converted into a resource - especially
     # useful for character shorthands
     if (!is_mocked) {
       # TODO: warn when we won't use the policy; when a resource is provided
-      x <- convert(x, resource, policy = policy)
+      resource <- convert(resource, class_resource, policy = policy)
     }
     
     if (!missing(permissions)) {
@@ -49,17 +55,30 @@ pkg <- class_pkg <- new_class(
       .parent = S7::S7_object(),
       data = new.env(parent = emptyenv()),
       metrics = list(),
-      resource = x,
+      resource = resource,
       permissions = permissions
     )
   }
 )
 
+#' Generate Random Package(s)
+#' 
+#' Create a package object to simulate metric derivation. When generating a
+#' collection of packages, dependencies will realistically be made between
+#' packages.
+#' 
+#' @param n `integer(1L)` how many packages to simulate
+#' @param package `character(1L)` a package name
+#' @param version `character(1L)` a package version
+#' @param ... Additional arguments passed to `pkg` 
+#' 
 #' @export
+#' @name random-pkg
 random_pkg <- function(
-    package = random_pkg_name(),
-    version = random_pkg_version(),
-    ...) {
+  package = random_pkg_name(),
+  version = random_pkg_version(),
+  ...
+) {
   resource <- mock_resource(
     package = package,
     version = version,
@@ -70,6 +89,7 @@ random_pkg <- function(
 }
 
 #' @export
+#' @name random-pkg
 random_pkgs <- function(n = 100, ...) {
   pkg_names <- random_pkg_name(n = n)
   pkgs <- lapply(pkg_names, random_pkg, ...)
@@ -167,6 +187,7 @@ get_pkg_datas <- function(x, index, ..., all = FALSE) {
   new_err("pkg objects don't know how to index with class {.cls index}")
 }
 
+#' @importFrom utils .DollarNames
 #' @exportS3Method ".DollarNames" "val.meter::pkg"
 `.DollarNames.val.meter::pkg` <- function(x, pattern, ...) {
   fields <- get_data_derive_field_names()
@@ -246,14 +267,23 @@ method(to_dcf, class_pkg) <- function(x, ...) {
   ))
 }
 
+#' Produce `pkg`(s) from a `DCF`-formatted string
+#' 
+#' @param x A `DCF`-formatted string
+#' @param ... Additional arguments unused
+#' 
+#' @returns A `pkg` object. Note that when parsing from a `DCF` string.
+#' 
 #' @include utils_dcf.R
 #' @export
+#' @name pkg_from_dcf
 pkg_from_dcf <- function(x, ...) {
   from_dcf(x, to = class_pkg, ...)
 }
 
 #' @include utils_dcf.R
 #' @export
+#' @name pkg_from_dcf
 pkgs_from_dcf <- function(x, ...) {
   parts <- strsplit(x, "\n\n")[[1]]
   structure(lapply(parts, from_dcf, to = class_pkg), class = "list_of_pkg")

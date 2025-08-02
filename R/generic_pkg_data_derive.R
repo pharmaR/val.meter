@@ -16,6 +16,7 @@
 #' @param field Used for dispatching on which field to derive. Methods are
 #'   provided such that a simple `character` field name can be passed and
 #'   used to build a class for dispatching to the right derivation function.
+#' @param ... Used by specific methods.
 #'
 #' @returns The derived field value.
 #'
@@ -116,7 +117,6 @@ method(
 ) <-
   function(pkg, resource, field, ...) {
     info <- pkg_data_info(field)
-
     tryCatch(
       # first try to evaluate as though this is a proper package, leveraging
       # real derivation rules for data that is interrelated
@@ -154,7 +154,7 @@ method(
   list(
     class_any,
     class_mock_resource,
-    new_union(.s7_class, .s7_base_class, .s7_s3_class)
+    new_union(.s7_class, .s7_base_class, .s7_s3_class, .s7_any)
   )
 ) <-
   function(pkg, resource, field, ..., field_name = field) {

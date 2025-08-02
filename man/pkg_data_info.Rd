@@ -6,6 +6,14 @@
 \usage{
 pkg_data_info(field, ...)
 }
+\arguments{
+\item{field}{\code{character(1L)} field name to retrieve.}
+
+\item{...}{Additional arguments unused.}
+}
+\value{
+\code{data_info} for field \code{field}.
+}
 \description{
 Retrieve metadata about a data field.
 }

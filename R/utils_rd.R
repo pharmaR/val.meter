@@ -209,20 +209,20 @@ rd_badge <- local({
 new_external_generic("tools", "toRd", "obj")
 
 #' @include class_tags.R
-method(toRd, class_tags) <- function(x, ...) {
+method(toRd, class_tags) <- function(obj, ...) {
   dest <- paste0("[", packageName(), ":tags]")
-  paste(collapse = " ", rd_badge(x, dest = dest, style = "link"))
+  paste(collapse = " ", rd_badge(obj, dest = dest, style = "link"))
 }
 
 #' @include class_permissions.R
-method(toRd, class_permissions) <- function(x, ...) {
+method(toRd, class_permissions) <- function(obj, ...) {
   dest <- paste0("[", packageName(), ":permissions]")
   
   scope_badge <- function(scope, color) {
     rd_badge(label = "req", scope, color = color, dest = dest)
   }
   
-  paste(collapse = " ", vcapply(x, function(scope) {
+  paste(collapse = " ", vcapply(obj, function(scope) {
     rd_sexpr(stage = "render", results = "rd", quote = FALSE, bquote(
       if (!is.na(match(.(scope), getOption("val.meter.permissions"))))
         .(scope_badge(scope, "green"))
@@ -233,14 +233,14 @@ method(toRd, class_permissions) <- function(x, ...) {
 }
 
 #' @include class_suggests.R
-method(toRd, class_suggests) <- function(x, ...) {
+method(toRd, class_suggests) <- function(obj, ...) {
   dest <- paste0("[", packageName(), ":permissions]")
   
   suggests_badge <- function(pkg, color) {
     rd_badge(label = "dep", pkg, color = color, dest = dest)
   }
   
-  paste(collapse = " ", vcapply(x, function(suggest) {
+  paste(collapse = " ", vcapply(obj, function(suggest) {
     rd_sexpr(stage = "render", results = "rd", quote = FALSE, bquote(
       if (length(find.package(.(suggest), quiet = TRUE)) > 0)
         .(suggests_badge(suggest, "green"))

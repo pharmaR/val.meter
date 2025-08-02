@@ -36,6 +36,7 @@ Imports:
     S7,
     tools,
     utils,
+    stats,
     jsonlite
 Suggests:
     rcmdcheck,

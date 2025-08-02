@@ -15,8 +15,10 @@
 #'     source_code_resource,
 #'     install_resource
 #'   ),
-#'   source_resources = list(repo_resource),
-#'   permissions = permissions(FALSE)
+#'   source_resources = list(
+#'     repo_resource
+#'   ),
+#'   permissions = class_permissions(FALSE)
 #' )
 #'
 #' @examples
@@ -38,7 +40,6 @@
 #'
 #' @export
 #' @keywords safeguard
-#' @name policy
 policy <- class_policy <- new_class(
   "policy",
   properties = list(
@@ -46,23 +47,21 @@ policy <- class_policy <- new_class(
     #'   priority, highest to lowest.
     accepted_resources = new_property(
       class_list,
-      default = list(
+      default = quote(list(
         source_archive_resource,
         source_code_resource,
         install_resource
-      )
+      ))
     ),
     
     #' @param source_resources A list of additional resource types, which may be
     #'   used to discover a resource of an accepted type. For example, even if
-    #'   only [`archive_source_resource()`]s are accepted, a [`repo_resource()`]
+    #'   only [`source_archive_resource()`]s are accepted, a [`repo_resource()`]
     #'   could be used as a means of acquiring the archive source, so long as it
-    #'   can be [`S7::convert()`]ed into a [`archive_source_resource()`].
+    #'   can be [`S7::convert()`]ed into a [`source_archive_resource()`].
     source_resources = new_property(
       class_list,
-      default = list(
-        repo_resource
-      )
+      default = quote(list(repo_resource))
     ),
     
     #' @param permissions Behavioral permissions provided for resource
@@ -71,7 +70,7 @@ policy <- class_policy <- new_class(
     #'   permissions.
     permissions = new_property(
       class_permissions,
-      default = permissions(FALSE),
+      default = quote(class_permissions(FALSE)),
       setter = setter_try_from()
     )
   )

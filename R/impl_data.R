@@ -37,6 +37,18 @@ NULL
 #' function for a combination of data field _and_ package resource) and
 #' `[impl_metric()]` (declare a piece of data to be a metric).
 #'
+#' @param name `character(1L)` the data field name to implement.
+#' @param fn `function` to use when deriving the data for a `pkg`.
+#' @param for_resource `resource` classes that can use this method to derive
+#'   data. Classes can also be `S7::new_union()`s or abstract classes to allow
+#'   multiple resources to use the same method.
+#' @param ... Additional arguments passed from `impl_data` to `impl_data_info`
+#'   and are provided as metadata.
+#' @param overwrite `logical(1L)` flag indicating that the method should
+#'   overwrite an existing method that uses the same dispatch arguments.
+#' @param quiet `logical(1L)` flag indicating that overwriting should be quiet,
+#'   suppressing messages emitted during overwriting.
+#'
 #' @export
 impl_data <- function(
   name, 
@@ -60,7 +72,7 @@ impl_data <- function(
     impl_data_derive(
       name = name,
       fn = fn,
-      resource = for_resource,
+      for_resource = for_resource,
       overwrite = overwrite,
       quiet = quiet
     )
@@ -70,6 +82,20 @@ impl_data <- function(
 
 #' @describeIn pkg_data
 #' Associate metadata with the data field
+#' 
+#' @param class `S7::S7_class` or `character(n)`. A return type that is type
+#'   checked after method evaluation. `character` values will be coerced into
+#'   `S7` representations of `S3` classes.
+#' @param title `character(1L)` data title, used for user-facing communication
+#'   about data derivation or purpose.
+#' @param description `character(n)` or `Rd` object used as longer-form
+#'   documentation about the data.
+#' @param tags `tags()` associated with the data.
+#' @param permissions `permissions()` required to compute the data.
+#' @param suggests `character(n)` packages which must be installed in order to
+#'   derive the data.
+#' @param metric `logical(1L)` flag indicating whether the data should be
+#'   user-facing as a metric. When `TRUE`, `class` must be [`atomic`].
 #'
 #' @include class_tags.R
 #' @include class_permissions.R
@@ -131,11 +157,11 @@ impl_data_info <- function(
 impl_data_derive <- function(
   name,
   fn,
-  resource,
+  for_resource,
   overwrite = FALSE,
   quiet = FALSE
 ) {
-  dispatch_classes <- list(pkg, resource, pkg_data_class(name))
+  dispatch_classes <- list(class_pkg, for_resource, pkg_data_class(name))
   is_derive_impl <- is_implemented(pkg_data_derive, dispatch_classes)
   if (is_derive_impl && !overwrite) {
     stop(fmt(

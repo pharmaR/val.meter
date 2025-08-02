@@ -37,18 +37,21 @@ NULL
 #' @include class_permissions.R
 #' @include class_suggests.R
 #' @include class_tags.R
+#'
+#' @keywords internal
+#' @noRd
 data_info <- class_data_info <- new_class(
   "data_info",
   properties = list(
-    #' @field metric `logical(1L)` a flag indicating whether the data is a
+    #' @param metric `logical(1L)` a flag indicating whether the data is a
     #'   metric -- a piece of structured, regular package metadata useful for
     #'   decision-making about package use.
     metric = class_logical,
 
-    #' @field title `character(1L)` a descriptive title.
+    #' @param title `character(1L)` a descriptive title.
     title = class_character,
 
-    #' @field description `Rd` a short description about the data.
+    #' @param description `Rd` a short description about the data.
     #'   Should provide enough context to support effective decision-making.
     #'   Can use Rd formatting for rich text.
     description = new_property(
@@ -73,14 +76,14 @@ data_info <- class_data_info <- new_class(
       }
     ),
     
-    #' @field tags [`val.meter::class_tags()`] a set of tags, used for
-    #'   classifying metrics into categories.
+    #' @param tags [`tags()`] a set of tags, used for classifying metrics into
+    #'   categories.
     tags = new_property(
       class_tags,
       default = class_tags()
     ),
     
-    #' @field data_class an object that can be converted into an `S7_class`
+    #' @param data_class an object that can be converted into an `S7_class`
     #'   using [`S7::as_class()`], used for enforcing a return class on data
     #'   derivations.
     data_class = new_property(
@@ -99,7 +102,7 @@ data_info <- class_data_info <- new_class(
       }
     ),
     
-    #' @field suggests `character(n)` a vector of suggested packages needed
+    #' @param suggests `character(n)` a vector of suggested packages needed
     #'   for deriving a piece of data. If the package is not available, the
     #'   metric will not be derived.
     suggests = new_property(
@@ -114,7 +117,7 @@ data_info <- class_data_info <- new_class(
       }
     ),
     
-    #' @field permissions [`permissions()`] a vector of enumerated permissions
+    #' @param permissions [`permissions()`] a vector of enumerated permissions
     #'   that must be granted before this piece of data will be derived.
     permissions = class_permissions
   )
@@ -227,25 +230,25 @@ local({
 })
 
 #' @include utils_rd.R
-method(toRd, data_info) <- function(x, ...) {
-  has_tags <- length(x@tags) > 0
-  requires_suggests <- length(x@suggests) > 0
-  requires_permissions <- length(x@permissions) > 0
+method(toRd, data_info) <- function(obj, ...) {
+  has_tags <- length(obj@tags) > 0
+  requires_suggests <- length(obj@suggests) > 0
+  requires_permissions <- length(obj@permissions) > 0
   
-  class <- if (S7::S7_inherits(x@data_class)) {
-    x@data_class@name
+  class <- if (S7::S7_inherits(obj@data_class)) {
+    obj@data_class@name
   } else {
-    S7:::class_desc(x@data_class)
+    S7:::class_desc(obj@data_class)
   }
   
   paste0(
     "\\code{", class, "} ",
-    rd_deparse(x@description),
+    rd_deparse(obj@description),
     "\n",
-    toRd(x@permissions), " ",
-    toRd(class_suggests(x@suggests)), " ",
+    toRd(obj@permissions), " ",
+    toRd(class_suggests(obj@suggests)), " ",
     "\n\n",
-    toRd(x@tags)
+    toRd(obj@tags)
   )
 }
 
@@ -309,15 +312,15 @@ local({
 })
 
 #' @include utils_rd.R
-method(toRd, data_info_list) <- function(x, ...) {
-  item_names <- vcapply(x, prop, "title")
-  item_names <- ifelse(!is.na(item_names), item_names, names(x))
+method(toRd, data_info_list) <- function(obj, ...) {
+  item_names <- vcapply(obj, prop, "title")
+  item_names <- ifelse(!is.na(item_names), item_names, names(obj))
   pkg <- packageName()
   paste0(
     "\\section{Metrics}{",
     "The following metrics are provided by \\code{\\link{", pkg, "}}.",
-    paste(collapse = "", "\n", vcapply(seq_along(x), function(i) {
-      paste0("\\subsection{", item_names[[i]], "}{", toRd(x[[i]]), "}")
+    paste(collapse = "", "\n", vcapply(seq_along(obj), function(i) {
+      paste0("\\subsection{", item_names[[i]], "}{", toRd(obj[[i]]), "}")
     })),
     "}"
   )

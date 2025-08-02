@@ -10,8 +10,10 @@ policy(
     source_code_resource,
     install_resource
   ),
-  source_resources = list(repo_resource),
-  permissions = permissions(FALSE)
+  source_resources = list(
+    repo_resource
+  ),
+  permissions = class_permissions(FALSE)
 )
 }
 \arguments{
@@ -20,9 +22,9 @@ priority, highest to lowest.}
 
 \item{source_resources}{A list of additional resource types, which may be
 used to discover a resource of an accepted type. For example, even if
-only \code{\link[=archive_source_resource]{archive_source_resource()}}s are accepted, a \code{\link[=repo_resource]{repo_resource()}}
+only \code{\link[=source_archive_resource]{source_archive_resource()}}s are accepted, a \code{\link[=repo_resource]{repo_resource()}}
 could be used as a means of acquiring the archive source, so long as it
-can be \code{\link[S7:convert]{S7::convert()}}ed into a \code{\link[=archive_source_resource]{archive_source_resource()}}.}
+can be \code{\link[S7:convert]{S7::convert()}}ed into a \code{\link[=source_archive_resource]{source_archive_resource()}}.}
 
 \item{permissions}{Behavioral permissions provided for resource
 acquisition. For example, downloading and installing source code for

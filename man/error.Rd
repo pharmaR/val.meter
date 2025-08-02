@@ -6,6 +6,14 @@
 \usage{
 error(type, ...)
 }
+\arguments{
+\item{type}{\code{character(1L)} class type for error condition}
+
+\item{...}{Additional arguments passed to specific error function.}
+}
+\value{
+A error condition of class \code{type}
+}
 \description{
 Build an error from an error type and data attributes
 }

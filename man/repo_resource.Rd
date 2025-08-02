@@ -22,7 +22,7 @@ provided if possible.}
 throughout execution. Generally not provided directly, as new objects
 automatically get a unique identifier. For example, the package source
 code from a \code{\link[=repo_resource]{repo_resource()}} may be downloaded to add a
-\code{\link[=archive_source_resource]{archive_source_resource()}} and add it to a new \code{\link[=multi_resource]{multi_resource()}}.
+\code{\link[=source_archive_resource]{source_archive_resource()}} and add it to a new \code{\link[=multi_resource]{multi_resource()}}.
 Because all of these represent the same package, they retain the same
 \code{id}. Primarily the \code{id} is used for isolating temporary files.}
 

@@ -15,6 +15,8 @@ extracted from \code{pkg@resource}.}
 \item{field}{Used for dispatching on which field to derive. Methods are
 provided such that a simple \code{character} field name can be passed and
 used to build a class for dispatching to the right derivation function.}
+
+\item{...}{Used by specific methods.}
 }
 \value{
 The derived field value.

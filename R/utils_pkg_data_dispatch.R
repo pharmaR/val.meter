@@ -62,9 +62,9 @@ as_pkg_data <- function(field_name) {
 #' well as for tab completions for `<pkg>$ <TAB>` to auto-populate a list of
 #' available metrics.
 #' 
-#' @param ... A list of [`S7`] classes. Not used if `args` is provided.
-#' @param args A list of [`S7`] classes, by default, collects the elements of
-#'   `...`.
+#' @param ... A list of [`S7::S7_object`] classes. Not used if `args` is provided.
+#' @param args A list of [`S7::S7_object`] classes, by default, collects the
+#'   elements of `...`.
 #' 
 #' @returns A `character` vector of field names.
 #' 

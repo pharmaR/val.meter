@@ -3,6 +3,7 @@
 .s7_union <- new_S3_class("S7_union")
 .s7_base_class <- new_S3_class("S7_base_class")
 .s7_s3_class <- new_S3_class("S7_S3_class")
+.s7_any <- new_S3_class("S7_any")
 
 #' Check whether a method is implemented for a given set of dispatch classes
 #'

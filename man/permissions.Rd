@@ -6,6 +6,12 @@
 \usage{
 permissions(...)
 }
+\arguments{
+\item{...}{Values to include in enumerated vector. Multiple values will be
+concatenated into a vector before instantiation. Special handling if the
+first and only argument is a logical, interpreting \code{TRUE} as a vector of
+all enumerated values and \code{FALSE} as a zero-length vector.}
+}
 \description{
 A descriptor of behaviors required for deriving package data. Each policy
 property is a \code{\link{logical}} flag, which may be either \code{TRUE} or \code{FALSE}.

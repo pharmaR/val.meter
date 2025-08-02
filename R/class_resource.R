@@ -30,7 +30,7 @@ resource <- class_resource <- new_class(
     #'   throughout execution. Generally not provided directly, as new objects
     #'   automatically get a unique identifier. For example, the package source
     #'   code from a [`repo_resource()`] may be downloaded to add a
-    #'   [`archive_source_resource()`] and add it to a new [`multi_resource()`].
+    #'   [`source_archive_resource()`] and add it to a new [`multi_resource()`].
     #'   Because all of these represent the same package, they retain the same
     #'   `id`. Primarily the `id` is used for isolating temporary files.
     id = new_property(class_integer, default = quote(next_id())),
@@ -93,7 +93,7 @@ multi_resource <- class_multi_resource <- new_class(
   #' @inheritParams resource
   parent = resource,
   properties = list(
-    #' @param resources `list` of [`resources`]
+    #' @param resources `list` of [`resource`]s
     resources = new_property(
       class_list,
       validator = function(value) {
@@ -219,8 +219,9 @@ repo_resource <- class_repo_resource <- new_class(
 #' Package CRAN Repository Resource Class
 #'
 #' A reference to a listing in CRAN. CRAN Resources must be from one of the
-#' repositories listed in [`getCRANmirrors()`]. To assert that a new url is
-#' also a CRAN mirror, please follow instructions in [`?getCRANmirrors()`].
+#' repositories listed in [`utils::getCRANmirrors()`]. To assert that a new url
+#' is also a CRAN mirror, please follow instructions in
+#' [`utils::getCRANmirrors()`].
 #'
 #' @family resources
 #' @export
@@ -252,7 +253,7 @@ cran_repo_resource <- class_cran_repo_resource <- new_class(
 #' @export
 git_resource <- class_git_resource <- new_class(
   "git_resource",
-  #' @inheritParams remote_source_resource
+  #' @inheritParams remote_resource
   parent = remote_resource,
   properties = list(
     #' @param http_url The git repository url
@@ -533,7 +534,7 @@ method(convert, list(class_local_source_resource, class_install_resource)) <-
 
 method(convert, list(class_resource, class_unknown_resource)) <-
   function(from, to, ...) {
-    set_props(to(), props(from, names(to@properties)))
+    set_props(to(), props(from, names(class_unknown_resource@properties)))
   }
 
 method(to_dcf, class_resource) <- function(x, ...) {
