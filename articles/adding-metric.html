@@ -314,22 +314,22 @@ them.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pkg_data.html">impl_data</a></span><span class="op">(</span></span>
 <span>  <span class="st">"oysteR_vulnerability_df"</span>,</span>
-<span>  </span>
+<span></span>
 <span>  <span class="co"># declare our suggested dependency on {oysteR}</span></span>
 <span>  suggests <span class="op">=</span> <span class="st">"oysteR"</span>,</span>
-<span>  </span>
+<span></span>
 <span>  <span class="co"># require that users opt-in to network requests as part of this data</span></span>
 <span>  permissions <span class="op">=</span> <span class="fu"><a href="../reference/permissions.html">permissions</a></span><span class="op">(</span><span class="st">"network"</span><span class="op">)</span>,</span>
-<span>  </span>
+<span></span>
 <span>  <span class="co"># assert that we expect a `data.frame` (S3 class) object</span></span>
 <span>  class <span class="op">=</span> <span class="st">"data.frame"</span>,</span>
-<span>  </span>
+<span></span>
 <span>  <span class="co"># we'll only implement this for our cran_repo_resource</span></span>
 <span>  for_resource <span class="op">=</span> <span class="va">cran_repo_resource</span>,</span>
 <span></span>
 <span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">oysteR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/oysteR/man/audit.html" class="external-link">audit</a></span><span class="op">(</span></span>
-<span>      pkg <span class="op">=</span> <span class="va">pkg</span><span class="op">$</span><span class="va">name</span>, </span>
+<span>      pkg <span class="op">=</span> <span class="va">pkg</span><span class="op">$</span><span class="va">name</span>,</span>
 <span>      version <span class="op">=</span> <span class="va">pkg</span><span class="op">$</span><span class="va">version</span>,</span>
 <span>      type <span class="op">=</span> <span class="st">"cran"</span>,</span>
 <span>      verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -359,7 +359,7 @@ working as intended as well.</p>
 <code class="sourceCode R"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/repo_resource.html">repo_resource</a></span><span class="op">(</span><span class="st">"haven"</span>, <span class="st">"0.1.1"</span>, repo <span class="op">=</span> <span class="st">"https://fakecran.org/"</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pkg.html">pkg</a></span><span class="op">(</span><span class="va">r</span>, permissions <span class="op">=</span> <span class="st">"network"</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">$</span><span class="va">oysteR_vulnerability_df</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">&lt;error/val_meter_not_implemented_for_resource_error&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> data field "oysteR_vulnerability_df" could not be derived because it</span></span>
 <span><span class="co">#&gt;   is not implemented for resource <span style="color: #0000BB;">&lt;val.meter::repo_resource&gt;</span></span></span></code></pre></div>
 <p>And that not providing necessary permissions for network access will
@@ -368,7 +368,7 @@ similarly throw an error.</p>
 <code class="sourceCode R"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cran_repo_resource.html">cran_repo_resource</a></span><span class="op">(</span><span class="st">"haven"</span>, <span class="st">"0.1.1"</span>, repo <span class="op">=</span> <span class="st">"https://cloud.r-project.org/"</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pkg.html">pkg</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">$</span><span class="va">oysteR_vulnerability_df</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">&lt;error/val_meter_derive_error&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> when deriving field "oysteR_vulnerability_df"</span></span>
 <span><span class="co">#&gt; data derivation was not granted permissions: "network"</span></span></code></pre></div>
 <p>And similarly, if we didn’t have <code>oysteR</code> installed we’d
@@ -377,7 +377,7 @@ see something like</p>
 <code class="sourceCode R"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cran_repo_resource.html">cran_repo_resource</a></span><span class="op">(</span><span class="st">"haven"</span>, <span class="st">"0.1.1"</span>, repo <span class="op">=</span> <span class="st">"https://cloud.r-project.org/"</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pkg.html">pkg</a></span><span class="op">(</span><span class="va">r</span>, permissions <span class="op">=</span> <span class="st">"network"</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">$</span><span class="va">oysteR_vulnerability_df</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
+<pre><code><span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">&lt;error/val_meter_derive_error&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> when deriving field "oysteR_vulnerability_df"</span></span>
 <span><span class="co">#&gt; data derivation requires suggests: <span style="color: #0000BB;">oysteR</span></span></span></code></pre>
 <p>Now that we can fetch the <code>oysteR</code> response, we can
@@ -407,7 +407,7 @@ happen if we tried it for a non-CRAN resource:</p>
 <code class="sourceCode R"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/repo_resource.html">repo_resource</a></span><span class="op">(</span><span class="st">"haven"</span>, <span class="st">"0.1.1"</span>, repo <span class="op">=</span> <span class="st">"https://fakecran.org/"</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pkg.html">pkg</a></span><span class="op">(</span><span class="va">r</span>, permissions <span class="op">=</span> <span class="st">"network"</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">$</span><span class="va">vulnerability_count</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
+<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">&lt;error/val_meter_derive_error&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> when deriving field "vulnerability_count"</span></span>
 <span><span class="co">#&gt; data field "oysteR_vulnerability_df" could not be derived because it is not</span></span>
 <span><span class="co">#&gt; implemented for resource <span style="color: #0000BB;">&lt;val.meter::repo_resource&gt;</span></span></span></code></pre></div>

@@ -66,9 +66,9 @@
 <div class="page-header"><h1 id="valmeter">
 <code>val.meter</code><a class="anchor" aria-label="anchor" href="#valmeter"></a>
 </h1></div>
-<p><em>validation-ready package quantification supporting regulatory use of R</em></p>
 <!-- badges: start -->
-<!-- badges: end -->
+
+<p><em>validation-ready package quantification supporting regulatory use of R</em></p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -83,7 +83,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rpkg</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/random_pkg.html">random_pkg</a></span><span class="op">(</span>permissions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/metrics.html">metrics</a></span><span class="op">(</span><span class="va">rpkg</span><span class="op">)</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/README/overview-metrics-dark.svg"><img src="reference/figures/README/overview-metrics.svg" width="100%"></source></picture></p>
+<p><img src="reference/figures/README/overview-metrics.svg" width="100%"></p>
 </div>
 <div class="section level2">
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
@@ -94,13 +94,13 @@
 <p><code>val.meter</code> makes it easy to find a listing of metrics and details of what those metrics represent.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/metrics.html">metrics</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/README/metrics-dark.svg"><img src="reference/figures/README/metrics.svg" width="100%"></source></picture></p>
+<p><img src="reference/figures/README/metrics.svg" width="100%"></p>
 <p><code>metrics</code> actually represent a small set of the internally calculated package data, which may go through a few stages of calculation before resulting in a quantifiable metric. If you want to see <em>all</em> the internal information, you can explore the whole set of package data.</p>
 <p><code>metrics</code> are unique in that their data is required to be consistent and simple (atomic) data.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># see all implemented _data_ (a superset of metrics)</span></span>
 <span><span class="fu"><a href="reference/metrics.html">metrics</a></span><span class="op">(</span>all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/README/metrics-all-dark.svg"><img src="reference/figures/README/metrics-all.svg" width="100%"></source></picture></p>
+<p><img src="reference/figures/README/metrics-all.svg" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="creating-package-objects">Creating package objects<a class="anchor" aria-label="anchor" href="#creating-package-objects"></a>
@@ -109,7 +109,7 @@
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate some data, using default conservative permissions</span></span>
 <span><span class="fu"><a href="reference/pkg.html">pkg</a></span><span class="op">(</span><span class="st">"../val.meter"</span><span class="op">)</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/README/pkg-dark.svg"><img src="reference/figures/README/pkg.svg" width="100%"></source></picture></p>
+<p><img src="reference/figures/README/pkg.svg" width="100%"></p>
 <p>We can also be declarative about exactly how we want to source our package metadata.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rconsortium.github.io/S7/" class="external-link">S7</a></span><span class="op">)</span></span>
@@ -117,7 +117,7 @@
 <span><span class="co"># initialize package with only our installed package as a resource</span></span>
 <span><span class="va">resrc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rconsortium.github.io/S7/reference/convert.html" class="external-link">convert</a></span><span class="op">(</span><span class="st">"../val.meter"</span>, <span class="va">source_code_resource</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/pkg.html">pkg</a></span><span class="op">(</span><span class="va">resrc</span><span class="op">)</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/README/pkg-explicit-dark.svg"><img src="reference/figures/README/pkg-explicit.svg" width="100%"></source></picture></p>
+<p><img src="reference/figures/README/pkg-explicit.svg" width="100%"></p>
 <div class="section level4">
 <h4 id="calculating-metrics">Calculating metrics<a class="anchor" aria-label="anchor" href="#calculating-metrics"></a>
 </h4>
@@ -125,12 +125,12 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pkg.html">pkg</a></span><span class="op">(</span><span class="st">"../val.meter"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/metrics.html">metrics</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/README/metrics-from-pkg-dark.svg"><img src="reference/figures/README/metrics-from-pkg.svg" width="100%"></source></picture></p>
+<p><img src="reference/figures/README/metrics-from-pkg.svg" width="100%"></p>
 <p>In this case, you’ll notice that some metric calculations raised errors during execution. Here you’ll notice that we have not granted <code>val.meter</code> permission to execute code or fetch data from APIs over the network.</p>
 <p>We can also access individual metrics by accessing our <code>pkg</code> object like a list.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span><span class="op">$</span><span class="va">dependency_count</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/README/metric-dep-count-dark.svg"><img src="reference/figures/README/metric-dep-count.svg" width="100%"></source></picture></p>
+<p><img src="reference/figures/README/metric-dep-count.svg" width="100%"></p>
 <p>Packages are <em>lazy</em> <span class="emoji" data-emoji="zzz">💤</span>! Since some metrics can be computationally intensive, we only calculate them as their needed. After they’re calculated the first time, the result is saved so you can access it whenever you need it.</p>
 </div>
 <div class="section level4">
@@ -140,11 +140,11 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pkg.html">pkg</a></span><span class="op">(</span><span class="st">"../val.meter"</span>, permissions <span class="op">=</span> <span class="st">"network"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/metrics.html">metrics</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/README/metrics-permissive-dark.svg"><img src="reference/figures/README/metrics-permissive.svg" width="100%"></source></picture></p>
+<p><img src="reference/figures/README/metrics-permissive.svg" width="100%"></p>
 <p>And digging a bit deeper, we’ll see that <code>r_cmd_check</code> itself requires additional permissions to grant <code>val.meter</code> the ability to execute code on your machine.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span><span class="op">$</span><span class="va">r_cmd_check</span></span></code></pre></div>
-<p><picture><source media="(prefers-color-scheme: dark)" srcset="reference/figures/README/metric-r-cmd-check-error-dark.svg"><img src="reference/figures/README/metric-r-cmd-check-error.svg" width="100%"></source></picture></p>
+<p><img src="reference/figures/README/metric-r-cmd-check-error.svg" width="100%"></p>
 </div>
 </div>
 </div>
@@ -181,7 +181,13 @@
 </ul>
 </div>
 
-
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/pharmaR/val.meter/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/pharmaR/val.meter/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/pharmaR/val.meter" class="external-link"><img src="https://codecov.io/gh/pharmaR/val.meter/graph/badge.svg" alt="Codecov test coverage"></a></li>
+</ul>
+</div>
 
   </aside>
 </div>

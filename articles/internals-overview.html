@@ -134,8 +134,8 @@ the foundational data types of the package.</p>
 <span><span class="co">#&gt;     union</span></span>
 <span></span>
 <span><span class="co"># since we're all developers, don't mind me taking a peek behind the curtain</span></span>
-<span><span class="va">val.meter</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-reflect.html" class="external-link">getNamespace</a></span><span class="op">(</span><span class="st">"val.meter"</span><span class="op">)</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="va">val.meter</span><span class="op">$</span><span class="fu">class_graph</span><span class="op">(</span><span class="st">"val.meter"</span><span class="op">)</span></span>
+<span><span class="va">val_meter</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-reflect.html" class="external-link">getNamespace</a></span><span class="op">(</span><span class="st">"val.meter"</span><span class="op">)</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="va">val_meter</span><span class="op">$</span><span class="fu">class_graph</span><span class="op">(</span><span class="st">"val.meter"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># do some slight class renaming to make them easier to read</span></span>
 <span><span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">$</span><span class="va">label</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span><span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">$</span><span class="va">class</span>, <span class="st">"_"</span><span class="op">)</span>, <span class="va">paste</span>, collapse <span class="op">=</span> <span class="st">"\n"</span><span class="op">)</span></span>
@@ -144,17 +144,17 @@ the foundational data types of the package.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">g</span>,</span>
 <span>  layout <span class="op">=</span> <span class="fu"><a href="https://r.igraph.org/reference/layout_with_graphopt.html" class="external-link">layout_with_graphopt</a></span><span class="op">(</span></span>
-<span>    <span class="va">g</span>, </span>
-<span>    niter <span class="op">=</span> <span class="fl">5000</span>, </span>
-<span>    charge <span class="op">=</span> <span class="fl">0.2</span>, </span>
-<span>    spring.length <span class="op">=</span> <span class="fl">4</span>, </span>
+<span>    <span class="va">g</span>,</span>
+<span>    niter <span class="op">=</span> <span class="fl">5000</span>,</span>
+<span>    charge <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>    spring.length <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>    spring.constant <span class="op">=</span> <span class="fl">8</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  vertex.size <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>  vertex.frame.color <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>  vertex.label <span class="op">=</span> <span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">$</span><span class="va">label</span>,</span>
 <span>  vertex.label.dist <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  vertex.label.degree <span class="op">=</span> <span class="op">-</span><span class="va">pi</span><span class="op">/</span><span class="fl">2</span>,</span>
+<span>  vertex.label.degree <span class="op">=</span> <span class="op">-</span><span class="va">pi</span> <span class="op">/</span> <span class="fl">2</span>,</span>
 <span>  vertex.label.family <span class="op">=</span> <span class="st">"sans-serif"</span>,</span>
 <span>  vertex.label.cex <span class="op">=</span> <span class="fl">0.6</span>,</span>
 <span>  vertex.label.color <span class="op">=</span> <span class="st">"grey8"</span>,</span>
@@ -381,7 +381,7 @@ because of this data dependency.</p>
 <code class="sourceCode R"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/install_resource.html">install_resource</a></span><span class="op">(</span>path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/find.package.html" class="external-link">find.package</a></span><span class="op">(</span><span class="st">"val.meter"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pkg.html">pkg</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">$</span><span class="va">name</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
+<pre><code><span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">&lt;error/val_meter_derive_dependency_error&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> field depends on field "desc" that threw an error during derivation</span></span></code></pre>
 <p>Sure enough, we can see that we’ve evaluated the internal field,
 <code>"desc"</code>, which produced a (mocked) error and prevented us
