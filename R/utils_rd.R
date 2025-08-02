@@ -180,17 +180,18 @@ rd_badge <- local({
     switch(
       style,
       link = rd_sexpr(
-        stage = "build",
+        stage = "install",
         results = "rd",
         quote = FALSE,
+        # omit rich link text for R<4.5.0 where it causes R CMD check warnings
         bquote(
           if (
             numeric_version(paste0(R.version$major, ".", R.version$minor)) <
               "4.5.0"
           ) {
-            .(paste(collapse = "\n", rd_link(content, dest = dest)))
-          } else {
             .(paste(collapse = "\n", content))
+          } else {
+            .(paste(collapse = "\n", rd_link(content, dest = dest)))
           }
         )
       ),
