@@ -26,25 +26,25 @@ pkg <- class_pkg <- new_class(
     #' @param permissions [`permissions`] granted for deriving data. If not
     #'   provided, the default from `policy` will be used.
     permissions = class_permissions
-    
+
     #' @param policy [`policy`] to use when converting input to resources. Most
     #'   commonly used for interpreting strings as resources.
   ),
-  
+
   constructor = function(
     resource,
     permissions,
     policy = opt("policy")
   ) {
     is_mocked <- S7::S7_inherits(resource, class_mock_resource)
-    
+
     # handle anything that can be converted into a resource - especially
     # useful for character shorthands
     if (!is_mocked) {
       # TODO: warn when we won't use the policy; when a resource is provided
       resource <- convert(resource, class_resource, policy = policy)
     }
-    
+
     if (!missing(permissions)) {
       permissions <- convert(permissions, class_permissions)
     } else {
@@ -62,16 +62,16 @@ pkg <- class_pkg <- new_class(
 )
 
 #' Generate Random Package(s)
-#' 
+#'
 #' Create a package object to simulate metric derivation. When generating a
 #' collection of packages, dependencies will realistically be made between
 #' packages.
-#' 
+#'
 #' @param n `integer(1L)` how many packages to simulate
 #' @param package `character(1L)` a package name
 #' @param version `character(1L)` a package version
-#' @param ... Additional arguments passed to `pkg` 
-#' 
+#' @param ... Additional arguments passed to `pkg`
+#'
 #' @export
 #' @name random_pkg
 random_pkg <- function(

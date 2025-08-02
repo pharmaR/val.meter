@@ -2,9 +2,9 @@
 #'
 #' A enumeration of tags that can be applied to a metric, to capture metadata
 #' more effectively.
-#' 
+#'
 #' `r roxygenize_enum_vector(tags)`
-#' 
+#'
 #' @param ... Values to include in enumerated vector. Multiple values will be
 #'   concatenated into a vector before instantiation. Special handling if the
 #'   first and only argument is a logical, interpreting `TRUE` as a vector of

@@ -34,3 +34,7 @@ vnapply <- function(
 tocamel <- function(x, ...) {
   paste0(toupper(substring(x, 1, 1)), tolower(substring(x, 2)))
 }
+
+rversion <- function() {
+  numeric_version(paste(collapse = ".", R.version[c("major", "minor")]))
+}
