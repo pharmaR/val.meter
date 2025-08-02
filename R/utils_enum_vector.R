@@ -20,16 +20,16 @@ enum_vector <- function(name, ..., enum = c(), error) {
       if (!all(self %in% enum)) fmt(error)
     }
   )
-  
+
   method(convert, list(NULL, cls)) <-
     function(from, to, ...) to(from)
-  
+
   method(convert, list(class_logical, cls)) <-
     function(from, to, ...) to(from)
-  
+
   method(convert, list(class_character, cls)) <-
     function(from, to, ...) to(from)
-  
+
   cls
 }
 

@@ -38,7 +38,7 @@ pkg_data_class <- function(...) {
 }
 
 #' @describeIn pkg_data_dispatch
-#' Parse a data field name from its S3 class. The inverse of 
+#' Parse a data field name from its S3 class. The inverse of
 #'   [`pkg_data_s3_class`].
 pkg_data_name_from_s3_class <- function(class_name) {
   signature_prefix <- "pkg_data_field_"
@@ -57,22 +57,23 @@ as_pkg_data <- function(field_name) {
 }
 
 #' Discover implemented data fields
-#' 
+#'
 #' This is used for finding all available metrics for use in [`metrics()`], as
 #' well as for tab completions for `<pkg>$ <TAB>` to auto-populate a list of
 #' available metrics.
-#' 
-#' @param ... A list of [`S7::S7_object`] classes. Not used if `args` is provided.
+#'
+#' @param ... A list of [`S7::S7_object`] classes. Not used if `args` is
+#'   provided.
 #' @param args A list of [`S7::S7_object`] classes, by default, collects the
 #'   elements of `...`.
-#' 
+#'
 #' @returns A `character` vector of field names.
-#' 
+#'
 #' @keywords internal
 #' @name pkg_data_dispatch
 get_data_derive_field_names <- function(..., args = list(...)) {
   if (length(args) == 0L) args <- list(class_pkg, class_resource)
-  
+
   all_methods <- function(x) {
     if (is.function(x) && inherits(x, "S7_generic")) {
       all_methods(x@methods)
@@ -82,26 +83,30 @@ get_data_derive_field_names <- function(..., args = list(...)) {
       x
     }
   }
-  
+
   # retrieve all methods
   methods <- all_methods(pkg_data_derive)
   signatures <- lapply(methods, attr, "signature")
+
+  # TODO: limit field names based on dispatch?
   valid_signatures <- Filter(x = signatures, function(signature) {
-    for (i in seq_along(args))
+    for (i in seq_along(args)) {
       if (!is_subclass(signature[[i]], args[[i]]))
         return(FALSE)
-    
+    }
     TRUE
   })
-  
+
+  valid_signatures
+
   # extract fields for which derivation is implemented given dispatch args
   signature_types <- unique(as.character(Filter(
-    Negate(is.null), 
+    Negate(is.null),
     lapply(signatures, function(signature) {
       signature[[3]]$class[[1]]
     })
   )))
-  
+
   # extract parsed data field names from class names
   Filter(Negate(is.na), pkg_data_name_from_s3_class(signature_types))
 }

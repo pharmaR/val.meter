@@ -1,7 +1,7 @@
 #' Derive package data information
-#' 
+#'
 #' Retrieve metadata about a data field.
-#' 
+#'
 #' @param field `character(1L)` field name to retrieve.
 #' @param ... Additional arguments unused.
 #'

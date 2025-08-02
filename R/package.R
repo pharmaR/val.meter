@@ -2,7 +2,7 @@
 #'
 #' @importFrom utils packageName packageVersion
 #' @importFrom stats rpois runif
-#' 
+#'
 #' @import cli
 #' @import options
 #' @import S7
@@ -22,6 +22,6 @@
 #'     words to use for package names. Gives extra weight to some science and
 #'     statistical words and R-isms that would make for fun surprises.}
 #' }
-#' 
+#'
 #' @source tidytext
 "pkg_words"

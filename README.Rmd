@@ -7,12 +7,12 @@ always_allow_html: yes
 
 # `val.meter`
 
-_validation-ready package quantification supporting regulatory use of R_
-
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/pharmaR/val.meter/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pharmaR/val.meter/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/pharmaR/val.meter/graph/badge.svg)](https://app.codecov.io/gh/pharmaR/val.meter)
 <!-- badges: end -->
+
+_validation-ready package quantification supporting regulatory use of R_
 
 ```{r, include = FALSE, cache = FALSE}
 knitr::opts_chunk$set(
@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README",
   out.width = "100%",
   out.lines = 8,
-  cache = TRUE,
+  cache = TRUE
 )
 
 Sys.setenv(ASCIICAST_KNITR_SVG = "TRUE")

@@ -121,7 +121,7 @@ method(
       # first try to evaluate as though this is a proper package, leveraging
       # real derivation rules for data that is interrelated
       pkg_data_derive(pkg, convert(resource, unknown_resource), field, ...),
-      
+
       # don't fall back if we've already raised an expected error
       val_meter_error = identity,
 
@@ -162,7 +162,7 @@ method(
       pkg = pkg,
       resource = resource,
       field = structure(
-        list(), 
+        list(),
         class = c(paste0("mock_", c(field$class, "data")), field$class)
       ),
       ...,

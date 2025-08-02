@@ -20,7 +20,8 @@ as_pkg_data(field_name)
 get_data_derive_field_names(..., args = list(...))
 }
 \arguments{
-\item{...}{A list of \code{\link[S7:S7_object]{S7::S7_object}} classes. Not used if \code{args} is provided.}
+\item{...}{A list of \code{\link[S7:S7_object]{S7::S7_object}} classes. Not used if \code{args} is
+provided.}
 
 \item{args}{A list of \code{\link[S7:S7_object]{S7::S7_object}} classes, by default, collects the
 elements of \code{...}.}

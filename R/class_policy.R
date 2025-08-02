@@ -3,7 +3,7 @@
 #' A descriptor of how package resources should be discovered, indicating
 #' which types of package resources should be considered and how they must be
 #' used to produce consistently sourced information.
-#' 
+#'
 #' The policy takes effect when packages are passed to [`pkg()`], limiting how
 #' package resources can be discovered. A policy can be applied globally using
 #' provided [`val.meter::options`].
@@ -53,7 +53,7 @@ policy <- class_policy <- new_class(
         install_resource
       ))
     ),
-    
+
     #' @param source_resources A list of additional resource types, which may be
     #'   used to discover a resource of an accepted type. For example, even if
     #'   only [`source_archive_resource()`]s are accepted, a [`repo_resource()`]
@@ -63,7 +63,7 @@ policy <- class_policy <- new_class(
       class_list,
       default = quote(list(repo_resource))
     ),
-    
+
     #' @param permissions Behavioral permissions provided for resource
     #'   acquisition. For example, downloading and installing source code for
     #'   more accurate metric evaluation requires the `"network"` and `"write"`

@@ -1,21 +1,21 @@
 #' Convert an object into a `DCF`-formatted string
-#' 
+#'
 #' @param x An object to convert
 #' @param ... Additional arguments unused
-#' 
+#'
 #' @returns A `DCF`-formatted string
-#' 
+#'
 #' @export
 to_dcf <- S7::new_generic("to_dcf", "x")
 
 #' Parse an object from a `DCF`-formatted string
-#' 
+#'
 #' @param x `character(n)` `DCF` vector
 #' @param to A `S7::S7_object` class to convert into
 #' @param ... Additional arguments unused
-#' 
+#'
 #' @returns An object of type `to`
-#' 
+#'
 #' @export
 from_dcf <- S7::new_generic("from_dcf", c("x", "to"))
 

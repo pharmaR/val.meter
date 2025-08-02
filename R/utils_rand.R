@@ -1,7 +1,9 @@
 random_pkg_name_styles <- local({
-  word <- function(x, n = 1, nprob = 1) with(pkg_words, {
-    sample(word[pos %in% x], sample(n, 1), prob = weight[pos %in% x])
-  })
+  word <- function(x, n = 1, nprob = 1) {
+    with(pkg_words, {
+      sample(word[pos %in% x], sample(n, 1), prob = weight[pos %in% x])
+    })
+  }
 
   prefix <- function(...) word("Prefix", ...)
   adjective <- function(...) word("Adjective", ...)
@@ -45,12 +47,16 @@ random_pkg_name_styles <- local({
       styles <- styles[startsWith(styles, "generic")]
       toupper(random_pkg_name(styles = styles))
     }),
-    "r-cute" = structure(weight = 0.5, function(...) with(pkg_words, {
-      gsub("er$", "r", sample(word[endsWith(word, "er")], 1))
-    })),
-    "r-cap" = structure(weight = 0.5, function(...) with(pkg_words, {
-      sub("r", "R", sample(word[grepl("r", word)], 1))
-    })),
+    "r-cute" = structure(weight = 0.5, function(...) {
+      with(pkg_words, {
+        gsub("er$", "r", sample(word[endsWith(word, "er")], 1))
+      })
+    }),
+    "r-cap" = structure(weight = 0.5, function(...) {
+      with(pkg_words, {
+        sub("r", "R", sample(word[grepl("r", word)], 1))
+      })
+    }),
     "r-prefix" = structure(weight = 0.1,
       function(..., styles = names(random_pkg_name_styles)) {
         styles <- styles[!startsWith(styles, "r-")]

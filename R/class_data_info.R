@@ -71,18 +71,18 @@ data_info <- class_data_info <- new_class(
         } else {
           self@description <- value
         }
-        
+
         self
       }
     ),
-    
+
     #' @param tags [`tags()`] a set of tags, used for classifying metrics into
     #'   categories.
     tags = new_property(
       class_tags,
       default = class_tags()
     ),
-    
+
     #' @param data_class an object that can be converted into an `S7_class`
     #'   using [`S7::as_class()`], used for enforcing a return class on data
     #'   derivations.
@@ -92,7 +92,7 @@ data_info <- class_data_info <- new_class(
         if (self@metric && !is_subclass(value, class_atomic)) {
           stop("metric data must have an atomic data class")
         }
-        
+
         self@data_class <- value
         self
       },
@@ -101,7 +101,7 @@ data_info <- class_data_info <- new_class(
         if (inherits(res, "error")) res$message
       }
     ),
-    
+
     #' @param suggests `character(n)` a vector of suggested packages needed
     #'   for deriving a piece of data. If the package is not available, the
     #'   metric will not be derived.
@@ -116,7 +116,7 @@ data_info <- class_data_info <- new_class(
         self
       }
     ),
-    
+
     #' @param permissions [`permissions()`] a vector of enumerated permissions
     #'   that must be granted before this piece of data will be derived.
     permissions = class_permissions
@@ -131,42 +131,41 @@ data_info <- class_data_info <- new_class(
 #
 local({
   method(format, data_info) <-
-      function(
+    function(
       x,
       ...,
       permissions = opt("policy")@permissions,
       tags = opt("tags")
     ) {
-      class <- if (S7::S7_inherits(x@data_class)) { # nolint: object_usage_linter.
+      class <- if (S7::S7_inherits(x@data_class)) {
         x@data_class@name
       } else {
         S7:::class_desc(x@data_class)
       }
-      
+
       is_installed <- vlapply(x@suggests, requireNamespace, quietly = TRUE)
       n_tags <- length(x@tags) + length(x@permissions) + length(x@suggests)
       any_tags <- n_tags > 0
-      
+
       c(
         # title
         if (length(x@title) > 0L) {
           fmt(style_bold("{x@title} "))
         },
-        
-        
+
         # data type
         fmt(style_dim("{class}")),
-        
+
         # description
         if (length(x@description) > 0L) {
           description <- paste0(
             collapse = " ",
             rd_to_txt(x@description, fragment = TRUE)
           )
-          
+
           fmt(style_italic("\n{description}"))
         },
-        
+
         if (any_tags) "\n",
         if (any_tags) {
           paste(collapse = " ", c(
@@ -175,13 +174,13 @@ local({
               color <- if (tag %in% tags) "blue" else "red"
               fmt(cli_tag(tag, color = color))
             }),
-            
+
             # permissions
             vcapply(x@permissions, function(permission) {
               color <- if (permission %in% permissions) "green" else "red"
               fmt(cli_tag(permission, scope = "req", color = color))
             }),
-            
+
             # suggests dependencies
             vcapply(seq_along(x@suggests), function(i) {
               color <- if (is_installed[[i]]) "green" else "red"
@@ -224,26 +223,21 @@ local({
           class = cnd_type("options", cnd = "message")
         )
       }
-      
+
       invisible(x)
     }
 })
 
 #' @include utils_rd.R
-method(toRd, data_info) <- function(obj, ...) {
-  has_tags <- length(obj@tags) > 0
-  requires_suggests <- length(obj@suggests) > 0
-  requires_permissions <- length(obj@permissions) > 0
-  
+method(toRd, data_info) <- function(obj, ...) {  # nolint: object_name_linter.
   class <- if (S7::S7_inherits(obj@data_class)) {
     obj@data_class@name
   } else {
     S7:::class_desc(obj@data_class)
   }
-  
+
   paste0(
-    "\\code{", class, "} ",
-    rd_deparse(obj@description),
+    "\\code{", class, "} ", rd_deparse(obj@description),
     "\n",
     toRd(obj@permissions), " ",
     toRd(class_suggests(obj@suggests)), " ",
@@ -268,7 +262,6 @@ print.val_meter_error <- function(x, ...) {
   cat(format(x, ...), "\n")
 }
 
-
 #' A list of package data information
 #'
 #' This class is largely superficial. It's primary purpose is the
@@ -282,7 +275,7 @@ data_info_list <- new_class("data_info_list", parent = class_list)
 local({
   method(print, data_info_list) <- function(x, ...) {
     msgs <- list()
-    
+
     # use individual element print methods
     to_print <- x
     class(to_print) <- NULL
@@ -298,21 +291,21 @@ local({
         }
       }
     )
-    
+
     if (length(msgs) > 0L) {
       cli_alert_info("Some metrics will not be evaluated")
     }
-    
+
     for (msg in unique(msgs)) {
       cli_text(style_dim(msg$message))
     }
-    
+
     invisible(res)
   }
 })
 
 #' @include utils_rd.R
-method(toRd, data_info_list) <- function(obj, ...) {
+method(toRd, data_info_list) <- function(obj, ...) {  # nolint: object_name_linter, line_length_linter.
   item_names <- vcapply(obj, prop, "title")
   item_names <- ifelse(!is.na(item_names), item_names, names(obj))
   pkg <- packageName()
@@ -320,14 +313,14 @@ method(toRd, data_info_list) <- function(obj, ...) {
     "\\section{Metrics}{",
     "The following metrics are provided by \\code{\\link{", pkg, "}}.",
     paste(collapse = "", "\n", vcapply(seq_along(obj), function(i) {
-      paste0("\\subsection{", item_names[[i]], "}{", toRd(obj[[i]]), "}")
+      paste0("\\subsection{", item_names[[i]], "}{\n", toRd(obj[[i]]), "\n}")
     })),
     "}"
   )
 }
 
 #' Catalog or calculate package metrics
-#' 
+#'
 #' When no object is passed, returns a list of possible metrics. When a [`pkg`]
 #' object is provided, return metrics calculated for that package. Metrics are
 #' a subset of all the data calculated over the course of assessing a package.
@@ -350,7 +343,7 @@ metrics <- function(x, ..., all = FALSE) {
   if (!missing(x)) {
     return(get_pkg_datas(x, index = TRUE, ..., all = all))
   }
-  
+
   fields <- get_data_derive_field_names()
   names(fields) <- fields
   fields <- lapply(fields, pkg_data_info)

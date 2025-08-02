@@ -4,12 +4,12 @@ describe("cnd_type()", {
       cnd_type(),
       "val_meter_error"
     )
-    
+
     expect_equal(
       cnd_type("test"),
       c("val_meter_test_error", "val_meter_error")
     )
-    
+
     expect_equal(
       cnd_type("test", cnd = "warning"),
       c("val_meter_test_warning", "val_meter_warning")
@@ -23,7 +23,7 @@ describe("cnd_class_from_type", {
       cnd_class_from_type("val_meter_test_error"),
       "test"
     )
-    
+
     expect_equal(
       cnd_class_from_type("val_meter_error"),
       ""

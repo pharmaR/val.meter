@@ -1,5 +1,5 @@
 #' Backport of tools md5sum bytes encoding
-#' 
+#'
 #' @keywords internal
 #' @noRd
 md5sum <- function(x) {

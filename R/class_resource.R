@@ -20,12 +20,12 @@ resource <- class_resource <- new_class(
   abstract = TRUE,
   properties = list(
     #' @param package `character(1L)` Package name. Optional, but should be
-    #'   provided if possible. 
+    #'   provided if possible.
     package = new_property(class_character, default = NA_character_),
-    
-    #' @param version `character(1L)` Package version, provided as a string. 
+
+    #' @param version `character(1L)` Package version, provided as a string.
     version = new_property(class_character, default = NA_character_),
-    
+
     #' @param id `integer(1L)` optional id used for tracking resources
     #'   throughout execution. Generally not provided directly, as new objects
     #'   automatically get a unique identifier. For example, the package source
@@ -34,7 +34,7 @@ resource <- class_resource <- new_class(
     #'   Because all of these represent the same package, they retain the same
     #'   `id`. Primarily the `id` is used for isolating temporary files.
     id = new_property(class_integer, default = quote(next_id())),
-    
+
     #' @param md5 `character(1L)` md5 digest of the package source code tarball.
     #'   This is not generally provided directly, but is instead derived when
     #'   acquiring resources.
@@ -43,14 +43,14 @@ resource <- class_resource <- new_class(
 )
 
 #' Mocked Package Resource
-#' 
+#'
 #' The mocked resource is not intended to be used for deriving real package
 #' data. Its purpose is as a signal to internals that we want to generate
 #' fake, or "mocked", package data. The only practical place where a mocked
 #' resource is needed is when adding your own data implementations and adding
 #' a custom data simulation method.
 #'
-#' @family resources 
+#' @family resources
 #' @export
 mock_resource <- class_mock_resource <- new_class(
   "mock_resource",
@@ -59,10 +59,10 @@ mock_resource <- class_mock_resource <- new_class(
 )
 
 #' Unknown Package Resource
-#' 
+#'
 #' Used as a placeholder when the exact source of metrics is unknown. Most,
 #' commonly when a package object is reconstructed from a `PACKAGES` file.
-#' 
+#'
 #' @family resources
 #' @keywords internal
 unknown_resource <- class_unknown_resource <- new_class(
@@ -72,20 +72,20 @@ unknown_resource <- class_unknown_resource <- new_class(
 )
 
 #' A Resource Collection
-#' 
+#'
 #' The [`multi_resource`] can be used to permit sourcing package information
 #' from multiple resources.
-#' 
+#'
 #' Most prominently, these are exposed when a [`pkg()`] is assumed from a
 #' character value. With only a package name, `val.meter` will search for
 #' resources from acceptable sources according to your [`policy`]. If
 #' more than one acceptable resource is discovered, they are combined into
-#' a [`multi_resource`]. 
-#' 
+#' a [`multi_resource`].
+#'
 #' During data derivation, each of the bundled resources is used to attempt
 #' to derive package data. The package only raises an error when no resource
 #' can successfully derive the expected data.
-#' 
+#'
 #' @family resources
 #' @export
 multi_resource <- class_multi_resource <- new_class(
@@ -134,7 +134,7 @@ local_resource <- class_local_resource <- new_class(
 )
 
 #' Abstract Class for Remote Package Resources
-#' 
+#'
 #' @family resources
 #' @export
 remote_resource <- class_remote_resource <- new_class(
@@ -145,15 +145,15 @@ remote_resource <- class_remote_resource <- new_class(
 )
 
 #' Abstract Class for Local Package Resources
-#' 
+#'
 #' Local source code is distinct from other local sources because it carries the
 #' assumption that all files needed to fully reproduce the original package are
 #' bundled alongside.
-#' 
+#'
 #' Unlike package archives that might be distributed or local installs, source
 #' code contains all tests and files which may be ignored as part of the build
 #' process, yet may be informative for metric assessment.
-#' 
+#'
 #' @family resources
 #' @export
 local_source_resource <- class_local_source_resource <- new_class(
@@ -210,7 +210,7 @@ repo_resource <- class_repo_resource <- new_class(
   #' @inheritParams resource
   parent = remote_resource,
   properties = list(
-    #' @param repo `character(1L)` The repository url from which the package 
+    #' @param repo `character(1L)` The repository url from which the package
     #'   is to be sourced.
     repo = class_character
   )
@@ -236,7 +236,7 @@ cran_repo_resource <- class_cran_repo_resource <- new_class(
         cran_mirrors <- getCRANmirrors(local.only = TRUE)
         if (!value %in% cran_mirrors$URL) {
           paste0(
-            "CRAN repo resources must be among the listed mirrors in", 
+            "CRAN repo resources must be among the listed mirrors in",
             "`getCRANmirrors()`"
           )
         }
@@ -339,7 +339,7 @@ method(convert, list(class_character, class_resource)) <-
 
       from_idx <- from_idx + 1L
     }
-    
+
     # filter out undiscovered resource types
     resources <- utils::head(resources, length(policy@accepted_resources))
     resources <- Filter(Negate(is.null), resources)
@@ -411,7 +411,7 @@ method(convert, list(class_character, class_source_code_resource)) <-
         !file.exists(file.path(from, "INDEX")) &&
         file.exists(desc_path <- file.path(from, "DESCRIPTION"))
     ) {
-      desc <- read.dcf(desc_path)[1,]
+      desc <- read.dcf(desc_path)[1, ]
       return(to(
         package = desc[["Package"]],
         version = desc[["Version"]],

@@ -234,22 +234,22 @@ no vulnerabilities just because it shares a name with one of them.
 ```{r}
 impl_data(
   "oysteR_vulnerability_df",
-  
+
   # declare our suggested dependency on {oysteR}
   suggests = "oysteR",
-  
+
   # require that users opt-in to network requests as part of this data
   permissions = permissions("network"),
-  
+
   # assert that we expect a `data.frame` (S3 class) object
   class = "data.frame",
-  
+
   # we'll only implement this for our cran_repo_resource
   for_resource = cran_repo_resource,
 
   function(pkg, ...) {
     oysteR::audit(
-      pkg = pkg$name, 
+      pkg = pkg$name,
       version = pkg$version,
       type = "cran",
       verbose = FALSE
@@ -300,11 +300,16 @@ orig_require_namespace <- base::requireNamespace
 testthat::with_mocked_bindings(
   .package = "base",
   requireNamespace = function(package, ...) {
-    if (package == "oysteR") return(FALSE)
+    if (package == "oysteR") FALSE
     else orig_require_namespace(package, ...)
   },
   {
-    r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
+    r <- cran_repo_resource(
+      "haven",
+      "0.1.1",
+      repo = "https://cloud.r-project.org/"
+    )
+
     p <- pkg(r, permissions = "network")
     p$oysteR_vulnerability_df
   }
