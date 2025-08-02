@@ -9,6 +9,10 @@
 \alias{rd_deparse}
 \alias{rd_sexpr}
 \alias{rd_badge}
+\alias{rd_figure}
+\alias{rd_ifelse}
+\alias{rd_href}
+\alias{rd_link}
 \title{Rd utilities}
 \usage{
 rd_empty()
@@ -37,6 +41,14 @@ rd_badge(
   url = "https://img.shields.io/badge/",
   params = list(style = "flat-square")
 )
+
+rd_figure(filename, alt, options = list(alt = alt))
+
+rd_ifelse(condition, true, false)
+
+rd_href(content, dest)
+
+rd_link(content, dest)
 }
 \description{
 These functions are used primarily for generating documentation
@@ -59,6 +71,14 @@ documented using \code{\link{pkg_data_info}} metadata objects.
 
 \item \code{rd_badge()}: Generate a badge, using shields.io and caching svg images for display in
 html output.
+
+\item \code{rd_figure()}: Generate \verb{\figure{}} Rd output
+
+\item \code{rd_ifelse()}: Generate \verb{\ifelse{}} Rd output
+
+\item \code{rd_href()}: Generate \verb{\\href\{\}} Rd output
+
+\item \code{rd_link()}: Generate \verb{\link[]\{\}} Rd output
 
 }}
 \keyword{internal}

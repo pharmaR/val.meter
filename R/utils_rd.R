@@ -168,41 +168,73 @@ rd_badge <- local({
 
     cache_badge(svg_url, svg_filename)
 
-    html <- paste0(
-      "\\figure{", svg_filename, "}",
-      "{options: alt='[", message, "]'}"
-    )
-
+    html <- rd_figure(svg_filename, alt = paste0("[", message, "]"))
     text <- paste0(
       "\\strong{[",
       label, ifelse(nzchar(label), "::", ""), message,
       "]}"
     )
 
-    # links with rich content only supported past 4.5.0
-    if (identical(style, "link") && rversion() < "4.5.0") {
-      style <- "raw"
-    }
+    content <- rd_ifelse("html", html, text)
 
-    paste0(
-      switch(
-        style,
-        link = paste0(
-          "\\link",
-          ifelse(nzchar(dest), dest, "")
-        ),
-        href = paste0(
-          "\\href",
-          ifelse(nzchar(dest), paste0("{", dest, "}"), "")
-        ),
-        ""
+    switch(
+      style,
+      link = rd_sexpr(
+        stage = "build",
+        results = "rd",
+        quote = FALSE,
+        bquote(
+          if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {
+            .(paste(collapse = "\n", rd_link(content, dest = dest)))
+          } else {
+            .(paste(collapse = "\n", content))
+          }
+        )
       ),
-      switch(style, link = , href = "{", ""),
-      "\\ifelse{html}{", html, "}{", text, "}",
-      switch(style, link = , href = "}", "")
+      href = rd_href(content, dest = dest),
+      content
     )
   }
 })
+
+#' @describeIn utils-rd
+#' Generate `\figure{}` Rd output
+rd_figure <- function(filename, alt, options = list(alt = alt)) {
+  # vectorize for option lengths
+  length.out <- max(viapply(options, length))
+  options <- lapply(options, rep_len, length.out = length.out)
+  options <- lapply(
+    seq_len(length.out),
+    function(n) lapply(options, function(x, i) x[[i]], i = n)
+  )
+
+  # build vector of option strings
+  options_strs <- vcapply(
+    options,
+    function(x) paste(collapse = " ", names(x), "=", vcapply(x, deparse))
+  )
+
+  paste0("\\figure{", filename, "}", "{options: ", options_strs, "}")
+}
+
+#' @describeIn utils-rd
+#' Generate `\ifelse{}` Rd output
+rd_ifelse <- function(condition, true, false) {
+  paste0("\\ifelse{", condition, "}", "{", true, "}", "{", false, "}")
+}
+
+#' @describeIn utils-rd
+#' Generate `\href{}` Rd output
+rd_href <- function(content, dest) {
+  paste0("\\href{", dest, "}", "{", content, "}")
+}
+
+#' @describeIn utils-rd
+#' Generate `\link[]{}` Rd output
+rd_link <- function(content, dest) {
+  if (!missing(dest)) dest <- paste0("[", dest, "]")
+  paste0("\\link", dest, "{", content, "}")
+}
 
 #' Support rendering metrics to Rd
 #'
@@ -220,7 +252,7 @@ new_external_generic("tools", "toRd", "obj")
 
 #' @include class_tags.R
 method(toRd, class_tags) <- function(obj, ...) {  # nolint: object_name_linter.
-  dest <- paste0("[", packageName(), ":tags]")
+  dest <- paste0(packageName(), ":tags")
   paste(collapse = "\n", rd_badge(obj, dest = dest, style = "link"))
 }
 
@@ -228,16 +260,16 @@ method(toRd, class_tags) <- function(obj, ...) {  # nolint: object_name_linter.
 method(toRd, class_permissions) <- function(obj, ...) {  # nolint: object_name_linter, line_length_linter.
   dest <- paste0("[", packageName(), ":permissions]")
 
-  scope_badge <- function(scope, color) {
-    rd_badge(label = "req", scope, color = color, dest = dest)
+  scope_badge <- function(permission, color) {
+    rd_badge(label = "req", permission, color = color, dest = dest)
   }
 
-  paste(collapse = " ", vcapply(obj, function(scope) {
+  paste(collapse = " ", vcapply(obj, function(permission) {
     rd_sexpr(stage = "render", results = "rd", quote = FALSE, bquote(
-      if (!is.na(match(.(scope), getOption("val.meter.permissions"))))
-        .(scope_badge(scope, "green"))
+      if (!is.na(match(.(permission), getOption("val.meter.permissions"))))
+        .(scope_badge(permission, "green"))
       else
-        .(scope_badge(scope, "red"))
+        .(scope_badge(permission, "red"))
     ))
   }))
 }
