@@ -6,7 +6,25 @@
 \usage{
 tags(...)
 }
+\arguments{
+\item{...}{Values to include in enumerated vector. Multiple values will be
+concatenated into a vector before instantiation. Special handling if the
+first and only argument is a logical, interpreting \code{TRUE} as a vector of
+all enumerated values and \code{FALSE} as a zero-length vector.}
+}
 \description{
 A enumeration of tags that can be applied to a metric, to capture metadata
 more effectively.
 }
+\section{Accepted Values}{
+\itemize{
+\item \code{"adoption"}
+\item \code{"lifecycle management"}
+\item \code{"best practice"}
+\item \code{"execution"}
+\item \code{"transient"}
+\item \code{"version-independent"}
+}
+}
+
+\keyword{safeguard}

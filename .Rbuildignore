@@ -1,0 +1,10 @@
+^data-raw$
+^.*\.Rproj$
+^\.Rproj\.user$
+^pkgdown$
+^docs$
+^LICENSE.md$
+^README\.Rmd$
+^man/figures/README
+^README_cache
+^\.github$

@@ -1,0 +1,81 @@
+development:
+  mode: auto
+
+url: https://pharmar.github.io/val.meter
+template:
+  bootstrap: 5
+  theme: github-light
+  theme-dark: github-dark
+  light-switch: true
+  bslib: 
+    border-color: transparent
+    border-radius: 0.15rem
+    btn-border-radius: 0.25rem
+
+navbar:
+  bg: primary
+
+# minimally customized from example in
+# https://pkgdown.r-lib.org/reference/build_reference.html#figures
+figures:
+  dev: svg
+  dpi: 96
+  dev.args: []
+  fig.ext: svg
+  fig.width: 7
+  fig.height: 4
+  fig.align: center
+  fig.retina: 2
+  bg: NA
+  other.parameters: []
+  
+reference:
+  - title: >
+      Package metric workflow
+    desc: >
+      The central tools for measuring packages.
+  - contents: has_keyword("workflow")
+  
+  - subtitle: >
+      Execution controls
+    desc: >
+      Safeguards to ensure that you're measuring precisely the package code you
+      intend, in precisely the ways you intend to measure them.
+  - contents:
+      - has_keyword("safeguard")
+      - options
+  
+  - title: >
+      Package resources
+    desc: >
+      Concrete classes which characterize sources of package information.
+  - contents: has_concept("resources")
+  
+  - title: >
+      Extending and integrating with `val.meter`
+    desc: >
+      Various developer-facing functions, used for extending `val.meter`
+       
+  - subtitle: >
+      `S7` Generics
+  - contents:
+      - pkg_data_derive
+      - pkg_data_info
+  
+  - subtitle: >
+      `S7` Method Implementation Helpers
+  - contents:
+      - pkg_data
+      
+  - subtitle: >
+      Random package generation
+  - contents:
+      - random_pkg
+      - pkg_words
+        
+  - subtitle: Miscellaneous
+  - contents:
+      - to_dcf
+      - from_dcf
+      - pkg_from_dcf
+      - error

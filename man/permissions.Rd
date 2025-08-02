@@ -2,9 +2,15 @@
 % Please edit documentation in R/class_permissions.R
 \name{permissions}
 \alias{permissions}
-\title{Package Data Scopes Class}
+\title{Package Data Permissions Class}
 \usage{
 permissions(...)
+}
+\arguments{
+\item{...}{Values to include in enumerated vector. Multiple values will be
+concatenated into a vector before instantiation. Special handling if the
+first and only argument is a logical, interpreting \code{TRUE} as a vector of
+all enumerated values and \code{FALSE} as a zero-length vector.}
 }
 \description{
 A descriptor of behaviors required for deriving package data. Each policy
@@ -17,3 +23,12 @@ policy will be derived.
 Given a policy, only assessments which conform to all enabled flags will be
 assessed.
 }
+\section{Accepted Values}{
+\itemize{
+\item \code{"write"}
+\item \code{"execution"}
+\item \code{"network"}
+}
+}
+
+\keyword{safeguard}

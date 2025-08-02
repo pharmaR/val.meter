@@ -1,0 +1,199 @@
+---
+title: "riskmetric Comparison"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{riskmetric Comparison}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+`val.meter` is builds on years of experience from `riskmetric` to arrive at a
+tool that is more robust, more rigorous and more explicit. We've learned a lot
+by supporting `riskmetric` - both ideas that we want to carry forward and
+concepts that we plan to leave in the past.
+
+# Design Philosophy
+
+Fundamentally, the impetus for the change boils down to just a couple core
+philosophies of `riskmetric` that manifested in an unpleasant user experience.
+
+## Precise and reproducible
+
+`riskmetric` was designed to be accommodating, but not precise. When we launched
+development on `riskmetric`, our primary intended audience was package _users_,
+who might need to justify to a system administrator why they should have access
+to a R package. These are analysts, statisticians and data scientists who may
+not even have permission to install the package in order to make a case for why
+it's rigorously developed. For this reason, we tried to build `riskmetric` to be
+accommodating to this use case, searching for information wherever we could find
+it. Unfortunately, this came with a sacrifice of reproducibility.
+
+Some metrics could vary heavily depending on where you would gather this
+information from.
+
+`val.meter` aims to address this by
+
+1. Having far more rigorous default sources
+2. Requiring that users opt-in to more variable metrics
+3. Giving users tools to filter metrics by qualities of those metrics (tags), 
+   for example, filtering out _transient_ metrics - those that should not be
+   expected to be reproduced.
+   
+## Unopinionated
+
+When `riskmetric` launched, the idea of a unified evaluation criteria was beyond
+our initial hopes for how the regulatory R landscape could evolve. We built
+`riskmetric` under the assumption that each regulatory sponsor would come with
+their own existing expectations for software quality. We built `riskmetric`
+with some naive defaults to demonstrate the workflow, with the right hooks
+exposed to tailor the way metrics were calculated.
+
+What we found was that nearly everyone sticks with the defaults. Taking the
+defaults as established guidance, organizations quickly discovered that the
+conclusions drawn from trivial scoring mechanisms leads to counterintuitive
+results.
+
+Further, by trying to score packages, we embed opinions on how to evaluate
+individual packages. For example, we transform lifetime downloads - which can 
+be any positive number - into a 0-to-1 scale. This is non-trivial and may not
+map to the expectations across users. The problem is compounded when users are
+expecting that a download count score on a 0-to-1 scale reflects the risk of
+`R CMD check` error counts mapped to a 0-to-1 scale. We never intended for
+this risk scale to be completely consistently applied, nor was it intended to be
+uncritically used for decision-making. 
+
+In `val.meter` we're glad to announce that we have solved this problem! By
+avoiding scores altogether, and instead focusing only on concrete, unopinionated
+measures of packages, we hope to focus discussions in `val.meter` on the
+calculation of these metrics, not on their interpretation. 
+
+Don't worry! We still plan to advocate for industry standards that help wit the
+decision-making, but that work will live in a separate package to allow folks
+with the most relevant expertise to focus on each particular problem. We hope
+that this makes `val.meter` a more welcoming environment for developers and that
+validation experts and regulators can have more direct conversations about
+interpretation when advocating for sensible defaults.
+
+# Technical Details
+
+## Assertive package discovery
+
+First and foremost, `val.meter` is far more restrictive about how package
+metrics are calculated by default. We still expose a user-friendly interface to
+start the process with the `pkg()` function (similar to `riskmetric::pkg_ref()`)
+function, but how it discovers potential sources of package information is
+controlled by a `policy()`, which can be configured globally or as a parameter.
+
+```{r}
+library(val.meter)
+pkg("val.meter") # when installed locally
+```
+
+Here we discover our local installation of `val.meter`, but we would fail to
+discover it if it wasn't installed, even for packages available in your
+available repositories.
+
+```{r, eval = FALSE}
+pkg("val.meter") # when not installed
+```
+
+```{r, error = TRUE, echo = FALSE}
+testthat::with_mocked_bindings(
+  .package = "base",
+  find.package = function(x, ...) character(0L),
+  pkg("val.meter")
+)
+```
+
+This default behavior may still evolve, but its intention is clear: We want to
+be decisive about package sources and only permit high quality reproducible
+sources by default.
+
+## Assertive behaviors
+
+Similarly, _how_ packages are evaluated is controlled by providing
+`permissions()` to `val.meter` which require users to opt-in to behaviors as
+they desire.
+
+Permissions include behaviors like executing code, accessing resources over the
+network and writing to your local filesystem. Each of these permissions must
+be granted before metrics which require these behaviors will be executed.
+
+Similarly, some characteristics of metrics are not necessarily sensitive, but
+may characterize metrics that you wish to include or exclude. These
+characteristics are categorized as `tags()`. For example, the number of package
+downloads are tagged as `"transient"` and `"version-independent"` because they
+will grow over time, even for the exact same package source, and they are
+aggregated across package versions.
+
+When exploring metrics, we'll even see a little indicator that these are enabled
+or disabled.
+
+```{r}
+metrics()$downloads_total
+```
+
+And after permitting network access, we'll see
+
+```{r, include = FALSE}
+local({
+  permissive_policy <- policy(permissions = TRUE)
+  orig_options <- options(val.meter.policy = permissive_policy)
+  print(metrics()$downloads_total)
+  options(orig_options)
+})
+```
+
+```{r, eval = FALSE}
+permissive_policy <- policy(permissions = FALSE)
+options(val.meter.policy = permissive_policy)
+
+metrics()$downloads_total
+```
+
+## Direct Calculation
+
+Assessments, metrics and scores! Oh, my! These terms were used inconsistently
+throughout `riskmetric` in ways that made the package both hard to communicate
+about and confusing to use. We've already mentioned that we're doing away with
+opinionated scores. You might be surprised to learn that despite all the talk
+of metrics, we're also doing away with assessments and metrics!
+
+Now, there is only package `"data"` - a catch-all for any piece of information
+derived about a package. We still refer to some data as "metrics", but in
+practical terms these are just a subset of data with a couple additional 
+constraints - metrics are always simple (`atomic`) data types and they get a
+little flag that helps us label data as useful for decision-making, but that
+is the extent of the difference.
+
+Fundamentally, the workflow has been reduced to a single step: a package object
+derives data.
+
+## Extensible
+
+In `riskmetric`, there's a noticeable lack of a vulnerability scanning metric.
+Metrics which incur new dependencies were always a challenge, forcing developers
+to decide between package footprint and features.
+
+In `val.meter` we've learned from this challenge to build in metric-specific
+suggested dependencies and to make it easier to register metrics from other
+packages.
+
+## Metric Metadata
+
+In `riskmetric`, discovering metrics was not as easy as it should have been.
+Metrics were documented, but the exact details of calculation sometimes required
+a deep dive into the package.
+
+We're aiming to make metrics far more discoverable. Every piece of package data
+now carries additional metadata - tagged characteristics, required permissions, 
+a richly formatted description and short-form title. Having this information
+tied to each metric will make it easier to report and communicate consistently
+across R Validation Hub products.

@@ -1,38 +1,52 @@
+#' Convert an object into a `DCF`-formatted string
+#' 
+#' @param x An object to convert
+#' @param ... Additional arguments unused
+#' 
+#' @returns A `DCF`-formatted string
+#' 
 #' @export
 to_dcf <- S7::new_generic("to_dcf", "x")
 
+#' Parse an object from a `DCF`-formatted string
+#' 
+#' @param x `character(n)` `DCF` vector
+#' @param to A `S7::S7_object` class to convert into
+#' @param ... Additional arguments unused
+#' 
+#' @returns An object of type `to`
+#' 
 #' @export
 from_dcf <- S7::new_generic("from_dcf", c("x", "to"))
 
-#' @export
 method(to_dcf, class_any) <- function(x, ...) {
-  paste(deparse(x), collapse = " ")
+  paste(deparse(x, width.cutoff = 500L), collapse = " ")
 }
 
-#' @export
 method(to_dcf, class_atomic) <- function(x, ...) {
   x <- unclass(x)
   attributes(x) <- attributes(x)[intersect(names(attributes(x)), "names")]
   paste(deparse(x), collapse = " ")
 }
 
+method(to_dcf, class_integer) <- function(x, ...) {
+  paste(deparse(as.numeric(x), width.cutoff = 500L), collapse = " ")
+}
+
 #' @include utils_s7.R
-#' @export
 method(from_dcf, list(class_character, S7::new_S3_class("S7_class"))) <-
   function(x, to) {
     class_name <- paste(c(to@package, to@name), collapse = "::")
     from_dcf(x, structure(list(), class = c(class_name, "S7_object")))
   }
 
-#' @export
 method(from_dcf, list(class_character, class_any)) <-
   function(
-    x,
-    to,
-    ...,
-    eval = TRUE,
-    fragment = c("key-values", "key-value", "value")
-  ) {
+      x,
+      to,
+      ...,
+      eval = TRUE,
+      fragment = c("key-values", "key-value", "value")) {
     fragment <- match.arg(fragment)
     switch(fragment,
       "key-values" = {

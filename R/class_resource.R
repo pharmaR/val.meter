@@ -12,87 +12,154 @@
 #' a reference may populate a local directory with the source code of the
 #' package.
 #'
+#' @family resources
 #' @export
 #' @name resource
 resource <- class_resource <- new_class(
   "resource",
   abstract = TRUE,
   properties = list(
-    #' @field optional id used for tracking resources throughout execution.
-    #'   For example, the package source code from a [`repo_resource()`] may be
-    #'   downloaded to add a [`archive_source_resource()`] and add it to a new
-    #'   [`multi_resource()`]. Because all of these represent the same package,
-    #'   they retain the same `id`. Primarily the `id` is used for
-    #'   isolating temporary files.
-    id = new_property(class_integer, default = quote(next_id())),
-    md5 = new_property(class_character, default = NA_character_),
+    #' @param package `character(1L)` Package name. Optional, but should be
+    #'   provided if possible. 
     package = new_property(class_character, default = NA_character_),
-    version = new_property(class_character, default = NA_character_)
+    
+    #' @param version `character(1L)` Package version, provided as a string. 
+    version = new_property(class_character, default = NA_character_),
+    
+    #' @param id `integer(1L)` optional id used for tracking resources
+    #'   throughout execution. Generally not provided directly, as new objects
+    #'   automatically get a unique identifier. For example, the package source
+    #'   code from a [`repo_resource()`] may be downloaded to add a
+    #'   [`source_archive_resource()`] and add it to a new [`multi_resource()`].
+    #'   Because all of these represent the same package, they retain the same
+    #'   `id`. Primarily the `id` is used for isolating temporary files.
+    id = new_property(class_integer, default = quote(next_id())),
+    
+    #' @param md5 `character(1L)` md5 digest of the package source code tarball.
+    #'   This is not generally provided directly, but is instead derived when
+    #'   acquiring resources.
+    md5 = new_property(class_character, default = NA_character_)
   )
 )
 
-unknown_resource <- class_unknown_resource <- new_class(
-  "unknown_resource",
-  parent = resource,
-  properties = list(
-    package = class_character,
-    version = class_character
-  )
-)
-
-multi_resource <- class_multi_resource <- new_class(
-  "multi_resource",
-  parent = resource,
-  properties = list(
-    resources = new_property(
-      class_list,
-      validator = function(value) {
-        if (!all(vlapply(value, S7_inherits, resource)))
-          "can only be constructed from a list of resources"
-      }
-    )
-  )
-)
-
-#' Package Source Code Resource Class
+#' Mocked Package Resource
+#' 
+#' The mocked resource is not intended to be used for deriving real package
+#' data. Its purpose is as a signal to internals that we want to generate
+#' fake, or "mocked", package data. The only practical place where a mocked
+#' resource is needed is when adding your own data implementations and adding
+#' a custom data simulation method.
 #'
-#' Note that in some cases, this is distinct from the source code extracted
-#' from a package archive, as some files are sometimes excluded from package
-#' builds (uploaded to repositories). This can include additional development-
-#' related metadata files, but can sometimes include additional tests that take
-#' too long to run by automated systems by the repository host.
-#'
-#' Commonly, this may mean omitting tests to avoid failures on CRAN's automated
-#' build systems.
-#'
+#' @family resources 
 #' @export
-local_resource <- class_local_resource <- new_class(
-  "local_resource",
-  parent = resource,
-  abstract = TRUE,
-  properties = list(
-    path = new_property(
-      class_character,
-      default = NA_character_,
-      validator = function(value) {
-        if (length(value) != 1L || is.na(value) || !file.exists(value))
-          "invalid path"
-      }
-    )
-  )
-)
-
-#' @export
-remote_source_resource <- class_remote_source_resource <- new_class(
-  "remote_source_resource",
-  abstract = TRUE,
+mock_resource <- class_mock_resource <- new_class(
+  "mock_resource",
+  #' @inheritParams resource
   parent = resource
 )
 
+#' Unknown Package Resource
+#' 
+#' Used as a placeholder when the exact source of metrics is unknown. Most,
+#' commonly when a package object is reconstructed from a `PACKAGES` file.
+#' 
+#' @family resources
+#' @keywords internal
+unknown_resource <- class_unknown_resource <- new_class(
+  "unknown_resource",
+  #' @inheritParams resource
+  parent = resource
+)
+
+#' A Resource Collection
+#' 
+#' The [`multi_resource`] can be used to permit sourcing package information
+#' from multiple resources.
+#' 
+#' Most prominently, these are exposed when a [`pkg()`] is assumed from a
+#' character value. With only a package name, `val.meter` will search for
+#' resources from acceptable sources according to your [`policy`]. If
+#' more than one acceptable resource is discovered, they are combined into
+#' a [`multi_resource`]. 
+#' 
+#' During data derivation, each of the bundled resources is used to attempt
+#' to derive package data. The package only raises an error when no resource
+#' can successfully derive the expected data.
+#' 
+#' @family resources
+#' @export
+multi_resource <- class_multi_resource <- new_class(
+  "multi_resource",
+  #' @inheritParams resource
+  parent = resource,
+  properties = list(
+    #' @param resources `list` of [`resource`]s
+    resources = new_property(
+      class_list,
+      validator = function(value) {
+        if (!all(vlapply(value, S7_inherits, resource))) {
+          "can only be constructed from a list of resources"
+        }
+      }
+    )
+  )
+)
+
+#' Abstract Class for Local Package Resources
+#'
+#' This abstract class represents any type of package resource that is derived
+#' from files locally on the filesystem.
+#'
+#' @family resources
+#' @export
+local_resource <- class_local_resource <- new_class(
+  "local_resource",
+  #' @inheritParams resource
+  parent = resource,
+  abstract = TRUE,
+  properties = list(
+    #' @param path `character(1L)` file system path to the local package
+    #'   resource.
+    path = new_property(
+      class_character,
+      default = NA_character_,
+      setter = setter_try_from(),
+      validator = function(value) {
+        # if (length(value) != 1L || is.na(value) || !file.exists(value)) {
+        #   "invalid path"
+        # }
+      }
+    )
+  )
+)
+
+#' Abstract Class for Remote Package Resources
+#' 
+#' @family resources
+#' @export
+remote_resource <- class_remote_resource <- new_class(
+  "remote_resource",
+  abstract = TRUE,
+  #' @inheritParams resource
+  parent = resource
+)
+
+#' Abstract Class for Local Package Resources
+#' 
+#' Local source code is distinct from other local sources because it carries the
+#' assumption that all files needed to fully reproduce the original package are
+#' bundled alongside.
+#' 
+#' Unlike package archives that might be distributed or local installs, source
+#' code contains all tests and files which may be ignored as part of the build
+#' process, yet may be informative for metric assessment.
+#' 
+#' @family resources
 #' @export
 local_source_resource <- class_local_source_resource <- new_class(
   "local_source_resource",
   abstract = TRUE,
+  #' @inheritParams local_resource
   parent = local_resource
 )
 
@@ -100,19 +167,23 @@ local_source_resource <- class_local_source_resource <- new_class(
 #'
 #' The extracted source code from a package's build archive.
 #'
+#' @family resources
 #' @export
 source_archive_resource <- class_source_archive_resource <- new_class(
   "source_archive_resource",
-  parent = local_resource,
+  #' @inheritParams local_resource
+  parent = local_resource
 )
 
 #' Package Install Resource Class
 #'
 #' An installed version of a package, as would be found in a package library.
 #'
+#' @family resources
 #' @export
 install_resource <- class_install_resource <- new_class(
   "install_resource",
+  #' @inheritParams local_resource
   parent = local_resource
 )
 
@@ -120,9 +191,11 @@ install_resource <- class_install_resource <- new_class(
 #'
 #' A union of all package resource classes that have local source code.
 #'
+#' @family resources
 #' @export
 source_code_resource <- class_source_code_resource <- new_class(
   "source_code_resource",
+  #' @inheritParams local_source_resource
   parent = local_source_resource
 )
 
@@ -130,12 +203,45 @@ source_code_resource <- class_source_code_resource <- new_class(
 #'
 #' A reference to a listing in an R package repository.
 #'
+#' @family resources
 #' @export
 repo_resource <- class_repo_resource <- new_class(
   "repo_resource",
-  parent = resource,
+  #' @inheritParams resource
+  parent = remote_resource,
   properties = list(
+    #' @param repo `character(1L)` The repository url from which the package 
+    #'   is to be sourced.
     repo = class_character
+  )
+)
+
+#' Package CRAN Repository Resource Class
+#'
+#' A reference to a listing in CRAN. CRAN Resources must be from one of the
+#' repositories listed in [`utils::getCRANmirrors()`]. To assert that a new url
+#' is also a CRAN mirror, please follow instructions in
+#' [`utils::getCRANmirrors()`].
+#'
+#' @family resources
+#' @export
+cran_repo_resource <- class_cran_repo_resource <- new_class(
+  "cran_repo_resource",
+  #' @inheritParams repo_resource
+  parent = repo_resource,
+  properties = list(
+    repo = new_property(
+      class_character,
+      validator = function(value) {
+        cran_mirrors <- getCRANmirrors(local.only = TRUE)
+        if (!value %in% cran_mirrors$URL) {
+          paste0(
+            "CRAN repo resources must be among the listed mirrors in", 
+            "`getCRANmirrors()`"
+          )
+        }
+      }
+    )
   )
 )
 
@@ -143,11 +249,14 @@ repo_resource <- class_repo_resource <- new_class(
 #'
 #' A reference to a listing in an R package git source code repository.
 #'
+#' @family resources
 #' @export
 git_resource <- class_git_resource <- new_class(
   "git_resource",
-  parent = remote_source_resource,
+  #' @inheritParams remote_resource
+  parent = remote_resource,
   properties = list(
+    #' @param http_url The git repository url
     http_url = class_character
   )
 )
@@ -174,7 +283,9 @@ method(convert, list(class_character, class_resource)) <-
     add_resource <- function(resource) {
       resource_type_name <- class_desc(S7::S7_class(resource))
       idx <- match(resource_type_name, all_resource_type_names)
-      if (is.na(idx) || !is.null(resources[[idx]])) return()
+      if (is.na(idx) || !is.null(resources[[idx]])) {
+        return()
+      }
       resources[[idx]] <<- resource
       idx
     }
@@ -228,7 +339,7 @@ method(convert, list(class_character, class_resource)) <-
 
       from_idx <- from_idx + 1L
     }
-
+    
     # filter out undiscovered resource types
     resources <- utils::head(resources, length(policy@accepted_resources))
     resources <- Filter(Negate(is.null), resources)
@@ -255,27 +366,27 @@ method(convert, list(class_character, class_resource)) <-
   }
 
 method(convert, list(class_resource, class_resource)) <-
-  function(from, to) {
+  function(from, to, ...) {
     if (S7::S7_inherits(from, class = to)) {
       return(from)
     }
-    from_str <- S7:::class_desc(from_class)  # nolint
-    to_str <- S7:::class_desc(to)  # nolint
+    from_str <- S7:::class_desc(from_class) # nolint
+    to_str <- S7:::class_desc(to) # nolint
     stop(fmt("{from_str} cannot be cast into a {to_str}"))
   }
 
 # mask built-in convert up/down-casting conversions
 method(convert, list(class_resource, class_any)) <-
-  function(from, to) {
+  function(from, to, ...) {
     from_class <- attr(from, "S7_class")
-    from_str <- S7:::class_desc(from_class)  # nolint
-    to_str <- S7:::class_desc(to)  # nolint
+    from_str <- S7:::class_desc(from_class) # nolint
+    to_str <- S7:::class_desc(to) # nolint
     stop(fmt("Unable to convert from {from_str} to {to_str}"))
   }
 
 method(convert, list(class_character, class_install_resource)) <-
-  function(from, to) {
-    if (file.exists(from) && file.exists(file.path(from, "INDEX"))) {
+  function(from, to, ...) {
+    if (dir.exists(from) && file.exists(file.path(from, "INDEX"))) {
       return(to(path = normalizePath(from)))
     } else if (length(paths <- find.package(from, quiet = TRUE)) > 0L) {
       return(convert(paths[[1]], to))
@@ -285,7 +396,7 @@ method(convert, list(class_character, class_install_resource)) <-
   }
 
 method(convert, list(class_character, class_source_archive_resource)) <-
-  function(from, to) {
+  function(from, to, ...) {
     if (file.exists(from) && endsWith(from, ".tar.gz")) {
       return(to(path = normalizePath(from)))
     }
@@ -294,20 +405,25 @@ method(convert, list(class_character, class_source_archive_resource)) <-
   }
 
 method(convert, list(class_character, class_source_code_resource)) <-
-  function(from, to) {
+  function(from, to, ...) {
     if (
       file.exists(from) &&
         !file.exists(file.path(from, "INDEX")) &&
-        file.exists(file.path(from, "DESCRIPTION"))
+        file.exists(desc_path <- file.path(from, "DESCRIPTION"))
     ) {
-      return(to(path = normalizePath(from)))
+      desc <- read.dcf(desc_path)[1,]
+      return(to(
+        package = desc[["Package"]],
+        version = desc[["Version"]],
+        path = normalizePath(from)
+      ))
     }
 
     stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }
 
 method(convert, list(class_character, class_repo_resource)) <-
-  function(from, to) {
+  function(from, to, ...) {
     ap <- available.packages()
     ap_idx <- Position(function(pkg) identical(from, pkg), ap[, "Package"])
 
@@ -325,7 +441,7 @@ method(convert, list(class_character, class_repo_resource)) <-
 
 method(convert, list(class_repo_resource, class_install_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
-    assert_scopes(c("network", "write"), policy@scopes)
+    assert_permissions(c("network", "write"), policy@permissions)
 
     # before creating install resource, get a new resource id for install path
     id <- next_id()
@@ -357,7 +473,7 @@ method(convert, list(class_repo_resource, class_install_resource)) <-
 
 method(convert, list(class_repo_resource, class_source_archive_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
-    assert_scopes("network", policy@scopes)
+    assert_permissions("network", policy@permissions)
 
     # before creating the resource, get resource id to specify download path
     id <- next_id()
@@ -386,7 +502,7 @@ method(convert, list(class_repo_resource, class_source_archive_resource)) <-
 
 method(convert, list(class_local_source_resource, class_install_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
-    assert_scopes("write", policy@scopes)
+    assert_permissions("write", policy@permissions)
 
     # before creating install resource, get a new resource id for install path
     id <- next_id()
@@ -414,6 +530,11 @@ method(convert, list(class_local_source_resource, class_install_resource)) <-
       md5 = from@md5,
       version = version
     )
+  }
+
+method(convert, list(class_resource, class_unknown_resource)) <-
+  function(from, to, ...) {
+    set_props(to(), props(from, names(class_unknown_resource@properties)))
   }
 
 method(to_dcf, class_resource) <- function(x, ...) {
@@ -446,8 +567,25 @@ method(to_dcf, class_multi_resource) <- function(x, ...) {
     }
   }
 
-  browser()
-
-  cls <- class(x)[[1]]  # nolint
+  cls <- class(x)[[1]] # nolint
   new_err("Resource {.cls {cls}} has no resources which produce a DCF output.")
+}
+
+method(to_dcf, new_S3_class("description")) <- function(x, ...) {
+  deps <- c("Depends", "Imports", "LinkingTo", "Suggests")
+  fields <- c("Package", "Version", deps, "License", "NeedsCompilation")
+  fields <- x$get(fields)
+  fields <- Filter(Negate(is.na), fields)
+  paste0(
+    names(fields), ": ",
+    trimws(gsub("\\s+", " ", fields)),
+    collapse = "\n"
+  )
+}
+
+method(to_dcf, class_mock_resource) <- function(x, ...) {
+  paste0(
+    "# mocked data generated by ", packageName(), "\n",
+    to_dcf(x@desc, ...)
+  )
 }

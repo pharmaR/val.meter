@@ -12,11 +12,9 @@ types of information various metrics contain. For more details, see
 resources (such as download and installation output) and executing code
 (for example, running \verb{R CMD check}) (Defaults to \code{TRUE}, overwritable using option 'val.meter.quiet' or environment variable 'R_VAL_METER_QUIET')}
 
-\item{policy}{Set the default \code{val.meter} package search policy. (Defaults to \code{resource_policy()}, overwritable using option 'val.meter.policy' or environment variable 'R_VAL_METER_POLICY')}
-
-\item{permissions}{Set the default \code{val.meter} data permissions policy. Permissions
-specify what capabilities are permitted when deriving package data. For more
-details, see \code{\link[=permissions]{permissions()}}. (Defaults to \code{permissions(FALSE)}, overwritable using option 'val.meter.permissions' or environment variable 'R_VAL_METER_PERMISSIONS')}
+\item{policy}{Set the default \code{val.meter} policies, specifying how package
+resources will be discovered and what permissions are granted when
+calculating metrics. (Defaults to \code{policy()}, overwritable using option 'val.meter.policy' or environment variable 'R_VAL_METER_POLICY')}
 
 \item{logs}{Logging directory where artifacts will be stored. Defaults to a temporary
 directory. (Defaults to \code{ns_tmp_root()}, overwritable using option 'val.meter.logs' or environment variable 'R_VAL_METER_LOGS')}
@@ -24,3 +22,4 @@ directory. (Defaults to \code{ns_tmp_root()}, overwritable using option 'val.met
 \description{
 Options As Parameters
 }
+\keyword{internal}
