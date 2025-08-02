@@ -1,6 +1,6 @@
 #' @keywords internal
 #'
-#' @importFrom utils packageName
+#' @importFrom utils packageName packageVersion
 #' @importFrom stats rpois runif
 #' 
 #' @import cli
