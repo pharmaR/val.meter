@@ -93,8 +93,8 @@ data field threw an error during execution.}
 \item{\code{data_not_implemented}}{Create an error indicating that data could not
 be derived because it is not implemented for this resource.}
 
-\item{\code{derive_error}}{Wrap an error raised through data derivation in a package
-error type for communication.}
+\item{\code{derive_error}}{Wrap an error raised through data derivation in a
+packag error type for communication.}
 }}
 
 \keyword{datasets}

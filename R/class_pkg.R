@@ -84,7 +84,7 @@ random_pkg <- function(
     version = version,
     md5 = md5sum(paste0(package, " v", version))
   )
-  
+
   pkg(resource, ...)
 }
 
@@ -93,7 +93,7 @@ random_pkg <- function(
 random_pkgs <- function(n = 100, ...) {
   pkg_names <- random_pkg_name(n = n)
   pkgs <- lapply(pkg_names, random_pkg, ...)
-  
+
   pkg_deps <- if (requireNamespace("igraph", quietly = TRUE)) {
     pkg_graph <- random_pkg_graph(pkg_names)
     function(pkg_name, ...) random_pkg_igraph_deps(pkg_graph, pkg_name)
@@ -102,10 +102,10 @@ random_pkgs <- function(n = 100, ...) {
       "package cohort may have cyclic dependencies. install {.pkg igraph} to",
       "ensure acyclic relationship"
     )
-    
+
     function(pkg_name) random_pkg_naive_deps(pkg_name, cohort = pkg_names)
   }
-  
+
   # generate mock metrics
   for (i in seq_along(pkgs)) {
     # provide cohort of package names to desc for generating dependencies
@@ -114,20 +114,20 @@ random_pkgs <- function(n = 100, ...) {
     get_pkg_data(pkg, "desc", deps = pkg_deps(pkg_name))
     metrics(pkg)
   }
-  
+
   structure(pkgs, class = c("list_of_pkg", class(pkgs)))
 }
 
 #' Get [`pkg`] object data
-#' 
+#'
 #' This methods handles the error handling and propagation of deriving package
-#' data. It is the primary interface by which a [`pkg`] object should be 
+#' data. It is the primary interface by which a [`pkg`] object should be
 #' deriving data. In contrast to [`pkg_data_derive`], which is the method that
 #' individual data implements to register it as a field, this function wraps
 #' the execution in appropriate error handling for user presentation. This
 #' function should not throw errors, but instead should capture errors for
 #' communication back to the user.
-#' 
+#'
 #' @param x [`pkg`] object to derive data for
 #' @param name `character(1L)` field name for the data to derive
 #' @param ... Additional arguments unused
@@ -135,10 +135,10 @@ random_pkgs <- function(n = 100, ...) {
 #'   or captured. This flag is not intended to be set directly, it is exposed
 #'   so that recursive calls can raise lower-level errors while capturing them
 #'   at the surface.
-#'   
+#'
 #' @returns the derived data, using the method of [`pkg_data_derive`] dispatched
 #'   on field `name`.
-#' 
+#'
 #' @keywords internal
 #' @include utils_err.R
 get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
@@ -147,27 +147,27 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
   if (is_rs_rpc_get_completions_call()) {
     return(as.list(x@data))
   }
-  
+
   if (!exists(name, envir = x@data)) {
     # upon computing subsequent data dependencies, raise their errors so that
     # they can be captured and annotated as dependency errors
     if (!.raise) {
       .state$raise_derive_errors()
-      # on.exit(.state$raise_derive_errors(FALSE))
+      on.exit(.state$raise_derive_errors(FALSE))
     }
-    
+
     x@data[[name]] <- tryCatch(
       pkg_data_derive(pkg = x, field = name, ...),
       error = function(e, ...) {
         convert(e, class_val_meter_error, field = name)
       }
     )
-    
+
     if (.raise && inherits(x@data[[name]], "error")) {
       stop(x@data[[name]])
     }
   }
-  
+
   x@data[[name]]
 }
 
@@ -176,14 +176,14 @@ get_pkg_datas <- function(x, index, ..., all = FALSE) {
     names(index) <- index
     return(lapply(index, get_pkg_data, x = x))
   }
-  
+
   if (is.logical(index)) {
     if (length(index) != 1) {
       new_err("pkg objects can only be indexed with scalar logical values")
     }
     return(x[names(metrics(all = all))])
   }
-  
+
   new_err("pkg objects don't know how to index with class {.cls index}")
 }
 
@@ -211,14 +211,14 @@ method(names, class_pkg) <- function(x, ...) {
 #' @export
 method(print, class_pkg) <- function(x, ...) {
   class_header <- paste0("<", class(x)[[1]], ">")
-  
+
   fields <- get_data_derive_field_names()
   names(fields) <- fields
   fields <- lapply(fields, convert, to = data_info)
   is_metric <- vlapply(fields, S7::prop, "metric")
   fields <- fields[order(!is_metric)]
   is_metric <- is_metric[order(!is_metric)]
-  
+
   out <- paste0(
     class_header, "\n",
     "@resource", "\n",
@@ -249,7 +249,7 @@ method(print, class_pkg) <- function(x, ...) {
       })
     )
   )
-  
+
   cat(out, "\n")
 }
 
@@ -268,12 +268,12 @@ method(to_dcf, class_pkg) <- function(x, ...) {
 }
 
 #' Produce `pkg`(s) from a `DCF`-formatted string
-#' 
+#'
 #' @param x A `DCF`-formatted string
 #' @param ... Additional arguments unused
-#' 
+#'
 #' @returns A `pkg` object. Note that when parsing from a `DCF` string.
-#' 
+#'
 #' @include utils_dcf.R
 #' @export
 #' @name pkg_from_dcf

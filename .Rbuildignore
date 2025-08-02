@@ -8,3 +8,4 @@
 ^man/figures/README
 ^README_cache
 ^\.github$
+^\.editorconfig$

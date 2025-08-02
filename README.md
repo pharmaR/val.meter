@@ -3,11 +3,14 @@
 
 # `val.meter`
 
-*validation-ready package quantification supporting regulatory use of R*
-
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/pharmaR/val.meter/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pharmaR/val.meter/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/pharmaR/val.meter/graph/badge.svg)](https://app.codecov.io/gh/pharmaR/val.meter)
 <!-- badges: end -->
+
+*validation-ready package quantification supporting regulatory use of R*
 
 ## Installation
 
@@ -27,10 +30,7 @@ rpkg <- random_pkg(permissions = TRUE)
 metrics(rpkg)
 ```
 
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="man/figures/README/overview-metrics-dark.svg">
 <img src="man/figures/README/overview-metrics.svg" width="100%" />
-</picture>
 
 ## Features
 
@@ -43,9 +43,7 @@ what those metrics represent.
 metrics()
 ```
 
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="man/figures/README/metrics-dark.svg">
-<img src="man/figures/README/metrics.svg" width="100%" /> </picture>
+<img src="man/figures/README/metrics.svg" width="100%" />
 
 `metrics` actually represent a small set of the internally calculated
 package data, which may go through a few stages of calculation before
@@ -60,9 +58,7 @@ simple (atomic) data.
 metrics(all = TRUE)
 ```
 
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="man/figures/README/metrics-all-dark.svg">
-<img src="man/figures/README/metrics-all.svg" width="100%" /> </picture>
+<img src="man/figures/README/metrics-all.svg" width="100%" />
 
 ### Creating package objects
 
@@ -77,9 +73,7 @@ permitted sources.
 pkg("../val.meter")
 ```
 
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="man/figures/README/pkg-dark.svg">
-<img src="man/figures/README/pkg.svg" width="100%" /> </picture>
+<img src="man/figures/README/pkg.svg" width="100%" />
 
 We can also be declarative about exactly how we want to source our
 package metadata.
@@ -92,10 +86,7 @@ resrc <- convert("../val.meter", source_code_resource)
 pkg(resrc)
 ```
 
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="man/figures/README/pkg-explicit-dark.svg">
 <img src="man/figures/README/pkg-explicit.svg" width="100%" />
-</picture>
 
 #### Calculating metrics
 
@@ -107,10 +98,7 @@ p <- pkg("../val.meter")
 metrics(p)
 ```
 
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="man/figures/README/metrics-from-pkg-dark.svg">
 <img src="man/figures/README/metrics-from-pkg.svg" width="100%" />
-</picture>
 
 In this case, you’ll notice that some metric calculations raised errors
 during execution. Here you’ll notice that we have not granted
@@ -124,10 +112,7 @@ a list.
 p$dependency_count
 ```
 
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="man/figures/README/metric-dep-count-dark.svg">
 <img src="man/figures/README/metric-dep-count.svg" width="100%" />
-</picture>
 
 Packages are *lazy* :zzz:! Since some metrics can be computationally
 intensive, we only calculate them as their needed. After they’re
@@ -145,10 +130,7 @@ p <- pkg("../val.meter", permissions = "network")
 metrics(p)
 ```
 
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="man/figures/README/metrics-permissive-dark.svg">
 <img src="man/figures/README/metrics-permissive.svg" width="100%" />
-</picture>
 
 And digging a bit deeper, we’ll see that `r_cmd_check` itself requires
 additional permissions to grant `val.meter` the ability to execute code
@@ -158,7 +140,4 @@ on your machine.
 p$r_cmd_check
 ```
 
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="man/figures/README/metric-r-cmd-check-error-dark.svg">
 <img src="man/figures/README/metric-r-cmd-check-error.svg" width="100%" />
-</picture>

@@ -1,21 +1,21 @@
 #' Package Data
-#' 
+#'
 #' Package data is feature of `r packageName()` - it is the framework by which
 #' we calculate package qualities and derive metrics. Package data is any
 #' derived information about a package. Fundamentally, new data is implemented
 #' using the methods [`pkg_data_derive()`] and [`pkg_data_info()`] used for
 #' calculating and providing metadata respectively.
-#' 
+#'
 #' However, implementing these functions directly requires a bit of knowledge
 #' of how the internals of the package are structured. Instead, it is
 #' recommended to use [`impl_data()`], which provides a high-level interface
 #' that helps make this process as simple as possible.
-#' 
+#'
 #' @section Implementing a new metric:
-#' 
+#'
 #' To implement some new data, you can use [`impl_data()`], providing, at a
 #' minimum, the field name for the data and the way it should be calculated.
-#' 
+#'
 #'     impl_data("name_character_count", function(pkg, ...) nchar(pkg$name))
 #'
 #' @examples
@@ -51,7 +51,7 @@ NULL
 #'
 #' @export
 impl_data <- function(
-  name, 
+  name,
   fn,
   for_resource = resource,
   ...,
@@ -67,7 +67,7 @@ impl_data <- function(
       quiet = quiet
     )
   }
-  
+
   if (!missing(fn)) {
     impl_data_derive(
       name = name,
@@ -82,7 +82,7 @@ impl_data <- function(
 
 #' @describeIn pkg_data
 #' Associate metadata with the data field
-#' 
+#'
 #' @param class `S7::S7_class` or `character(n)`. A return type that is type
 #'   checked after method evaluation. `character` values will be coerced into
 #'   `S7` representations of `S3` classes.
@@ -119,7 +119,7 @@ impl_data_info <- function(
   if (is.character(class)) {
     class <- S7::new_S3_class(class)
   }
-  
+
   is_info_impl <- is_implemented(pkg_data_info, pkg_data_class(name))
   if (is_info_impl && !overwrite) {
     stop(
@@ -130,7 +130,7 @@ impl_data_info <- function(
 
   data_class <- S7::as_class(class)
   handler <- if (quiet) suppress_method_overwrite else identity
-  
+
   info <- data_info(
     metric = metric,
     title = title,
@@ -140,9 +140,9 @@ impl_data_info <- function(
     suggests = suggests,
     permissions = permissions
   )
-  
+
   handler({
-    method(pkg_data_info, pkg_data_class(name)) <- 
+    method(pkg_data_info, pkg_data_class(name)) <-
       function(field) info
   })
 }
@@ -169,7 +169,7 @@ impl_data_derive <- function(
       "{.cls {class_desc(resource)}}. Use overwrite=TRUE to replace."
     ))
   }
-  
+
   handler <- if (quiet) suppress_method_overwrite else identity
   handler({
     method(pkg_data_derive, dispatch_classes) <-
@@ -179,12 +179,12 @@ impl_data_derive <- function(
         required_suggests <- info@suggests
         assert_permissions(required_permissions, pkg@permissions)
         assert_suggests(required_suggests)
-        
+
         data <- fn(pkg, resource, field, ...)
         if (!identical(info@data_class, class_any)) {
           data <- convert(data, info@data_class)
         }
-        
+
         data
       }
   })

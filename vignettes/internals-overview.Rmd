@@ -65,8 +65,8 @@ data types of the package.
 library(igraph)
 
 # since we're all developers, don't mind me taking a peek behind the curtain
-val.meter <- getNamespace("val.meter")
-g <- val.meter$class_graph("val.meter")
+val_meter <- getNamespace("val.meter")
+g <- val_meter$class_graph("val.meter")
 
 # do some slight class renaming to make them easier to read
 V(g)$label <- sapply(strsplit(V(g)$class, "_"), paste, collapse = "\n")
@@ -75,17 +75,17 @@ par(mar = c(0, 0, 0, 0))
 plot(
   g,
   layout = layout_with_graphopt(
-    g, 
-    niter = 5000, 
-    charge = 0.2, 
-    spring.length = 4, 
+    g,
+    niter = 5000,
+    charge = 0.2,
+    spring.length = 4,
     spring.constant = 8
   ),
   vertex.size = 30,
   vertex.frame.color = NA,
   vertex.label = V(g)$label,
   vertex.label.dist = 0,
-  vertex.label.degree = -pi/2,
+  vertex.label.degree = -pi / 2,
   vertex.label.family = "sans-serif",
   vertex.label.cex = 0.6,
   vertex.label.color = "grey8",
@@ -166,7 +166,7 @@ Let's see what code was needed to implement this
 library(S7)
 
 method_env <- environment(method(
-  pkg_data_derive, 
+  pkg_data_derive,
   list(class_pkg, class_resource, pkg_data_class("r_cmd_check_error_count"))
 ))
 

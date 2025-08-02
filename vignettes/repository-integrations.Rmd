@@ -137,7 +137,7 @@ df$package[df$dependency_percentile > 0.95]
 options(scipen = 10)
 plot(
   xlab = "Percently",
-  x = df$dependency_percentile, 
+  x = df$dependency_percentile,
   ylab = "Dependency Count",
   y = df$dependency_count
 )

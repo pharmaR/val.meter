@@ -49,7 +49,7 @@ get_package_boundary_call <- function(calls = sys.calls()) {
       return(sys.frame(i))
     }
   }
-  
+
   sys.frame()
 }
 
@@ -79,21 +79,21 @@ cnd_class_from_type <- function(type, cnd = "error") {
 #'
 #' Used predominately by [`err()`]
 new_err <- function(
-    ...,
-    data = list(),
-    class = NULL,
-    call = NULL,
-    trace = NULL,
-    parent = NULL,
-    capture = FALSE,
-    .envir = parent.frame()
+  ...,
+  data = list(),
+  class = NULL,
+  call = NULL,
+  trace = NULL,
+  parent = NULL,
+  capture = FALSE,
+  .envir = parent.frame()
 ) {
   topenv_frame_idx <- Position(
     function(frame) identical(frame, topenv()),
     sys.frames(),
     nomatch = sys.nframe()
   )
-  
+
   args <- list(data = data)
   args$message <- as.character(list(...))
   call <- call %||% get_package_boundary_call()
@@ -101,13 +101,13 @@ new_err <- function(
   args$trace <- trace
   args$.envir <- .envir
   args$.trace_bottom <- sys.frames()[[topenv_frame_idx]]
-  
+
   if (capture) {
     e <- tryCatch(do.call(cli::cli_abort, args), error = identity)
     e$call <- call
     return(e)
   }
-  
+
   # for some reason, adding a `call` argument breaks cli::cli_abort... only
   # add afterwards
   args$call <- call
@@ -133,14 +133,14 @@ err <- list(
       ...
     )
   },
-  
+
   #' @field missing_suggests Create an error indicating that a dependency that
   #'   is required for a specific data derivation is not available.
   missing_suggests = function(suggests, ...) {
     data <- list(suggests = suggests)
     data$suggests <- suggests
     stopifnot(is.character(data$suggests))
-    
+
     new_err(
       class = "missing_suggests",
       data = data,
@@ -148,7 +148,7 @@ err <- list(
       ...
     )
   },
-  
+
   #' @field metric_not_atomic Create an error indicating that a metric was
   #'   derived but did not conform to its anticipated atomic return type.
   metric_not_atomic = function(...) {
@@ -159,7 +159,7 @@ err <- list(
       ...
     )
   },
-  
+
   #' @field derive_dependency Create an error that is raised when a dependent
   #'   data field threw an error during execution.
   derive_dependency = function(field, ...) {
@@ -175,7 +175,7 @@ err <- list(
       ...
     )
   },
-  
+
   #' @field data_not_implemented Create an error indicating that data could not
   #'   be derived because it is not implemented for this resource.
   not_implemented_for_resource = function(resource, field, ...) {
@@ -184,7 +184,7 @@ err <- list(
       is.character(data$resource),
       is.character(data$field)
     )
-    
+
     new_err(
       class = "not_implemented_for_resource",
       data = data,
@@ -195,32 +195,32 @@ err <- list(
       ...
     )
   },
-  
-  #' @field derive_error Wrap an error raised through data derivation in a package
-  #'   error type for communication.
+
+  #' @field derive_error Wrap an error raised through data derivation in a
+  #'   packag error type for communication.
   derive = function(
     field,
     message = NULL,
-    ..., 
+    ...,
     parent = NULL
   ) {
     if (is.null(message) && !missing(parent)) {
       message <- parent$message
     }
-    
+
     data <- list(message = message)
     if (!is.null(data$message)) {
       stopifnot(is.character(data$message))
     }
-    
+
     data$field <- field
     stopifnot(is.character(data$field))
-    
+
     new_err(
       class = "derive",
       parent = parent,
       data = data,
-      "when deriving field {.str {data$field}}", 
+      "when deriving field {.str {data$field}}",
       "{data$message}",
       ...
     )
@@ -247,11 +247,11 @@ err <- list(
 #'
 #' @examples
 #' # given a DCF input such as
-#' 
+#'
 #' ## Package: testpkg
 #' ## Version: 1.2.3
 #' ## Metric/word_count@R: error("missing_suggests", "wordcount")
-#' 
+#'
 #' # we want to parse (by evaluation) the output into our own error type
 #' error("missing_suggests", "wordcount")
 #'
@@ -268,30 +268,30 @@ class_val_meter_derive_error <- S7::new_S3_class(cnd_type("derive")[[1]])
 class_error <- S7::new_S3_class("error")
 
 method(
-  convert, 
+  convert,
   list(new_S3_class("S7_error_method_not_found"), class_val_meter_error)
-) <- 
+) <-
   function(from, to, ...) {
     # S7 error doesn't include data directly, must be parsed out
     msg <- strsplit(from$message, "\n")[[1]]
-    
+
     # disregard method errors if no dispatch args are listed
     if (length(msg) < 3L) return(from)
-    
+
     # extract dispatch args
     msg_generic <- msg[[1]]
     msg_resource <- msg[[length(msg) - 1L]]  # second-to-last dispatch arg
     msg_field <- msg[[length(msg)]]  # last dispatch arg
-    
+
     # only wrap in our own error type for missing derive implementations
     generic_str <- sub(".*generic `([^`(]*).*", "\\1", msg_generic, perl = TRUE)
     if (generic_str != "pkg_data_derive") return(from)
-    
+
     # extract resource class and field name from error message
     resource_str <- sub(".*<([^/>]*).*", "\\1", msg_resource, perl = TRUE)
     field_str <- sub(".*<([^/>]*).*", "\\1", msg_field, perl = TRUE)
     field <- pkg_data_name_from_s3_class(field_str)
-    
+
     err$not_implemented_for_resource(
       resource = resource_str,
       field = field,
@@ -300,17 +300,17 @@ method(
   }
 
 method(
-  convert, 
+  convert,
   list(class_val_meter_derive_error, class_val_meter_error)
-) <- 
+) <-
   function(from, to, ...) {
     err$derive_dependency(field = from$data$field, capture = TRUE)
   }
 
 method(
-  convert, 
+  convert,
   list(class_error, class_val_meter_error)
-) <- 
+) <-
   function(from, to, ..., field) {
     err$derive(field = field, parent = from, capture = TRUE)
   }

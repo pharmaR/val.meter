@@ -7,10 +7,10 @@ fmt <- function(..., .envir = parent.frame()) {
 }
 
 #' Create a cli-formatted badge
-#' 
+#'
 #' @param style A `list` of arguments to pass to the ellipsis arguments of
 #'   [`cli::make_ansi_style()`].
-#'   
+#'
 #' @keywords internal
 #' @noRd
 cli_tag <- function(
@@ -39,9 +39,14 @@ cli_tag <- function(
   tag_fg <- do.call(cli::make_ansi_style, tag_color)
   tag_bg <- do.call(cli::make_ansi_style, append(tag_color, list(bg = TRUE)))
 
+  # appease lintr, keep these hanging around for possible future use
+  symbols
+  scope_fg
+  tag_fg
+
   format_inline(
     .envir = .envir,
-    if (!is.null(scope)) col_black(scope_bg(" ", scope, " ")),
-    style_bold(col_black(tag_bg(" ", ..., " ")))
+    if (!is.null(scope)) style_dim(col_black(scope_bg(" ", scope, " "))),
+    col_black(tag_bg(" ", ..., " "))
   )
 }
