@@ -1,0 +1,12 @@
+pandoc: 3.1.11
+pkgdown: 2.1.3
+pkgdown_sha: ~
+articles:
+  adding-metric: adding-metric.html
+  internals-overview: internals-overview.html
+  repository-integrations: repository-integrations.html
+  riskmetric-comparison: riskmetric-comparison.html
+last_built: 2025-08-02T04:45Z
+urls:
+  reference: https://pharmar.github.io/val.meter/reference
+  article: https://pharmar.github.io/val.meter/articles
