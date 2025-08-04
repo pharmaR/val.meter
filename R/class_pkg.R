@@ -67,7 +67,6 @@ pkg <- class_pkg <- new_class(
 #' collection of packages, dependencies will realistically be made between
 #' packages.
 #'
-#' @param n `integer(1L)` how many packages to simulate
 #' @param package `character(1L)` a package name
 #' @param version `character(1L)` a package version
 #' @param ... Additional arguments passed to `pkg`
@@ -88,8 +87,12 @@ random_pkg <- function(
   pkg(resource, ...)
 }
 
+#' @describeIn random_pkg
+#' Generate a set of random packges
+#'
+#' @param n `integer(1L)` how many packages to simulate
+#'
 #' @export
-#' @name random_pkg
 random_pkgs <- function(n = 100, ...) {
   pkg_names <- random_pkg_name(n = n)
   pkgs <- lapply(pkg_names, random_pkg, ...)
@@ -116,6 +119,30 @@ random_pkgs <- function(n = 100, ...) {
   }
 
   structure(pkgs, class = c("list_of_pkg", class(pkgs)))
+}
+
+#' @describeIn random_pkg
+#' Create a random assortment of packages and write the out to local repository
+#' file structure such that it can be used with `options(repos = random_repo())`
+#'
+#' @param path `character(1L)` directory path where the repository should be
+#'   created. Directory will be created if it doesn't yet exist.
+#'
+#' @export
+random_repo <- function(..., path = tempfile("repo")) {
+  packages_path <- file.path(path, "src", "contrib", "PACKAGES")
+  if (!dir.exists(d <- dirname(packages_path))) {
+    dir.create(d, recursive = TRUE)
+  }
+
+  pkgs <- random_pkgs(...)
+  dcf <- to_dcf(pkgs)
+  writeLines(dcf, packages_path)
+
+  repos <- paste0("file://", path)
+  names(repos) <- paste0(packageName(), "-generated")
+
+  repos
 }
 
 #' Get [`pkg`] object data

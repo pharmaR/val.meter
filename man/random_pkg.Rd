@@ -3,11 +3,14 @@
 \name{random_pkg}
 \alias{random_pkg}
 \alias{random_pkgs}
+\alias{random_repo}
 \title{Generate Random Package(s)}
 \usage{
 random_pkg(package = random_pkg_name(), version = random_pkg_version(), ...)
 
 random_pkgs(n = 100, ...)
+
+random_repo(..., path = tempfile("repo"))
 }
 \arguments{
 \item{package}{\code{character(1L)} a package name}
@@ -17,9 +20,20 @@ random_pkgs(n = 100, ...)
 \item{...}{Additional arguments passed to \code{pkg}}
 
 \item{n}{\code{integer(1L)} how many packages to simulate}
+
+\item{path}{\code{character(1L)} directory path where the repository should be
+created. Directory will be created if it doesn't yet exist.}
 }
 \description{
 Create a package object to simulate metric derivation. When generating a
 collection of packages, dependencies will realistically be made between
 packages.
 }
+\section{Functions}{
+\itemize{
+\item \code{random_pkgs()}: Generate a set of random packges
+
+\item \code{random_repo()}: Create a random assortment of packages and write the out to local repository
+file structure such that it can be used with \code{options(repos = random_repo())}
+
+}}
