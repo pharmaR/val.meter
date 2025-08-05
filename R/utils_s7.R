@@ -234,6 +234,14 @@ class_desc <- function(x) {
   getNamespace("S7")$class_desc(x)
 }
 
+#' lifted from S7:::class_desc
+#'
+#' @keywords internal
+#' @noRd
+obj_desc <- function(x) {
+  getNamespace("S7")$obj_desc(x)
+}
+
 #' Generate a graph of class relations
 #'
 #' @keywords internal

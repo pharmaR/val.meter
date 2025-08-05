@@ -79,9 +79,29 @@ random_pkg_name <- function(n = 1, styles) {
 
   idx <- names(random_pkg_name_styles) %in% styles
   prob <- vnapply(random_pkg_name_styles, attr, "weight")[idx]
-  pkg_styles <- sample(styles, n, prob = prob, replace = TRUE)
-  fns <- unname(random_pkg_name_styles[pkg_styles])
-  vcapply(fns, do.call, args = list(styles = styles))
+
+  attempts <- 0L
+  chars <- charToRaw(paste0(collapse = "", letters, LETTERS))
+  pkg_names <- character(0L)
+  while ((n_rem <- n - length(pkg_names)) > 0) {
+    new_names <- if (attempts < 2) {
+      # first try a couple times to generate cute names
+      vcapply(
+        sample(styles, size = n_rem, prob = prob, replace = TRUE),
+        function(style) random_pkg_name_styles[[style]]()
+      )
+    } else {
+      # if we are running out of cute package names, fall back to gibberish
+      vcapply(
+        sample(8:32, size = n_rem, replace = TRUE),
+        function(nchar) rawToChar(sample(chars, size = nchar, replace = TRUE))
+      )
+    }
+
+    pkg_names <- unique(c(pkg_names, new_names))
+  }
+
+  head(pkg_names, n)
 }
 
 random_pkg_version <- function(n = 1) {

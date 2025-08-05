@@ -6,7 +6,13 @@
 \alias{random_repo}
 \title{Generate Random Package(s)}
 \usage{
-random_pkg(package = random_pkg_name(), version = random_pkg_version(), ...)
+random_pkg(
+  package = random_pkg_name(),
+  version = random_pkg_version(),
+  md5 = md5sum(paste0(package, " v", version)),
+  ...,
+  permissions = TRUE
+)
 
 random_pkgs(n = 100, ...)
 
@@ -17,7 +23,12 @@ random_repo(..., path = tempfile("repo"))
 
 \item{version}{\code{character(1L)} a package version}
 
-\item{...}{Additional arguments passed to \code{pkg}}
+\item{...}{Additional arguments passed to \code{\link{mock_resource}}}
+
+\item{permissions}{\code{permissions} a permissions object, or a anything that
+can be interpretted as a permissions object through \code{convert}. Unlike
+general \code{\link{pkg}}s, \code{\link{random_pkg}}s default to mocking a package with all
+permissions are enabled to mock as many metrics as possible.}
 
 \item{n}{\code{integer(1L)} how many packages to simulate}
 
