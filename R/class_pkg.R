@@ -69,22 +69,31 @@ pkg <- class_pkg <- new_class(
 #'
 #' @param package `character(1L)` a package name
 #' @param version `character(1L)` a package version
-#' @param ... Additional arguments passed to `pkg`
+#' @param md5 `character(1L)` an `md5` hash to use for the package. By default,
+#'   is a simple hash derived from the package name and version.
+#' @param ... Additional arguments passed to [`mock_resource`]
+#' @param permissions `permissions` a permissions object, or a anything that
+#'   can be interpretted as a permissions object through `convert`. Unlike
+#'   general [`pkg`]s, [`random_pkg`]s default to mocking a package with all
+#'   permissions are enabled to mock as many metrics as possible.
 #'
 #' @export
 #' @name random_pkg
 random_pkg <- function(
   package = random_pkg_name(),
   version = random_pkg_version(),
-  ...
+  md5 = md5sum(paste0(package, " v", version)),
+  ...,
+  permissions = TRUE
 ) {
   resource <- mock_resource(
     package = package,
     version = version,
-    md5 = md5sum(paste0(package, " v", version))
+    md5 = md5,
+    ...
   )
 
-  pkg(resource, ...)
+  pkg(resource, permissions = permissions)
 }
 
 #' @describeIn random_pkg
@@ -136,10 +145,14 @@ random_repo <- function(..., path = tempfile("repo")) {
   }
 
   pkgs <- random_pkgs(...)
-  dcf <- to_dcf(pkgs)
+  dcf <- c(
+    "Format: Metrics",
+    "",
+    to_dcf(pkgs)
+  )
   writeLines(dcf, packages_path)
 
-  repos <- paste0("file://", path)
+  repos <- paste0("file://", normalizePath(path))
   names(repos) <- paste0(packageName(), "-generated")
 
   repos
@@ -247,14 +260,20 @@ method(print, class_pkg) <- function(x, ...) {
   is_metric <- is_metric[order(!is_metric)]
 
   out <- paste0(
-    class_header, "\n",
-    "@resource", "\n",
-    paste0("  ", capture.output(x@resource), collapse = "\n"), "\n",
-    "@permissions", "\n",
-    paste0("  ", capture.output(x@permissions), collapse = "\n"), "\n",
+    class_header,
+    "\n",
+    "@resource",
+    "\n",
+    paste0("  ", capture.output(x@resource), collapse = "\n"),
+    "\n",
+    "@permissions",
+    "\n",
+    paste0("  ", capture.output(x@permissions), collapse = "\n"),
+    "\n",
     paste0(
       collapse = "\n",
-      "$", names(fields),
+      "$",
+      names(fields),
       ifelse(!is_metric, " (internal)", ""),
       vcapply(seq_along(fields), function(i) {
         field <- names(fields)[[i]]
@@ -287,11 +306,14 @@ method(to_dcf, new_S3_class("list_of_pkg")) <- function(x, ...) {
 
 #' @include utils_dcf.R
 method(to_dcf, class_pkg) <- function(x, ...) {
-  paste(collapse = "\n", c(
-    to_dcf(x$desc),
-    if (!is.na(x@resource@md5)) paste0("MD5: ", x@resource@md5),
-    paste0("Metric/", names(metrics(x)), "@R: ", vcapply(metrics(x), to_dcf))
-  ))
+  paste(
+    collapse = "\n",
+    c(
+      to_dcf(x$desc),
+      if (!is.na(x@resource@md5)) paste0("MD5sum: ", x@resource@md5),
+      paste0("Metric/", names(metrics(x)), "@R: ", vcapply(metrics(x), to_dcf))
+    )
+  )
 }
 
 #' Produce `pkg`(s) from a `DCF`-formatted string
@@ -315,7 +337,6 @@ pkgs_from_dcf <- function(x, ...) {
   parts <- strsplit(x, "\n\n")[[1]]
   structure(lapply(parts, from_dcf, to = class_pkg), class = "list_of_pkg")
 }
-
 
 #' @exportS3Method as.data.frame list_of_pkg
 as.data.frame.list_of_pkg <- function(x, ...) {
@@ -349,7 +370,11 @@ method(from_dcf, list(class_character, class_pkg)) <-
     resource <- unknown_resource(
       package = dcf[[1, "Package"]],
       version = dcf[[1, "Version"]],
-      md5 = if ("MD5" %in% colnames(dcf)) dcf[[1, "MD5"]] else NA_character_
+      md5 = if ("MD5sum" %in% colnames(dcf)) {
+        dcf[[1, "MD5sum"]]
+      } else {
+        NA_character_
+      }
     )
 
     data <- new.env(parent = emptyenv())
@@ -358,17 +383,7 @@ method(from_dcf, list(class_character, class_pkg)) <-
       field <- sub(prefix, "", name)
       info <- pkg_data_info(field)
       val <- dcf[[1, name]]
-
-      # special case for integers without trailing "L"
-      is_int_expected <- is_subclass(info@data_class, class_integer)
-      if (is_int_expected && is(val, class_numeric)) {
-        val <- as.integer(val)
-      }
-
-      if (!inherits(val, cnd_type())) {
-        val <- convert(val, info@data_class)
-      }
-
+      val <- metric_coerce(val, info@data_class)
       data[[field]] <- val
     }
 

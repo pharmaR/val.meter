@@ -13,16 +13,22 @@ random_pkg_name_styles <- local({
 
   list(
     "generic-an" = structure(weight = 1, function(...) {
-      paste0(collapse = sample(c("", "."), 1L, prob = c(5, 1)), c(
-        tolower(adjective(1:2, c(10, 3))),
-        tolower(noun())
-      ))
+      paste0(
+        collapse = sample(c("", "."), 1L, prob = c(5, 1)),
+        c(
+          tolower(adjective(1:2, c(10, 3))),
+          tolower(noun())
+        )
+      )
     }),
     "generic-xn" = structure(weight = 1, function(...) {
-      paste0(collapse = sample(c("", "."), 1L, prob = c(5, 1)), c(
-        tolower(word(c("Verb", "Noun"))),
-        tocamel(noun())
-      ))
+      paste0(
+        collapse = sample(c("", "."), 1L, prob = c(5, 1)),
+        c(
+          tolower(word(c("Verb", "Noun"))),
+          tocamel(noun())
+        )
+      )
     }),
     "tidy" = structure(weight = 0.5, function(...) {
       paste0(tolower(prefix()), tolower(noun()))
@@ -35,10 +41,13 @@ random_pkg_name_styles <- local({
     }),
     "plyr" = structure(weight = 0.1, function(...) {
       paste0(
-        paste(collapse = "", sample(
-          letters,
-          sample(1:3, 1, prob = c(3, 10, 1))
-        )),
+        paste(
+          collapse = "",
+          sample(
+            letters,
+            sample(1:3, 1, prob = c(3, 10, 1))
+          )
+        ),
         tolower(suffix())
       )
     }),
@@ -57,13 +66,15 @@ random_pkg_name_styles <- local({
         sub("r", "R", sample(word[grepl("r", word)], 1))
       })
     }),
-    "r-prefix" = structure(weight = 0.1,
+    "r-prefix" = structure(
+      weight = 0.1,
       function(..., styles = names(random_pkg_name_styles)) {
         styles <- styles[!startsWith(styles, "r-")]
         paste0(sample(c("r", "R"), 1), random_pkg_name(styles = styles))
       }
     ),
-    "r-suffix" = structure(weight = 0.1,
+    "r-suffix" = structure(
+      weight = 0.1,
       function(..., styles = names(random_pkg_name_styles)) {
         styles <- styles[!startsWith(styles, "r-")]
         paste0(random_pkg_name(styles = styles), "R")
@@ -72,6 +83,7 @@ random_pkg_name_styles <- local({
   )
 })
 
+#' @importFrom utils head
 random_pkg_name <- function(n = 1, styles) {
   if (missing(styles) || is.null(styles)) {
     styles <- names(random_pkg_name_styles)
@@ -79,9 +91,29 @@ random_pkg_name <- function(n = 1, styles) {
 
   idx <- names(random_pkg_name_styles) %in% styles
   prob <- vnapply(random_pkg_name_styles, attr, "weight")[idx]
-  pkg_styles <- sample(styles, n, prob = prob, replace = TRUE)
-  fns <- unname(random_pkg_name_styles[pkg_styles])
-  vcapply(fns, do.call, args = list(styles = styles))
+
+  attempts <- 0L
+  chars <- charToRaw(paste0(collapse = "", letters, LETTERS))
+  pkg_names <- character(0L)
+  while ((n_rem <- n - length(pkg_names)) > 0) {
+    new_names <- if (attempts < 2) {
+      # first try a couple times to generate cute names
+      vcapply(
+        sample(styles, size = n_rem, prob = prob, replace = TRUE),
+        function(style) random_pkg_name_styles[[style]]()
+      )
+    } else {
+      # if we are running out of cute package names, fall back to gibberish
+      vcapply(
+        sample(8:32, size = n_rem, replace = TRUE),
+        function(nchar) rawToChar(sample(chars, size = nchar, replace = TRUE))
+      )
+    }
+
+    pkg_names <- unique(c(pkg_names, new_names))
+  }
+
+  utils::head(pkg_names, n)
 }
 
 random_pkg_version <- function(n = 1) {
