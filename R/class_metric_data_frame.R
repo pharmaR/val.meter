@@ -3,6 +3,8 @@
 #' A [`data.frame`], for all intents and purposes, with column names
 #' corresponding to [`pkg`] metric data.
 #'
+#' @param .data,row.names See [`S7::class_data.frame`]
+#'
 #' @export
 class_metric_data_frame <- new_class(
   "metric_data_frame",
@@ -16,6 +18,8 @@ class_metric_data_frame <- new_class(
 #' classes](https://github.com/RConsortium/S7/issues/401), we currently need
 #' to wrap matrices that we want to handle through `convert` in our own custom
 #' classes. This may not be necessary in the future.
+#'
+#' @param .data See [`S7::class_character`]
 #'
 #' @export
 class_package_matrix <- new_class(
@@ -34,14 +38,18 @@ method(convert, list(class_package_matrix, class_metric_data_frame)) <-
     for (metric_name in metric_names) {
       metric <- metrics[[metric_name]]
       field_names <- paste0("Metric/", metric_name, c("", "@R"))
-      if (!any(field_names %in% colnames(df))) next
+      if (!any(field_names %in% colnames(df))) {
+        next
+      }
 
       field_name <- field_names[which(field_names %in% colnames(df))[[1]]]
       out[[metric_name]] <- suppressWarnings({
         metric_coerce(df[[field_name]], metric@data_class)
       })
 
-      if (identical(errors, "as.na")) next
+      if (identical(errors, "as.na")) {
+        next
+      }
       is_error <- is.na(out[[metric_name]])
       is_error <- grepl(
         paste0("^(", packageName(), "::)?error"),

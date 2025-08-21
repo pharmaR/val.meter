@@ -69,6 +69,8 @@ pkg <- class_pkg <- new_class(
 #'
 #' @param package `character(1L)` a package name
 #' @param version `character(1L)` a package version
+#' @param md5 `character(1L)` an `md5` hash to use for the package. By default,
+#'   is a simple hash derived from the package name and version.
 #' @param ... Additional arguments passed to [`mock_resource`]
 #' @param permissions `permissions` a permissions object, or a anything that
 #'   can be interpretted as a permissions object through `convert`. Unlike
@@ -258,14 +260,20 @@ method(print, class_pkg) <- function(x, ...) {
   is_metric <- is_metric[order(!is_metric)]
 
   out <- paste0(
-    class_header, "\n",
-    "@resource", "\n",
-    paste0("  ", capture.output(x@resource), collapse = "\n"), "\n",
-    "@permissions", "\n",
-    paste0("  ", capture.output(x@permissions), collapse = "\n"), "\n",
+    class_header,
+    "\n",
+    "@resource",
+    "\n",
+    paste0("  ", capture.output(x@resource), collapse = "\n"),
+    "\n",
+    "@permissions",
+    "\n",
+    paste0("  ", capture.output(x@permissions), collapse = "\n"),
+    "\n",
     paste0(
       collapse = "\n",
-      "$", names(fields),
+      "$",
+      names(fields),
       ifelse(!is_metric, " (internal)", ""),
       vcapply(seq_along(fields), function(i) {
         field <- names(fields)[[i]]
@@ -298,11 +306,14 @@ method(to_dcf, new_S3_class("list_of_pkg")) <- function(x, ...) {
 
 #' @include utils_dcf.R
 method(to_dcf, class_pkg) <- function(x, ...) {
-  paste(collapse = "\n", c(
-    to_dcf(x$desc),
-    if (!is.na(x@resource@md5)) paste0("MD5sum: ", x@resource@md5),
-    paste0("Metric/", names(metrics(x)), "@R: ", vcapply(metrics(x), to_dcf))
-  ))
+  paste(
+    collapse = "\n",
+    c(
+      to_dcf(x$desc),
+      if (!is.na(x@resource@md5)) paste0("MD5sum: ", x@resource@md5),
+      paste0("Metric/", names(metrics(x)), "@R: ", vcapply(metrics(x), to_dcf))
+    )
+  )
 }
 
 #' Produce `pkg`(s) from a `DCF`-formatted string

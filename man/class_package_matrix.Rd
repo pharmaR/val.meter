@@ -6,6 +6,9 @@
 \usage{
 class_package_matrix(.data = character(0))
 }
+\arguments{
+\item{.data}{See \code{\link[S7:base_classes]{S7::class_character}}}
+}
 \description{
 A matrix produced by \code{available.packages}
 }

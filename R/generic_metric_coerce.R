@@ -1,11 +1,11 @@
 #' Metric Coerce
 #'
-#' Nearly identical to [`S7::convert`], but with a few additional helpers for
+#' Nearly identical to [`S7::convert()`], but with a few additional helpers for
 #' handling conversions between atomic types that are not implemented by
 #' convert.
 #'
 #' @note
-#' We avoid using [`convert`] directly to avoid _type piracy_ - defining
+#' We avoid using [`S7::convert()`] directly to avoid _type piracy_ - defining
 #' methods for signatures we don't control for generics we didn't create.
 #' Since we created neither the `convert` generic, nor the base classes we
 #' want to implement it for, we instead create our own generic to avoid

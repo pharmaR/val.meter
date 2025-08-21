@@ -6,6 +6,9 @@
 \usage{
 class_metric_data_frame(.data = list(), row.names = NULL)
 }
+\arguments{
+\item{.data, row.names}{See \code{\link[S7:base_s3_classes]{S7::class_data.frame}}}
+}
 \description{
 A \code{\link{data.frame}}, for all intents and purposes, with column names
 corresponding to \code{\link{pkg}} metric data.

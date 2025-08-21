@@ -23,6 +23,9 @@ random_repo(..., path = tempfile("repo"))
 
 \item{version}{\code{character(1L)} a package version}
 
+\item{md5}{\code{character(1L)} an \code{md5} hash to use for the package. By default,
+is a simple hash derived from the package name and version.}
+
 \item{...}{Additional arguments passed to \code{\link{mock_resource}}}
 
 \item{permissions}{\code{permissions} a permissions object, or a anything that
