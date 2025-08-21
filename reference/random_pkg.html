@@ -57,7 +57,13 @@ packages.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">random_pkg</span><span class="op">(</span>package <span class="op">=</span> <span class="fu">random_pkg_name</span><span class="op">(</span><span class="op">)</span>, version <span class="op">=</span> <span class="fu">random_pkg_version</span><span class="op">(</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">random_pkg</span><span class="op">(</span></span>
+<span>  package <span class="op">=</span> <span class="fu">random_pkg_name</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  version <span class="op">=</span> <span class="fu">random_pkg_version</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  md5 <span class="op">=</span> <span class="fu">md5sum</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">package</span>, <span class="st">" v"</span>, <span class="va">version</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  permissions <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">random_pkgs</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">100</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -76,8 +82,20 @@ packages.</p>
 <dd><p><code>character(1L)</code> a package version</p></dd>
 
 
+<dt id="arg-md-">md5<a class="anchor" aria-label="anchor" href="#arg-md-"></a></dt>
+<dd><p><code>character(1L)</code> an <code>md5</code> hash to use for the package. By default,
+is a simple hash derived from the package name and version.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments passed to <code>pkg</code></p></dd>
+<dd><p>Additional arguments passed to <code><a href="mock_resource.html">mock_resource</a></code></p></dd>
+
+
+<dt id="arg-permissions">permissions<a class="anchor" aria-label="anchor" href="#arg-permissions"></a></dt>
+<dd><p><code>permissions</code> a permissions object, or a anything that
+can be interpretted as a permissions object through <code>convert</code>. Unlike
+general <code><a href="pkg.html">pkg</a></code>s, <code>random_pkg</code>s default to mocking a package with all
+permissions are enabled to mock as many metrics as possible.</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>

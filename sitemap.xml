@@ -9,6 +9,8 @@
 <url><loc>https://pharmar.github.io/val.meter/articles/riskmetric-comparison.html</loc></url>
 <url><loc>https://pharmar.github.io/val.meter/authors.html</loc></url>
 <url><loc>https://pharmar.github.io/val.meter/index.html</loc></url>
+<url><loc>https://pharmar.github.io/val.meter/reference/class_metric_data_frame.html</loc></url>
+<url><loc>https://pharmar.github.io/val.meter/reference/class_package_matrix.html</loc></url>
 <url><loc>https://pharmar.github.io/val.meter/reference/cran_repo_resource.html</loc></url>
 <url><loc>https://pharmar.github.io/val.meter/reference/data_info_list.html</loc></url>
 <url><loc>https://pharmar.github.io/val.meter/reference/enum_vector.html</loc></url>
@@ -22,6 +24,7 @@
 <url><loc>https://pharmar.github.io/val.meter/reference/is_rs_rpc_get_completions_call.html</loc></url>
 <url><loc>https://pharmar.github.io/val.meter/reference/local_resource.html</loc></url>
 <url><loc>https://pharmar.github.io/val.meter/reference/local_source_resource.html</loc></url>
+<url><loc>https://pharmar.github.io/val.meter/reference/metric_coerce.html</loc></url>
 <url><loc>https://pharmar.github.io/val.meter/reference/metrics.html</loc></url>
 <url><loc>https://pharmar.github.io/val.meter/reference/mock_resource.html</loc></url>
 <url><loc>https://pharmar.github.io/val.meter/reference/multi_resource.html</loc></url>
