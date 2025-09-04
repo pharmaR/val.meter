@@ -34,6 +34,17 @@ method(metric_coerce, list(new_S3_class(cnd_type()), class_any)) <-
 method(
   metric_coerce,
   list(
+    new_union(class_character, class_double, class_logical, class_integer),
+    new_S3_class(class_desc(class_double))
+  )
+) <-
+  function(from, to, ...) {
+    as.double(from, ...)
+  }
+
+method(
+  metric_coerce,
+  list(
     new_union(class_character, class_double, class_logical),
     new_S3_class(class_desc(class_integer))
   )

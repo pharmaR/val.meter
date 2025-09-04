@@ -168,25 +168,28 @@ local({
 
         if (any_tags) "\n",
         if (any_tags) {
-          paste(collapse = " ", c(
-            # tags
-            vcapply(x@tags, function(tag) {
-              color <- if (tag %in% tags) "blue" else "red"
-              fmt(cli_tag(tag, color = color))
-            }),
+          paste(
+            collapse = " ",
+            c(
+              # tags
+              vcapply(x@tags, function(tag) {
+                color <- if (tag %in% tags) "blue" else "red"
+                fmt(cli_tag(tag, color = color))
+              }),
 
-            # permissions
-            vcapply(x@permissions, function(permission) {
-              color <- if (permission %in% permissions) "green" else "red"
-              fmt(cli_tag(permission, scope = "req", color = color))
-            }),
+              # permissions
+              vcapply(x@permissions, function(permission) {
+                color <- if (permission %in% permissions) "green" else "red"
+                fmt(cli_tag(permission, scope = "req", color = color))
+              }),
 
-            # suggests dependencies
-            vcapply(seq_along(x@suggests), function(i) {
-              color <- if (is_installed[[i]]) "green" else "red"
-              fmt(cli_tag(scope = "dep", x@suggests[[i]], color = color))
-            })
-          ))
+              # suggests dependencies
+              vcapply(seq_along(x@suggests), function(i) {
+                color <- if (is_installed[[i]]) "green" else "red"
+                fmt(cli_tag(scope = "dep", x@suggests[[i]], color = color))
+              })
+            )
+          )
         }
       )
     }
@@ -229,7 +232,8 @@ local({
 })
 
 #' @include utils_rd.R
-method(toRd, data_info) <- function(obj, ...) {  # nolint: object_name_linter.
+method(toRd, data_info) <- function(obj, ...) {
+  # nolint: object_name_linter.
   class <- if (S7::S7_inherits(obj@data_class)) {
     obj@data_class@name
   } else {
@@ -237,10 +241,15 @@ method(toRd, data_info) <- function(obj, ...) {  # nolint: object_name_linter.
   }
 
   paste0(
-    "\\code{", class, "} ", rd_deparse(obj@description),
+    "\\code{",
+    class,
+    "} ",
+    rd_deparse(obj@description),
     "\n",
-    toRd(obj@permissions), " ",
-    toRd(class_suggests(obj@suggests)), " ",
+    toRd(obj@permissions),
+    " ",
+    toRd(class_suggests(obj@suggests)),
+    " ",
     "\n\n",
     toRd(obj@tags)
   )
@@ -305,16 +314,23 @@ local({
 })
 
 #' @include utils_rd.R
-method(toRd, data_info_list) <- function(obj, ...) {  # nolint: object_name_linter, line_length_linter.
+method(toRd, data_info_list) <- function(obj, ...) {
+  # nolint: object_name_linter, line_length_linter.
   item_names <- vcapply(obj, prop, "title")
   item_names <- ifelse(!is.na(item_names), item_names, names(obj))
   pkg <- packageName()
   paste0(
     "\\section{Metrics}{",
-    "The following metrics are provided by \\code{\\link{", pkg, "}}.",
-    paste(collapse = "", "\n", vcapply(seq_along(obj), function(i) {
-      paste0("\\subsection{", item_names[[i]], "}{\n", toRd(obj[[i]]), "\n}")
-    })),
+    "The following metrics are provided by \\code{\\link{",
+    pkg,
+    "}}.",
+    paste(
+      collapse = "",
+      "\n",
+      vcapply(seq_along(obj), function(i) {
+        paste0("\\subsection{", item_names[[i]], "}{\n", toRd(obj[[i]]), "\n}")
+      })
+    ),
     "}"
   )
 }
@@ -340,14 +356,24 @@ method(toRd, data_info_list) <- function(obj, ...) {  # nolint: object_name_lint
 #' @keywords workflow
 #' @export
 metrics <- function(x, ..., all = FALSE) {
-  if (!missing(x)) {
+  if (!missing(x) && is(x, class_pkg)) {
     return(get_pkg_datas(x, index = TRUE, ..., all = all))
   }
 
-  fields <- get_data_derive_field_names()
-  names(fields) <- fields
-  fields <- lapply(fields, pkg_data_info)
+  if (!missing(x) && is(x, .s7_class)) {
+    fields <- get_data_derive_field_names(class_pkg, x)
+    names(fields) <- fields
+    fields <- lapply(fields, pkg_data_info, resource = x)
+  } else {
+    fields <- get_data_derive_field_names()
+    names(fields) <- fields
+    fields <- lapply(fields, pkg_data_info)
+  }
+
   is_metric <- vlapply(fields, S7::prop, "metric")
-  if (!all) fields <- fields[is_metric]
+  if (!all) {
+    fields <- fields[is_metric]
+  }
+
   data_info_list(fields)
 }

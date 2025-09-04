@@ -39,6 +39,7 @@ Imports:
     stats,
     jsonlite
 Suggests:
+    covr,
     rcmdcheck,
     igraph,
     knitr,
@@ -78,6 +79,7 @@ Collate:
     'data_archive_md5.R'
     'data_desc.R'
     'data_downloads_total.R'
+    'data_expr_coverage.R'
     'data_r_cmd_check.R'
     'generic_metric_coerce.R'
     'options.R'
