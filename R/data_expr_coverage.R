@@ -31,3 +31,11 @@ impl_data(
     covr::percent_coverage(pkg$covr_test_coverage) / 100
   }
 )
+
+impl_data(
+  "covr_test_coverage_fraction",
+  for_resource = mock_resource,
+  function(pkg, resource, field, ...) {
+    1 - pmin(pmax(rnorm(1, 0.5, 0.45)**2, 0), 1)
+  }
+)

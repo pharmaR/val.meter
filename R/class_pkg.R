@@ -366,11 +366,15 @@ as.data.frame.list_of_pkg <- function(x, ...) {
 
   # populate with data
   for (name in all_names) {
-    df[[name]] <- simplify2array(lapply(x, function(xi) {
+    df[[name]] <- lapply(x, function(xi) {
       data <- xi@data[[name]]
       is_err <- inherits(data, cnd_type())
       if (is_err) NA else data
-    }))
+    })
+
+    if (all(vlapply(df[[name]], is.atomic))) {
+      df[[name]] <- simplify2array(df[[name]])
+    }
   }
 
   df

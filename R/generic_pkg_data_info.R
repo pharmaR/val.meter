@@ -13,7 +13,7 @@ pkg_data_info <- new_generic("pkg_data_info", c("field", "resource"))
 
 method(pkg_data_info, list(class_character, class_missing)) <-
   function(field, resource, ...) {
-    pkg_data_info(as_pkg_data(field))
+    pkg_data_info(field, resource = class_resource)
   }
 
 #' Aggregates field constraints across field dependencies.

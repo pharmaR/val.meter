@@ -25,12 +25,38 @@ object is provided, return metrics calculated for that package. Metrics are
 a subset of all the data calculated over the course of assessing a package.
 For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 }
+\examples{
+# see all available metrics
+metrics()
+
+# to extend the list with intermediate data
+metrics(all = TRUE)
+
+# see metrics available for package's resources
+p <- pkg("val.meter")  # with installed package resource
+metrics(p@resource)
+
+}
 \keyword{workflow}
 \section{Metrics}{The following metrics are provided by \code{\link{val.meter}}.
+ \subsection{R CMD check Error Count}{
+\code{<integer>} the number of errors produced when running \code{R CMD check}
+
+\Sexpr[stage=render,results=rd]{if (!is.na(match("execution", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-execution-x-flat-square-green.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[req::execution]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-execution-x-flat-square-red.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[req::execution]}}"} \Sexpr[stage=render,results=rd]{if (length(find.package("rcmdcheck", quiet = TRUE)) > 0) "\\\\ifelse{html}{\\\\figure{badge-dep-rcmdcheck-x-flat-square-green.svg}{options: alt = \\"[rcmdcheck]\\"}}{\\\\strong{[dep::rcmdcheck]}}" else "\\\\ifelse{html}{\\\\figure{badge-dep-rcmdcheck-x-flat-square-red.svg}{options: alt = \\"[rcmdcheck]\\"}}{\\\\strong{[dep::rcmdcheck]}}"} 
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}}" }}
+}
+ \subsection{Total Downloads}{
+\code{<integer>} total number of lifetime downloads, as reported by the Posit CRAN mirror through the \href{https://cranlogs.rpkg.org}{cranlogs} API
+
+\Sexpr[stage=render,results=rd]{if (!is.na(match("network", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-green.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-red.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}"}  
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}\\n\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}\\n\\\\ifelse{html}{\\\\figure{badge-version--independent-x-flat-square-blue.svg}{options: alt = \\"[version-independent]\\"}}{\\\\strong{[version-independent]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-version--independent-x-flat-square-blue.svg}{options: alt = \\"[version-independent]\\"}}{\\\\strong{[version-independent]}}}" }}
+}
  \subsection{Unit tests expression coverage}{
 \code{<double>} the fraction of expressions evaluated by any unit tests
 
-  
+\Sexpr[stage=render,results=rd]{if (!is.na(match("execution", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-execution-x-flat-square-green.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[req::execution]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-execution-x-flat-square-red.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[req::execution]}}"} \Sexpr[stage=render,results=rd]{if (length(find.package("covr", quiet = TRUE)) > 0) "\\\\ifelse{html}{\\\\figure{badge-dep-covr-x-flat-square-green.svg}{options: alt = \\"[covr]\\"}}{\\\\strong{[dep::covr]}}" else "\\\\ifelse{html}{\\\\figure{badge-dep-covr-x-flat-square-red.svg}{options: alt = \\"[covr]\\"}}{\\\\strong{[dep::covr]}}"} 
 
 
 }

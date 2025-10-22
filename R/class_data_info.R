@@ -154,7 +154,7 @@ local({
         },
 
         # data type
-        fmt(style_dim("{class}")),
+        fmt(col_grey("{class}")),
 
         # description
         if (length(x@description) > 0L) {
@@ -306,7 +306,7 @@ local({
     }
 
     for (msg in unique(msgs)) {
-      cli_text(style_dim(msg$message))
+      cli_text(col_grey(msg$message))
     }
 
     invisible(res)
@@ -342,6 +342,8 @@ method(toRd, data_info_list) <- function(obj, ...) {
 #' a subset of all the data calculated over the course of assessing a package.
 #' For access to _all_ the internally calculated data, pass `all = TRUE`.
 #'
+#' @evalRd tools::toRd(metrics())
+#'
 #' @param x Optionally, an object to retrieve metrics from. When `NULL` (the
 #'   default), a listing of metric metadata is returned.
 #' @param ... Additional arguments unused.
@@ -351,7 +353,16 @@ method(toRd, data_info_list) <- function(obj, ...) {
 #' @returns A `list` of calculated values or metadata, in the cases where an
 #'   object is or is not provided respectively.
 #'
-#' @evalRd tools::toRd(metrics())
+#' @examples
+#' # see all available metrics
+#' metrics()
+#'
+#' # to extend the list with intermediate data
+#' metrics(all = TRUE)
+#'
+#' # see metrics available for package's resources
+#' p <- pkg("val.meter")  # with installed package resource
+#' metrics(p@resource)
 #'
 #' @keywords workflow
 #' @export
@@ -362,6 +373,10 @@ metrics <- function(x, ..., all = FALSE) {
 
   if (!missing(x) && is(x, .s7_class)) {
     fields <- get_data_derive_field_names(class_pkg, x)
+    names(fields) <- fields
+    fields <- lapply(fields, pkg_data_info, resource = x)
+  } else if (!missing(x) && is(x, class_resource)) {
+    fields <- get_data_derive_field_names(class_pkg, attr(x, "S7_class"))
     names(fields) <- fields
     fields <- lapply(fields, pkg_data_info, resource = x)
   } else {
