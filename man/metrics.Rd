@@ -54,4 +54,11 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
   
 
 \Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}}" }}
+}
+ \subsection{Has Website}{
+\code{<logical>} a logical indicating whether the package has a website
+
+  
+
+
 }}
