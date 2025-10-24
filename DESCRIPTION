@@ -42,13 +42,13 @@ Suggests:
     rcmdcheck,
     igraph,
     knitr,
-    oysteR,
     rmarkdown,
+    rosv,
     testthat (>= 3.0.0)
 Config/Needs/vignettes:
     knitr,
     rmarkdown,
-    oysteR,
+    rosv,
     testthat (>= 3.0.0)
 Config/Needs/readme:
     asciicast
