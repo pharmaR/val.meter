@@ -57,6 +57,18 @@ impl_data(
 )
 
 impl_data(
+  "has_website",
+  class = class_logical,
+  metric = TRUE,
+  permissions = c(),
+  title = "Has Website",
+  description = "a logical indicating whether the package has a website",
+  function(pkg, resource, ...) {
+    length(pkg$desc$get_urls()) > 0
+  }
+)
+
+impl_data(
   "desc",
   for_resource = mock_resource,
   function(pkg, resource, ..., deps = NULL) {
