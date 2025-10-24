@@ -79,6 +79,7 @@ Collate:
     'data_desc.R'
     'data_downloads_total.R'
     'data_r_cmd_check.R'
+    'data_vignettes.R'
     'generic_metric_coerce.R'
     'options.R'
     'package.R'
