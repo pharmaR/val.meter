@@ -106,11 +106,11 @@ the <code><a href="../reference/metrics.html">metrics()</a></code> function. How
 data.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="../reference/metrics.html">metrics</a></span><span class="op">(</span>all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "r_cmd_check"             "desc"                   </span></span>
-<span><span class="co">#&gt; [3] "archive_md5"             "name"                   </span></span>
-<span><span class="co">#&gt; [5] "version"                 "r_cmd_check_error_count"</span></span>
-<span><span class="co">#&gt; [7] "downloads_total"         "dependency_count"       </span></span>
-<span><span class="co">#&gt; [9] "has_website"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "r_cmd_check"             "desc"                   </span></span>
+<span><span class="co">#&gt;  [3] "archive_md5"             "vignette_count"         </span></span>
+<span><span class="co">#&gt;  [5] "name"                    "version"                </span></span>
+<span><span class="co">#&gt;  [7] "r_cmd_check_error_count" "downloads_total"        </span></span>
+<span><span class="co">#&gt;  [9] "dependency_count"        "has_website"</span></span></code></pre></div>
 <p>Sure enough, <code>"name"</code> is in the list. We can learn a bit
 more about it by pulling this entry from our metrics:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">

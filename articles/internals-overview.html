@@ -252,11 +252,11 @@ they’re lists! They have tab completion, print out their contents
 <code>list</code>-like entries using <code><a href="https://rdrr.io/r/base/names.html" class="external-link">names()</a></code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">rpkg</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "r_cmd_check"             "desc"                   </span></span>
-<span><span class="co">#&gt; [3] "archive_md5"             "name"                   </span></span>
-<span><span class="co">#&gt; [5] "version"                 "r_cmd_check_error_count"</span></span>
-<span><span class="co">#&gt; [7] "downloads_total"         "dependency_count"       </span></span>
-<span><span class="co">#&gt; [9] "has_website"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1] "r_cmd_check"             "desc"                   </span></span>
+<span><span class="co">#&gt;  [3] "archive_md5"             "vignette_count"         </span></span>
+<span><span class="co">#&gt;  [5] "name"                    "version"                </span></span>
+<span><span class="co">#&gt;  [7] "r_cmd_check_error_count" "downloads_total"        </span></span>
+<span><span class="co">#&gt;  [9] "dependency_count"        "has_website"</span></span></code></pre></div>
 <p>Yep. There they are. All the fields you can just <em>assume</em>
 exist in this <code>pkg</code> object. We say <em>“assume”</em> because
 they don’t actually exist in the <code>pkg</code> - at least not yet.
@@ -274,6 +274,8 @@ about.</p>
 <span><span class="co">#&gt;    @ md5    : chr "f1c516596e9ad5015218ead8114487d5"</span></span>
 <span><span class="co">#&gt; @permissions</span></span>
 <span><span class="co">#&gt;   &lt;val.meter::permissions&gt; chr [1:3] "write" "execution" "network"</span></span>
+<span><span class="co">#&gt; $vignette_count</span></span>
+<span><span class="co">#&gt;   &lt;promise&gt;</span></span>
 <span><span class="co">#&gt; $r_cmd_check_error_count</span></span>
 <span><span class="co">#&gt;   &lt;promise&gt;</span></span>
 <span><span class="co">#&gt; $downloads_total</span></span>
@@ -304,6 +306,8 @@ some new data.</p>
 <span><span class="co">#&gt;    @ md5    : chr "f1c516596e9ad5015218ead8114487d5"</span></span>
 <span><span class="co">#&gt; @permissions</span></span>
 <span><span class="co">#&gt;   &lt;val.meter::permissions&gt; chr [1:3] "write" "execution" "network"</span></span>
+<span><span class="co">#&gt; $vignette_count</span></span>
+<span><span class="co">#&gt;   &lt;promise&gt;</span></span>
 <span><span class="co">#&gt; $r_cmd_check_error_count</span></span>
 <span><span class="co">#&gt;   [1] 0</span></span>
 <span><span class="co">#&gt; $downloads_total</span></span>
