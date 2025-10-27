@@ -27,6 +27,13 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 }
 \keyword{workflow}
 \section{Metrics}{The following metrics are provided by \code{\link{val.meter}}.
+ \subsection{Total Vignettes}{
+\code{<integer>} total number of vignettes
+
+  
+
+
+}
  \subsection{R CMD check Error Count}{
 \code{<integer>} the number of errors produced when running \code{R CMD check}
 
