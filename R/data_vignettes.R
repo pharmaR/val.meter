@@ -25,9 +25,9 @@ impl_data(
       pkg$web_html,
       xpath = '//a[contains(@href,"vignettes")]'
     )
-    
+
     if (!length(nodes)) return(0)
-    
+
     nodes |>
       xml2::xml_attr("href") |>
       basename() |>
