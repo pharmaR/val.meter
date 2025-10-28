@@ -28,11 +28,11 @@ impl_data(
     
     if (!length(nodes)) return(0)
     
-    nodes |> 
-      xml2::xml_attr("href") |> 
-      basename() |> 
-      tools::file_path_sans_ext() |> 
-      unique() |> 
+    nodes |>
+      xml2::xml_attr("href") |>
+      basename() |>
+      tools::file_path_sans_ext() |>
+      unique() |>
       length()
   }
 )
