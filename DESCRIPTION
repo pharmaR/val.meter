@@ -37,7 +37,9 @@ Imports:
     tools,
     utils,
     stats,
-    jsonlite
+    jsonlite,
+    httr2,
+    xml2
 Suggests:
     rcmdcheck,
     igraph,
@@ -80,6 +82,7 @@ Collate:
     'data_downloads_total.R'
     'data_r_cmd_check.R'
     'data_vignettes.R'
+    'data_web_html.R'
     'generic_metric_coerce.R'
     'options.R'
     'package.R'

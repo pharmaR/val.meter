@@ -17,6 +17,26 @@ impl_data(
   }
 )
 
+impl_data(
+  "vignette_count",
+  for_resource = repo_resource,
+  function(pkg, resource, ...) {
+    nodes <- xml2::xml_find_all(
+      pkg$web_html,
+      xpath = '//a[contains(@href,"vignettes")]'
+    )
+    
+    if (!length(nodes)) return(0)
+    
+    nodes |> 
+      xml2::xml_attr("href") |> 
+      basename() |> 
+      tools::file_path_sans_ext() |> 
+      unique() |> 
+      length()
+  }
+)
+
 #' @importFrom stats rbinom
 impl_data(
   "vignette_count",
