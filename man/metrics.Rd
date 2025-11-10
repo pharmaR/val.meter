@@ -39,6 +39,13 @@ metrics(p@resource)
 }
 \keyword{workflow}
 \section{Metrics}{The following metrics are provided by \code{\link{val.meter}}.
+ \subsection{Total Vignettes}{
+\code{<integer>} total number of vignettes
+
+  
+
+
+}
  \subsection{R CMD check Error Count}{
 \code{<integer>} the number of errors produced when running \code{R CMD check}
 
@@ -66,4 +73,11 @@ metrics(p@resource)
   
 
 \Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}}" }}
+}
+ \subsection{Has Website}{
+\code{<logical>} a logical indicating whether the package has a website
+
+  
+
+
 }}

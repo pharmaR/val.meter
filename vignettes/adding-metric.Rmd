@@ -195,16 +195,21 @@ And finally, if we want to make our metric discoverable, we can provide it with
 any associated `tags()`. 
 
 Let's implement a rigorous metric, which will surface vulnerabilities using the
-`oysteR` package.
+`rosv` package.
 
 ## Planning our metric
 
-`oysteR` provides a very useful interface for querying the Sonatype
-vulnerability database. In our case, we can use a known example to see how
-vulnerabilities might be reported:
+`rosv` provides a very useful interface for querying the open source
+vulnerabilities (OSV) database. In our case, we can use a known example to see
+how vulnerabilities might be reported:
 
 ```{r}
-oysteR::audit("haven", version = "0.1.1", type = "cran")
+rosv::osv_query(
+  "haven",
+  version = "0.1.1",
+  ecosystem = "CRAN",
+  all_affected = FALSE
+)
 ```
 
 > **Note: `haven` is a pillar of regulatory reporting!**
@@ -215,17 +220,17 @@ oysteR::audit("haven", version = "0.1.1", type = "cran")
 > to do this as rigorously as possible.
 
 We can see from the output that `haven` historically had a few vulnerabilities
-reported. But we can also see a fair amount of information provided by `oysteR`.
+reported. But we can also see a fair amount of information provided by `rosv`.
 
 ## Implementing intermediate data
 
 Which data do we want to use as our metric? For now, let's implement just the
 number of vulnerabilities - but let's also pave the way for ourselves to add 
 other metrics based on this result later. To do this, let's first gather the
-output of `oysteR` as intermediate data, which we'll then use to derive our
+output of `rosv` as intermediate data, which we'll then use to derive our
 metrics as summarizing data.
 
-What's important to note is that `oysteR` operates on packages from `CRAN`, so
+What's important to note is that `rosv` operates on packages from `CRAN`, so
 we should be extra careful about not assuming that packages installed locally
 are the same as those coming from `CRAN`. There are tens of thousands of
 packages on `CRAN` and we don't want to accidentally report that a package has
@@ -233,10 +238,10 @@ no vulnerabilities just because it shares a name with one of them.
 
 ```{r}
 impl_data(
-  "oysteR_vulnerability_df",
+  "rosv_vulnerability_df",
 
-  # declare our suggested dependency on {oysteR}
-  suggests = "oysteR",
+  # declare our suggested dependency on {rosv}
+  suggests = "rosv",
 
   # require that users opt-in to network requests as part of this data
   permissions = permissions("network"),
@@ -248,11 +253,11 @@ impl_data(
   for_resource = cran_repo_resource,
 
   function(pkg, resource, field, ...) {
-    oysteR::audit(
-      pkg = pkg$name,
+    rosv::osv_query(
+      name = pkg$name,
       version = pkg$version,
-      type = "cran",
-      verbose = FALSE
+      ecosystem = "CRAN",
+      all_affected = FALSE
     )
   }
 )
@@ -264,7 +269,7 @@ from a `CRAN` resource
 ```{r}
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r, permissions = TRUE)
-p$oysteR_vulnerability_df
+p$rosv_vulnerability_df
 ```
 
 That looks good! We can double check that a few of our guardrails are working
@@ -275,7 +280,7 @@ We can see that a generic repository will throw an error.
 ```{r, error = TRUE}
 r <- repo_resource("haven", "0.1.1", repo = "https://fakecran.org/")
 p <- pkg(r, permissions = "network")
-p$oysteR_vulnerability_df
+p$rosv_vulnerability_df
 ```
 
 And that not providing necessary permissions for network access will similarly
@@ -284,15 +289,15 @@ throw an error.
 ```{r, error = TRUE}
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r)
-p$oysteR_vulnerability_df
+p$rosv_vulnerability_df
 ```
 
-And similarly, if we didn't have `oysteR` installed we'd see something like
+And similarly, if we didn't have `rosv` installed we'd see something like
 
 ```{r, eval = FALSE}
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r, permissions = "network")
-p$oysteR_vulnerability_df
+p$rosv_vulnerability_df
 ```
 
 ```{r, echo = FALSE, error = TRUE}
@@ -300,7 +305,7 @@ orig_require_namespace <- base::requireNamespace
 testthat::with_mocked_bindings(
   .package = "base",
   requireNamespace = function(package, ...) {
-    if (package == "oysteR") FALSE
+    if (package == "rosv") FALSE
     else orig_require_namespace(package, ...)
   },
   {
@@ -311,12 +316,12 @@ testthat::with_mocked_bindings(
     )
 
     p <- pkg(r, permissions = "network")
-    p$oysteR_vulnerability_df
+    p$rosv_vulnerability_df
   }
 )
 ```
 
-Now that we can fetch the `oysteR` response, we can process it to derive our
+Now that we can fetch the `rosv` response, we can process it to derive our
 metric. 
 
 ```{r}
@@ -327,7 +332,7 @@ impl_data(
   metric = TRUE,
   class = S7::class_integer,
   function(pkg, resource, field, ...) {
-    pkg$oysteR_vulnerability_df$no_of_vulnerabilities
+    nrow(pkg$rosv_vulnerability_df)
   }
 )
 ```
@@ -352,7 +357,7 @@ p$vulnerability_count
 ```
 
 When attempting to calculate our count, we implicitly try to fetch the internal
-`oysteR_vulnerability_df`, which itself is limited to only CRAN repositories. We
+`rosv_vulnerability_df`, which itself is limited to only CRAN repositories. We
 surface this error automatically when we try to calculate a dependent metric.
 
 ## Simulating metrics

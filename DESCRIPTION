@@ -43,13 +43,13 @@ Suggests:
     rcmdcheck,
     igraph,
     knitr,
-    oysteR,
     rmarkdown,
+    rosv,
     testthat (>= 3.0.0)
 Config/Needs/vignettes:
     knitr,
     rmarkdown,
-    oysteR,
+    rosv,
     testthat (>= 3.0.0)
 Config/Needs/readme:
     asciicast
@@ -81,6 +81,7 @@ Collate:
     'data_downloads_total.R'
     'data_expr_coverage.R'
     'data_r_cmd_check.R'
+    'data_vignettes.R'
     'generic_metric_coerce.R'
     'options.R'
     'package.R'
