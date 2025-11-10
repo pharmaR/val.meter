@@ -165,12 +165,15 @@ Let's see what code was needed to implement this
 ```{r, echo = FALSE, message = FALSE}
 library(S7)
 
-method_env <- environment(method(
+method_fn <- method(
   pkg_data_derive,
   list(class_pkg, class_resource, pkg_data_class("r_cmd_check_error_count"))
-))
+)
 
-with(method_env, fn)
+method_fn <- unclass(method_fn)  # remove S7 class info for simpler display
+attributes(method_fn) <- NULL  # remove extra attributes
+
+method_fn
 ```
 
 This code is pretty straightforward! We can count on `pkg$r_cmd_check` existing,

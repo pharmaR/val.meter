@@ -102,7 +102,9 @@ constructor_try_from <- function(...) {
   self <- sys.frame(-1L)
   self_args <- list()
   for (name in names(self)) {
-    if (identical(name, "constructor")) next
+    if (identical(name, "constructor")) {
+      next
+    }
     self_args[[name]] <- self[[name]]
   }
 
@@ -112,7 +114,9 @@ constructor_try_from <- function(...) {
     # other args will come from the default constructor
     args <- list()
     arg_names <- setdiff(names(match.call(expand.dots = TRUE)[-1]), ".from")
-    for (name in arg_names) args[[name]] <- environment()[[name]]
+    for (name in arg_names) {
+      args[[name]] <- environment()[[name]]
+    }
 
     class <- sys.function()
     if (!missing(.from)) {
@@ -163,7 +167,7 @@ as_signature_vector <- function(signature) {
 #'
 #' @keywords internal
 #' @noRd
-suppress_method_overwrite <- function(expr) {
+suppress_method_overwrite <- function(expr, envir = parent.frame()) {
   withCallingHandlers(expr, message = function(m) {
     if (startsWith(tolower(m$message), "overwriting")) {
       invokeRestart("muffleMessage")
@@ -284,10 +288,13 @@ class_graph <- function(x) {
     )
   )
 
-  g <- igraph::add_edges(g, rbind(
-    tail = names(x)[has_parent],
-    head = as.character(x_parents[has_parent])
-  ))
+  g <- igraph::add_edges(
+    g,
+    rbind(
+      tail = names(x)[has_parent],
+      head = as.character(x_parents[has_parent])
+    )
+  )
 
   g
 }
