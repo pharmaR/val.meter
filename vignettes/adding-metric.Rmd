@@ -407,7 +407,7 @@ dispatch mechanism to create a custom data-generating process.
 impl_data(
   "vulnerability_count",
   for_resource = mock_resource,
-  function(...) rpois(1, lambda = 0.1)
+  function(pkg, resource, field, ...) rpois(1, lambda = 0.1)
 )
 ```
 

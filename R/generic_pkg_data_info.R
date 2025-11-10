@@ -3,6 +3,8 @@
 #' Retrieve metadata about a data field.
 #'
 #' @param field `character(1L)` field name to retrieve.
+#' @param resource [`resource`] providing the resource to be used for
+#'   retrieving package data info.
 #' @param ... Additional arguments unused.
 #'
 #' @return `data_info` for field `field`.

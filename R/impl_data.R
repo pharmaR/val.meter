@@ -20,7 +20,11 @@
 #'
 #' @examples
 #' p <- random_pkg()
-#' impl_data("name_character_count", function(pkg, ...) nchar(pkg$name))
+#' impl_data(
+#'   "name_character_count",
+#'   function(pkg, resource, field, ...) nchar(pkg$name)
+#' )
+#'
 #' p$name_character_count
 #'
 #'

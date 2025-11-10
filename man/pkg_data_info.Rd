@@ -9,6 +9,9 @@ pkg_data_info(field, resource, ...)
 \arguments{
 \item{field}{\code{character(1L)} field name to retrieve.}
 
+\item{resource}{\code{\link{resource}} providing the resource to be used for
+retrieving package data info.}
+
 \item{...}{Additional arguments unused.}
 }
 \value{

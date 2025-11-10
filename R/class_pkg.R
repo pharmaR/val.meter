@@ -340,10 +340,6 @@ pkgs_from_dcf <- function(x, ...) {
 
 #' @exportS3Method as.data.frame list_of_pkg
 as.data.frame.list_of_pkg <- function(x, ...) {
-  # extract all package data types
-  datas <- lapply(x, function(i) as.list(i@data))
-  all_names <- unique(unlist(lapply(datas, names)))
-
   # build data frame
   df <- data.frame(
     package = vcapply(x, function(xi) xi@resource@package),
@@ -352,7 +348,7 @@ as.data.frame.list_of_pkg <- function(x, ...) {
   )
 
   # populate with data
-  for (name in all_names) {
+  for (name in names(metrics())) {
     df[[name]] <- simplify2array(lapply(x, function(xi) {
       data <- xi@data[[name]]
       is_err <- inherits(data, cnd_type())

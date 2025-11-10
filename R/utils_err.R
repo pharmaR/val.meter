@@ -256,7 +256,8 @@ err <- list(
 #' error("missing_suggests", "wordcount")
 #'
 #' @export
-error <- function(type, ...) { # nolint: object_usage_linter
+error <- function(type, ...) {
+  # nolint: object_usage_linter
   cnd <- err[[type]](..., capture = TRUE)
   cnd$trace <- NULL
   cnd$call <- NULL
@@ -276,16 +277,20 @@ method(
     msg <- strsplit(from$message, "\n")[[1]]
 
     # disregard method errors if no dispatch args are listed
-    if (length(msg) < 3L) return(from)
+    if (length(msg) < 3L) {
+      return(from)
+    }
 
     # extract dispatch args
     msg_generic <- msg[[1]]
-    msg_resource <- msg[[length(msg) - 1L]]  # second-to-last dispatch arg
-    msg_field <- msg[[length(msg)]]  # last dispatch arg
+    msg_resource <- msg[[length(msg) - 1L]] # second-to-last dispatch arg
+    msg_field <- msg[[length(msg)]] # last dispatch arg
 
     # only wrap in our own error type for missing derive implementations
     generic_str <- sub(".*generic `([^`(]*).*", "\\1", msg_generic, perl = TRUE)
-    if (generic_str != "pkg_data_derive") return(from)
+    if (generic_str != "pkg_data_derive") {
+      return(from)
+    }
 
     # extract resource class and field name from error message
     resource_str <- sub(".*<([^/>]*).*", "\\1", msg_resource, perl = TRUE)
@@ -321,8 +326,12 @@ method(to_dcf, S7::new_S3_class("val_meter_error")) <- function(x, ...) {
   text_data <- lapply(x$data, to_dcf)
 
   paste0(
-    packageName(), "::", "error(",
-    '"', subclass, '"',
+    packageName(),
+    "::",
+    "error(",
+    '"',
+    subclass,
+    '"',
     if (length(text_data) > 0) ", ",
     paste0(names(text_data), " = ", text_data, collapse = ", "),
     ")"
@@ -332,12 +341,4 @@ method(to_dcf, S7::new_S3_class("val_meter_error")) <- function(x, ...) {
 #' @include utils_dcf.R
 method(to_dcf, S7::new_S3_class("condition")) <- function(x, ...) {
   stop("Condition type cannot be encoded to dcf format")
-}
-
-as_pkg_data_derive_error <- function(x, ...) {
-  after <- match(cnd_type(), class(x), nomatch = 1L) - 1L
-  class(x) <- append(class(x), cnd_type("derive")[[1L]], after = after)
-  new_data <- list(...)
-  x[names(new_data)] <- new_data
-  x
 }
