@@ -127,7 +127,19 @@ method(
 
       # should that fail, generate using mocking rules
       error = function(e, ...) {
-        pkg_data_derive(pkg, resource, info@data_class, ..., field_name = field)
+        # when simulating data, we are only looking for reasonably
+        # representative data, so we use coerce(), which is more permissive
+        # than convert()
+        metric_coerce(
+          to = info@data_class,
+          pkg_data_derive(
+            pkg,
+            resource,
+            info@data_class,
+            ...,
+            field_name = field
+          )
+        )
       }
     )
   }

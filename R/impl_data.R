@@ -58,7 +58,9 @@ impl_data <- function(
   overwrite = FALSE,
   quiet = FALSE
 ) {
-  is_info_impl <- is_implemented(pkg_data_info, pkg_data_class(name))
+  dispatch_classes <- list(pkg_data_class(name), class_missing)
+  is_info_impl <- is_implemented(pkg_data_info, dispatch_classes)
+
   if (!is_info_impl || ...length()) {
     impl_data_info(
       name = name,
@@ -120,17 +122,19 @@ impl_data_info <- function(
     class <- S7::new_S3_class(class)
   }
 
-  is_info_impl <- is_implemented(pkg_data_info, pkg_data_class(name))
+  dispatch_classes <- list(pkg_data_class(name), class_missing)
+  is_info_impl <- is_implemented(pkg_data_info, dispatch_classes)
+
   if (is_info_impl && !overwrite) {
     stop(
-      "data info for '", name, "' is already implemented. Use ",
+      "data info for '",
+      name,
+      "' is already implemented. Use ",
       "overwrite=TRUE to modify."
     )
   }
 
   data_class <- S7::as_class(class)
-  handler <- if (quiet) suppress_method_overwrite else identity
-
   info <- data_info(
     metric = metric,
     title = title,
@@ -141,9 +145,12 @@ impl_data_info <- function(
     permissions = permissions
   )
 
+  handler <- if (quiet) suppress_method_overwrite else identity
   handler({
-    method(pkg_data_info, pkg_data_class(name)) <-
-      function(field) info
+    method(pkg_data_info, dispatch_classes) <-
+      function(field, resource, ...) {
+        info
+      }
   })
 }
 
@@ -171,21 +178,5 @@ impl_data_derive <- function(
   }
 
   handler <- if (quiet) suppress_method_overwrite else identity
-  handler({
-    method(pkg_data_derive, dispatch_classes) <-
-      function(pkg, resource, field, ...) {
-        info <- pkg_data_info(field)
-        required_permissions <- info@permissions
-        required_suggests <- info@suggests
-        assert_permissions(required_permissions, pkg@permissions)
-        assert_suggests(required_suggests)
-
-        data <- fn(pkg, resource, field, ...)
-        if (!identical(info@data_class, class_any)) {
-          data <- convert(data, info@data_class)
-        }
-
-        data
-      }
-  })
+  handler(method(pkg_data_derive, dispatch_classes) <- fn)
 }

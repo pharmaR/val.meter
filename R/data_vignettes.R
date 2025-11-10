@@ -12,7 +12,7 @@ impl_data(
 impl_data(
   "vignette_count",
   for_resource = install_resource,
-  function(pkg, resource, ...) {
+  function(pkg, resource, field, ...) {
     nrow(tools::getVignetteInfo(pkg$name, dirname(resource@path)))
   }
 )
@@ -21,5 +21,5 @@ impl_data(
 impl_data(
   "vignette_count",
   for_resource = mock_resource,
-  function(...) rbinom(1, 10, .3)
+  function(pkg, resource, field, ...) rbinom(1, 10, .3)
 )
