@@ -43,7 +43,9 @@ impl_data(
   tags = c("execution"),
   permissions = c(),
   title = "R CMD check Error Count",
-  description = "the number of errors produced when running \\code{R CMD check}",
+  description = paste0(
+    "the number of errors produced when running \\code{R CMD check}"
+  ),
   function(pkg, resource, field, ...) {
     length(pkg$r_cmd_check$errors)
   }
