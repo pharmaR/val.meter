@@ -293,7 +293,7 @@ method(convert, list(class_character, class_resource)) <-
     # try to cast input into each resource type
     for (resource_type in all_resource_types) {
       new_idx <- tryCatch(
-        add_resource(convert(from, resource_type)),
+        add_resource(convert(from, resource_type, policy = policy)),
         error = identity
       )
 
@@ -321,7 +321,7 @@ method(convert, list(class_character, class_resource)) <-
           # and try to convert a known resource to another desired resource type
           to_resource_type <- all_resource_types[[to_idx]]
           new_idx <- tryCatch(
-            add_resource(convert(from_resource, to_resource_type)),
+            add_resource(convert(from_resource, to_resource_type, policy = policy)),
             error = identity
           )
 
