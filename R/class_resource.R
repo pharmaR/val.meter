@@ -522,7 +522,7 @@ method(convert, list(class_repo_resource, class_cran_repo_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
     assert_permissions("network", policy@permissions)
 
-    id = next_id()
+    id <- next_id()
 
     cran_repo_resource(
       id = id,
