@@ -251,7 +251,7 @@ cran_repo_resource <- class_cran_repo_resource <- new_class(
             Comment = character(1)
           )
         )
-        if (!value %in% contrib.url(cran_mirrors$URL)) {
+        if (!value %in% cran_mirrors$URL) {
           paste0(
             "CRAN repo resources must be among the listed mirrors in",
             "`getCRANmirrors()`"
@@ -442,7 +442,7 @@ method(convert, list(class_character, class_source_code_resource)) <-
 method(convert, list(class_character, class_repo_resource)) <-
   method(convert, list(class_character, class_cran_repo_resource)) <-
   function(from, to, ...) {
-    ap <- available.packages()
+    ap <- available.packages(type = "source")
     ap_idx <- Position(function(pkg) identical(from, pkg), ap[, "Package"])
 
     if (!is.na(ap_idx)) {
@@ -450,7 +450,7 @@ method(convert, list(class_character, class_repo_resource)) <-
         package = ap[[ap_idx, "Package"]],
         version = ap[[ap_idx, "Version"]],
         md5 = ap[[ap_idx, "MD5sum"]],
-        repo = ap[[ap_idx, "Repository"]]
+        repo = sub("src/contrib", "", ap[[ap_idx, "Repository"]])
       ))
     }
 
@@ -468,7 +468,7 @@ method(convert, list(class_repo_resource, class_install_resource)) <-
     install.packages(
       pkgs = from@package,
       lib = lib_path,
-      contriburl = from@repo,
+      contriburl = utils::contrib.url(from@repo),
       repos = NULL,
       quiet = quiet
     )
@@ -501,7 +501,7 @@ method(convert, list(class_repo_resource, class_source_archive_resource)) <-
       pkgs = from@package,
       destdir = path,
       repos = NULL,
-      contriburl = from@repo,
+      contriburl = utils::contrib.url(from@repo),
       quiet = quiet
     )
 

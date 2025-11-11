@@ -7,7 +7,7 @@ impl_data(
   function(pkg, resource, ...) {
     sprintf(
       "%s/web/packages/%s",
-      dirname(dirname(resource@repo)),
+      resource@repo,
       resource@package
     )
   }
