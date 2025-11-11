@@ -3,7 +3,7 @@
 impl_data(
   "web_url",
   class = class_character,
-  for_resource = repo_resource,
+  for_resource = cran_repo_resource,
   function(pkg, resource, ...) {
     sprintf(
       "%s/web/packages/%s",
@@ -16,7 +16,7 @@ impl_data(
 impl_data(
   "web_html",
   class = c("xml_document", "xml_node"),
-  for_resource = repo_resource,
+  for_resource = cran_repo_resource,
   permissions = "network",
   function(pkg, resource, ...) {
     pkg$web_url |>

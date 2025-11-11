@@ -19,7 +19,7 @@ impl_data(
 
 impl_data(
   "vignette_count",
-  for_resource = repo_resource,
+  for_resource = cran_repo_resource,
   function(pkg, resource, ...) {
     nodes <- xml2::xml_find_all(
       pkg$web_html,

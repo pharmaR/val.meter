@@ -234,7 +234,24 @@ cran_repo_resource <- class_cran_repo_resource <- new_class(
       class_character,
       validator = function(value) {
         cran_mirrors <- getCRANmirrors(local.only = TRUE)
-        if (!value %in% cran_mirrors$URL) {
+        # NOTE: For the time being the POSIT CRAN mirror is being manually
+        # added. It's inclusion is justified since it is a true cran mirror and
+        # is the default in very populat IDEs, namely RStudio and Positron.
+        cran_mirrors <- rbind(
+          cran_mirrors,
+          data.frame(
+            Name = "RStudio IDE",
+            Country = character(1),
+            City = character(1),
+            URL = "https://cran.rstudio.com/",
+            Host = character(1),
+            Maintainer = character(1),
+            OK = integer(1),
+            CountryCode = character(1),
+            Comment = character(1)
+          )
+        )
+        if (!value %in% contrib.url(cran_mirrors$URL)) {
           paste0(
             "CRAN repo resources must be among the listed mirrors in",
             "`getCRANmirrors()`"
@@ -423,6 +440,7 @@ method(convert, list(class_character, class_source_code_resource)) <-
   }
 
 method(convert, list(class_character, class_repo_resource)) <-
+  method(convert, list(class_character, class_cran_repo_resource)) <-
   function(from, to, ...) {
     ap <- available.packages()
     ap_idx <- Position(function(pkg) identical(from, pkg), ap[, "Package"])
@@ -497,6 +515,21 @@ method(convert, list(class_repo_resource, class_source_archive_resource)) <-
       version = version,
       md5 = from@md5,
       path = path
+    )
+  }
+
+method(convert, list(class_repo_resource, class_cran_repo_resource)) <-
+  function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
+    assert_permissions("network", policy@permissions)
+
+    id = next_id()
+
+    cran_repo_resource(
+      id = id,
+      package = from@package,
+      version = from@version,
+      md5 = from@md5,
+      repo = from@repo
     )
   }
 
