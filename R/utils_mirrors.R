@@ -6,7 +6,7 @@
 #'
 #' @keywords internal
 #' @noRd
-get_cran_mirrors <- function(all = FALSE, local.only = TRUE) {
+get_cran_mirrors <- function(all = FALSE, local.only = TRUE) { # nolint
   cran_mirrors <- getCRANmirrors(all = all, local.only = local.only)
   # NOTE: For the time being the POSIT CRAN mirror is being manually
   # added. It's inclusion is justified since it is a true cran mirror and

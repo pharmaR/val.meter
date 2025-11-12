@@ -15,6 +15,7 @@
 #' @family resources
 #' @export
 #' @name resource
+#' @include utils_mirrors.R
 resource <- class_resource <- new_class(
   "resource",
   abstract = TRUE,
