@@ -233,24 +233,7 @@ cran_repo_resource <- class_cran_repo_resource <- new_class(
     repo = new_property(
       class_character,
       validator = function(value) {
-        cran_mirrors <- getCRANmirrors(local.only = TRUE)
-        # NOTE: For the time being the POSIT CRAN mirror is being manually
-        # added. It's inclusion is justified since it is a true cran mirror and
-        # is the default in very populat IDEs, namely RStudio and Positron.
-        cran_mirrors <- rbind(
-          cran_mirrors,
-          data.frame(
-            Name = "RStudio IDE",
-            Country = character(1),
-            City = character(1),
-            URL = "https://cran.rstudio.com/",
-            Host = character(1),
-            Maintainer = character(1),
-            OK = integer(1),
-            CountryCode = character(1),
-            Comment = character(1)
-          )
-        )
+        cran_mirrors <- get_cran_mirrors()
         if (!value %in% cran_mirrors$URL) {
           paste0(
             "CRAN repo resources must be among the listed mirrors in",
@@ -519,6 +502,23 @@ method(convert, list(class_repo_resource, class_source_archive_resource)) <-
 method(convert, list(class_repo_resource, class_cran_repo_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
     assert_permissions("network", policy@permissions)
+
+    cran_ap <- available.packages(
+      repos = "https://cloud.r-project.org/",
+      type = "source"
+    )
+    cran_md5 <- tryCatch(
+      cran_ap[from@package, "MD5sum"],
+      error = function(e) {
+        NA_character_
+      }
+    )
+
+    if (!identical(from@md5, cran_md5)) {
+      stop(fmt("Cannot convert '{.cls from}' into {.cls to}"))
+    } else if (!from@repo %in% get_cran_mirrors()$URL) {
+      from@repo <- "https://cloud.r-project.org/"
+    }
 
     id <- next_id()
 

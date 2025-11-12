@@ -87,6 +87,7 @@ Collate:
     'options.R'
     'package.R'
     'utils_backports.R'
+    'utils_mirrors.R'
     'utils_rand.R'
     'utils_rstudio.R'
     'utils_tmp.R'
