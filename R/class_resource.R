@@ -234,9 +234,11 @@ cran_repo_resource <- class_cran_repo_resource <- new_class(
       class_character,
       validator = function(value) {
         cran_mirrors <- getCRANmirrors(local.only = TRUE)
-        if (!value %in% cran_mirrors$URL) {
+        cran_mirror_urls <- cran_mirrors$URL
+        cran_mirror_urls <- c(cran_mirror_urls, contrib.url(cran_mirror_urls))
+        if (!value %in% cran_mirror_urls) {
           paste0(
-            "CRAN repo resources must be among the listed mirrors in",
+            "CRAN repo url must be among the listed mirrors in",
             "`getCRANmirrors()`"
           )
         }
@@ -292,15 +294,13 @@ method(convert, list(class_character, class_resource)) <-
 
     # try to cast input into each resource type
     for (resource_type in all_resource_types) {
-      new_idx <- tryCatch(
-        add_resource(convert(from, resource_type)),
+      tryCatch(
+        {
+          add_resource(convert(from, resource_type, policy = policy))
+          break
+        },
         error = identity
       )
-
-      # stop on the first discovered source
-      if (!inherits(new_idx, "error")) {
-        break
-      }
     }
 
     # after we've found all the resources we can parse a string into, try to
@@ -309,32 +309,41 @@ method(convert, list(class_character, class_resource)) <-
     while (from_idx <= length(resources)) {
       # for each resource
       from_resource <- resources[[from_idx]]
-      if (!is.null(from_resource)) {
-        # iterate over other allowed resource types
-        for (to_idx in seq_along(all_resource_types)) {
-          # that are not yet populated with a known resource
-          to_resource <- resources[[to_idx]]
-          if (!is.null(to_resource)) {
-            next
-          }
 
-          # and try to convert a known resource to another desired resource type
-          to_resource_type <- all_resource_types[[to_idx]]
-          new_idx <- tryCatch(
-            add_resource(convert(from_resource, to_resource_type)),
-            error = identity
-          )
+      if (is.null(from_resource)) {
+        from_idx <- from_idx + 1L
+        next
+      }
 
-          if (inherits(new_idx, "error")) {
-            next
-          }
-
-          # if we found a more preferential resource, start again from that one
-          if (is.integer(new_idx) && new_idx < from_idx) {
-            from_idx <- new_idx - 1L # -1 to compensate for increment below
-            break # from inner for-loop, continue with next while
-          }
+      # iterate over other allowed resource types
+      for (to_idx in seq_along(all_resource_types)) {
+        # that are not yet populated with a known resource
+        to_resource <- resources[[to_idx]]
+        if (!is.null(to_resource)) {
+          next
         }
+
+        # and try to convert a known resource to another desired resource type
+        to_resource_type <- all_resource_types[[to_idx]]
+        result <- tryCatch(
+          add_resource(convert(
+            from_resource,
+            to_resource_type,
+            policy = policy
+          )),
+          error = identity
+        )
+
+        # special handling for error conditions used to test discovery in tests
+        if (inherits(result, "test_suite_signal")) {
+          stop(result)
+        } else if (inherits(result, "error")) {
+          next
+        }
+
+        # if we found a more preferential resource, start again from that one
+        from_idx <- result - 1L # -1 to compensate for increment below
+        break # from inner for-loop, continue with next while
       }
 
       from_idx <- from_idx + 1L
@@ -345,7 +354,15 @@ method(convert, list(class_character, class_resource)) <-
     resources <- Filter(Negate(is.null), resources)
 
     if (length(resources) < 1L) {
-      stop("Unable to discover package resource")
+      stop(
+        call. = FALSE,
+        "\n",
+        "Unable to discover package resource given acceptable policy resource ",
+        "types.",
+        "\n",
+        "For more information on how to configure package resource ",
+        "discovery see `?policy`"
+      )
     }
 
     md5s <- vcapply(resources, S7::prop, "md5")
@@ -422,6 +439,7 @@ method(convert, list(class_character, class_source_code_resource)) <-
     stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }
 
+#' @importFrom utils available.packages
 method(convert, list(class_character, class_repo_resource)) <-
   function(from, to, ...) {
     ap <- available.packages()
@@ -439,6 +457,7 @@ method(convert, list(class_character, class_repo_resource)) <-
     stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }
 
+#' @importFrom utils install.packages
 method(convert, list(class_repo_resource, class_install_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
     assert_permissions(c("network", "write"), policy@permissions)
@@ -471,6 +490,7 @@ method(convert, list(class_repo_resource, class_install_resource)) <-
     )
   }
 
+#' @importFrom utils download.packages
 method(convert, list(class_repo_resource, class_source_archive_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
     assert_permissions("network", policy@permissions)
@@ -500,6 +520,7 @@ method(convert, list(class_repo_resource, class_source_archive_resource)) <-
     )
   }
 
+#' @importFrom utils install.packages
 method(convert, list(class_local_source_resource, class_install_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
     assert_permissions("write", policy@permissions)
@@ -577,7 +598,8 @@ method(to_dcf, new_S3_class("description")) <- function(x, ...) {
   fields <- x$get(fields)
   fields <- Filter(Negate(is.na), fields)
   paste0(
-    names(fields), ": ",
+    names(fields),
+    ": ",
     trimws(gsub("\\s+", " ", fields)),
     collapse = "\n"
   )
@@ -585,7 +607,9 @@ method(to_dcf, new_S3_class("description")) <- function(x, ...) {
 
 method(to_dcf, class_mock_resource) <- function(x, ...) {
   paste0(
-    "# mocked data generated by ", packageName(), "\n",
+    "# mocked data generated by ",
+    packageName(),
+    "\n",
     to_dcf(x@desc, ...)
   )
 }

@@ -26,9 +26,6 @@ pkg <- class_pkg <- new_class(
     #' @param permissions [`permissions`] granted for deriving data. If not
     #'   provided, the default from `policy` will be used.
     permissions = class_permissions
-
-    #' @param policy [`policy`] to use when converting input to resources. Most
-    #'   commonly used for interpreting strings as resources.
   ),
 
   constructor = function(
@@ -38,6 +35,19 @@ pkg <- class_pkg <- new_class(
   ) {
     is_mocked <- S7::S7_inherits(resource, class_mock_resource)
 
+    # discourage mixing policy and permissions arguments
+    if (!missing(policy) && !missing(permissions)) {
+      stop(
+        "only one of parameters `permissions` and `policy` should be ",
+        "provided."
+      )
+    }
+
+    # if provided, mask default permissions with bespoke permissions
+    if (!missing(permissions)) {
+      policy@permissions <- convert(permissions, class_permissions)
+    }
+
     # handle anything that can be converted into a resource - especially
     # useful for character shorthands
     if (!is_mocked) {
@@ -45,18 +55,12 @@ pkg <- class_pkg <- new_class(
       resource <- convert(resource, class_resource, policy = policy)
     }
 
-    if (!missing(permissions)) {
-      permissions <- convert(permissions, class_permissions)
-    } else {
-      permissions <- policy@permissions
-    }
-
     new_object(
       .parent = S7::S7_object(),
       data = new.env(parent = emptyenv()),
       metrics = list(),
       resource = resource,
-      permissions = permissions
+      permissions = policy@permissions
     )
   }
 )
