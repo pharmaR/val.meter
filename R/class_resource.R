@@ -450,7 +450,7 @@ method(convert, list(class_character, class_repo_resource)) <-
         package = ap[[ap_idx, "Package"]],
         version = ap[[ap_idx, "Version"]],
         md5 = ap[[ap_idx, "MD5sum"]],
-        repo = sub("src/contrib", "", ap[[ap_idx, "Repository"]])
+        repo = sub("src/contrib$", "", ap[[ap_idx, "Repository"]])
       ))
     }
 
@@ -468,8 +468,7 @@ method(convert, list(class_repo_resource, class_install_resource)) <-
     install.packages(
       pkgs = from@package,
       lib = lib_path,
-      contriburl = utils::contrib.url(from@repo),
-      repos = NULL,
+      repos = from@repo,
       quiet = quiet
     )
 
@@ -500,8 +499,7 @@ method(convert, list(class_repo_resource, class_source_archive_resource)) <-
     x <- download.packages(
       pkgs = from@package,
       destdir = path,
-      repos = NULL,
-      contriburl = utils::contrib.url(from@repo),
+      repos = from@repo,
       quiet = quiet
     )
 
