@@ -1,0 +1,274 @@
+# `val.meter`
+
+*validation-ready package quantification supporting regulatory use of R*
+
+## Installation
+
+``` r
+# install.packages("pak")
+pak::pak("pharmaR/val.meter")
+```
+
+## Overview
+
+Easily measure characteristics of packages, built to support the process
+of *validation* required in regulated industries, but generally useful
+to anyone who wants to survey packages.
+
+``` r
+rpkg <- random_pkg(permissions = TRUE)
+metrics(rpkg)
+```
+
+![](reference/figures/README/overview-metrics.svg)
+
+## Features
+
+### Exploring metrics
+
+`val.meter` makes it easy to find a listing of metrics and details of
+what those metrics represent.
+
+``` r
+metrics()
+```
+
+![](reference/figures/README/metrics.svg)
+
+`metrics` actually represent a small set of the internally calculated
+package data, which may go through a few stages of calculation before
+resulting in a quantifiable metric. If you want to see *all* the
+internal information, you can explore the whole set of package data.
+
+`metrics` are unique in that their data is required to be consistent and
+simple (atomic) data.
+
+``` r
+# see all implemented _data_ (a superset of metrics)
+metrics(all = TRUE)
+```
+
+![](reference/figures/README/metrics-all.svg)
+
+### Creating package objects
+
+To start evaluating metrics, start by create a `pkg` (package) object.
+Package objects represent a set of resources from which metadata is
+pulled and a collection of package metadata. When we pass a `character`
+path or package name, `val.meter` will search for the package from
+permitted sources.
+
+``` r
+# calculate some data, using default conservative permissions
+pkg("../val.meter")
+```
+
+![](reference/figures/README/pkg.svg)
+
+We can also be declarative about exactly how we want to source our
+package metadata.
+
+``` r
+library(S7)
+
+# initialize package with only our installed package as a resource
+resrc <- convert("../val.meter", source_code_resource)
+pkg(resrc)
+```
+
+![](reference/figures/README/pkg-explicit.svg)
+
+#### Calculating metrics
+
+Once we have declared *what* we want to assess, we can then start
+calculating metrics.
+
+``` r
+p <- pkg("../val.meter")
+metrics(p)
+```
+
+![](reference/figures/README/metrics-from-pkg.svg)
+
+In this case, you’ll notice that some metric calculations raised errors
+during execution. Here you’ll notice that we have not granted
+`val.meter` permission to execute code or fetch data from APIs over the
+network.
+
+We can also access individual metrics by accessing our `pkg` object like
+a list.
+
+``` r
+p$dependency_count
+```
+
+![](reference/figures/README/metric-dep-count.svg)
+
+Packages are *lazy* 💤! Since some metrics can be computationally
+intensive, we only calculate them as their needed. After they’re
+calculated the first time, the result is saved so you can access it
+whenever you need it.
+
+#### Managing execution permissions
+
+We can opt-in to more extensive capabilities by giving our package more
+permissive execution. We pass `permissions(TRUE)` to grant blanket
+permission to all capabilities.
+
+``` r
+p <- pkg("../val.meter", permissions = "network")
+metrics(p)
+```
+
+![](reference/figures/README/metrics-permissive.svg)
+
+And digging a bit deeper, we’ll see that `r_cmd_check` itself requires
+additional permissions to grant `val.meter` the ability to execute code
+on your machine.
+
+``` r
+p$r_cmd_check
+```
+
+![](reference/figures/README/metric-r-cmd-check-error.svg)
+
+# Package index
+
+## Package metric workflow
+
+The central tools for measuring packages.
+
+- [`metrics()`](https://pharmar.github.io/val.meter/reference/metrics.md)
+  : Catalog or calculate package metrics
+- [`pkg()`](https://pharmar.github.io/val.meter/reference/pkg.md) :
+  Create a new package object to start measuring package heuristics
+
+### Execution controls
+
+Safeguards to ensure that you’re measuring precisely the package code
+you intend, in precisely the ways you intend to measure them.
+
+- [`permissions()`](https://pharmar.github.io/val.meter/reference/permissions.md)
+  : Package Data Permissions Class
+- [`policy()`](https://pharmar.github.io/val.meter/reference/policy.md)
+  : Package Evaluation Policy Class
+- [`tags()`](https://pharmar.github.io/val.meter/reference/tags.md) :
+  Tags Class
+- [`options`](https://pharmar.github.io/val.meter/reference/options.md)
+  : val.meter Options
+
+## Package resources
+
+Concrete classes which characterize sources of package information.
+
+- [`cran_repo_resource()`](https://pharmar.github.io/val.meter/reference/cran_repo_resource.md)
+  : Package CRAN Repository Resource Class
+
+- [`git_resource()`](https://pharmar.github.io/val.meter/reference/git_resource.md)
+  :
+
+  Package `git` Resource Class
+
+- [`install_resource()`](https://pharmar.github.io/val.meter/reference/install_resource.md)
+  : Package Install Resource Class
+
+- [`local_resource()`](https://pharmar.github.io/val.meter/reference/local_resource.md)
+  : Abstract Class for Local Package Resources
+
+- [`local_source_resource()`](https://pharmar.github.io/val.meter/reference/local_source_resource.md)
+  : Abstract Class for Local Package Resources
+
+- [`mock_resource()`](https://pharmar.github.io/val.meter/reference/mock_resource.md)
+  : Mocked Package Resource
+
+- [`multi_resource()`](https://pharmar.github.io/val.meter/reference/multi_resource.md)
+  : A Resource Collection
+
+- [`remote_resource()`](https://pharmar.github.io/val.meter/reference/remote_resource.md)
+  : Abstract Class for Remote Package Resources
+
+- [`repo_resource()`](https://pharmar.github.io/val.meter/reference/repo_resource.md)
+  : Package Repository Resource Class
+
+- [`resource()`](https://pharmar.github.io/val.meter/reference/resource.md)
+  : Resource Class
+
+- [`source_archive_resource()`](https://pharmar.github.io/val.meter/reference/source_archive_resource.md)
+  : Package Archive Source Code Resource Class
+
+- [`source_code_resource()`](https://pharmar.github.io/val.meter/reference/source_code_resource.md)
+  : Package Local Resource Class Union
+
+## Extending and integrating with `val.meter`
+
+Various developer-facing functions, used for extending `val.meter`
+
+### `S7` Generics
+
+- [`pkg_data_derive()`](https://pharmar.github.io/val.meter/reference/pkg_data_derive.md)
+  : Derive a package data field
+- [`pkg_data_info()`](https://pharmar.github.io/val.meter/reference/pkg_data_info.md)
+  : Derive package data information
+
+### `S7` Method Implementation Helpers
+
+- [`impl_data()`](https://pharmar.github.io/val.meter/reference/pkg_data.md)
+  [`impl_data_info()`](https://pharmar.github.io/val.meter/reference/pkg_data.md)
+  [`impl_data_derive()`](https://pharmar.github.io/val.meter/reference/pkg_data.md)
+  : Package Data
+
+### Random package generation
+
+- [`random_pkg()`](https://pharmar.github.io/val.meter/reference/random_pkg.md)
+  [`random_pkgs()`](https://pharmar.github.io/val.meter/reference/random_pkg.md)
+  [`random_repo()`](https://pharmar.github.io/val.meter/reference/random_pkg.md)
+  : Generate Random Package(s)
+- [`pkg_words`](https://pharmar.github.io/val.meter/reference/pkg_words.md)
+  : Words for Package Names
+
+### Repository integrations
+
+- [`to_dcf()`](https://pharmar.github.io/val.meter/reference/to_dcf.md)
+  :
+
+  Convert an object into a `DCF`-formatted string
+
+- [`from_dcf()`](https://pharmar.github.io/val.meter/reference/from_dcf.md)
+  :
+
+  Parse an object from a `DCF`-formatted string
+
+- [`pkg_from_dcf()`](https://pharmar.github.io/val.meter/reference/pkg_from_dcf.md)
+  [`pkgs_from_dcf()`](https://pharmar.github.io/val.meter/reference/pkg_from_dcf.md)
+  :
+
+  Produce `pkg`(s) from a `DCF`-formatted string
+
+- [`metric_coerce()`](https://pharmar.github.io/val.meter/reference/metric_coerce.md)
+  : Metric Coerce
+
+- [`class_metric_data_frame()`](https://pharmar.github.io/val.meter/reference/class_metric_data_frame.md)
+  : Metric data frame
+
+- [`class_package_matrix()`](https://pharmar.github.io/val.meter/reference/class_package_matrix.md)
+  :
+
+  A matrix produced by `available.packages`
+
+### Miscellaneous
+
+- [`error()`](https://pharmar.github.io/val.meter/reference/error.md) :
+  Build an error from an error type and data attributes
+
+# Articles
+
+### All vignettes
+
+- [Adding a
+  Metric](https://pharmar.github.io/val.meter/articles/adding-metric.md):
+- [Internals
+  Overview](https://pharmar.github.io/val.meter/articles/internals-overview.md):
+- [Repository
+  Integrations](https://pharmar.github.io/val.meter/articles/repository-integrations.md):
+- [riskmetric
+  Comparison](https://pharmar.github.io/val.meter/articles/riskmetric-comparison.md):

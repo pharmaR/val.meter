@@ -161,7 +161,7 @@ the foundational data types of the package.</p>
 <span>  edge.arrow.size <span class="op">=</span> <span class="fl">0.25</span>,</span>
 <span>  vertex.color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://r.igraph.org/reference/V.html" class="external-link">V</a></span><span class="op">(</span><span class="va">g</span><span class="op">)</span><span class="op">$</span><span class="va">abstract</span>, <span class="st">"grey"</span>, <span class="st">"lightblue"</span><span class="op">)</span>,</span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="internals-overview_files/figure-html/unnamed-chunk-3-1.svg" alt="A class relationship graph, showcasing the various S7 classes used throughout val.meter. There is a cluster of resource classes, showing the hierarchy of resource classes (including abstract classes), as well as a large set of standalone classes." width="768" style="display: block; margin: auto;"></p>
+<p><img src="internals-overview_files/figure-html/unnamed-chunk-3-1.svg" class="r-plt" alt="A class relationship graph, showcasing the various S7 classes used throughout val.meter. There is a cluster of resource classes, showing the hierarchy of resource classes (including abstract classes), as well as a large set of standalone classes." width="768" style="display: block; margin: auto;"></p>
 <p>So that’s a lot to take in, but let’s break down what we’re seeing.
 First, there’s a large cluster of <code>resource</code> classes. These
 account for over half of the classes that <code>val.meter</code>
@@ -254,9 +254,10 @@ they’re lists! They have tab completion, print out their contents
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">rpkg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "r_cmd_check"             "desc"                   </span></span>
 <span><span class="co">#&gt;  [3] "archive_md5"             "vignette_count"         </span></span>
-<span><span class="co">#&gt;  [5] "name"                    "version"                </span></span>
-<span><span class="co">#&gt;  [7] "r_cmd_check_error_count" "downloads_total"        </span></span>
-<span><span class="co">#&gt;  [9] "dependency_count"        "has_website"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [5] "web_html"                "web_url"                </span></span>
+<span><span class="co">#&gt;  [7] "name"                    "version"                </span></span>
+<span><span class="co">#&gt;  [9] "r_cmd_check_error_count" "downloads_total"        </span></span>
+<span><span class="co">#&gt; [11] "dependency_count"        "has_website"</span></span></code></pre></div>
 <p>Yep. There they are. All the fields you can just <em>assume</em>
 exist in this <code>pkg</code> object. We say <em>“assume”</em> because
 they don’t actually exist in the <code>pkg</code> - at least not yet.
@@ -287,6 +288,8 @@ about.</p>
 <span><span class="co">#&gt; $r_cmd_check (internal)</span></span>
 <span><span class="co">#&gt; $desc (internal)</span></span>
 <span><span class="co">#&gt; $archive_md5 (internal)</span></span>
+<span><span class="co">#&gt; $web_html (internal)</span></span>
+<span><span class="co">#&gt; $web_url (internal)</span></span>
 <span><span class="co">#&gt; $name (internal)</span></span>
 <span><span class="co">#&gt; $version (internal)</span></span></code></pre>
 <p>You’ll see that there’s a lot of data missing in there, but that
@@ -319,6 +322,8 @@ some new data.</p>
 <span><span class="co">#&gt; $r_cmd_check (internal)</span></span>
 <span><span class="co">#&gt; $desc (internal)</span></span>
 <span><span class="co">#&gt; $archive_md5 (internal)</span></span>
+<span><span class="co">#&gt; $web_html (internal)</span></span>
+<span><span class="co">#&gt; $web_url (internal)</span></span>
 <span><span class="co">#&gt; $name (internal)</span></span>
 <span><span class="co">#&gt; $version (internal)</span></span></code></pre>
 <p>After we accessed our data, the package object did the work to
@@ -458,7 +463,7 @@ naming convention patterns.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

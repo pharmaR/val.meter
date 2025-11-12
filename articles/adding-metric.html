@@ -108,9 +108,10 @@ data.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="../reference/metrics.html">metrics</a></span><span class="op">(</span>all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "r_cmd_check"             "desc"                   </span></span>
 <span><span class="co">#&gt;  [3] "archive_md5"             "vignette_count"         </span></span>
-<span><span class="co">#&gt;  [5] "name"                    "version"                </span></span>
-<span><span class="co">#&gt;  [7] "r_cmd_check_error_count" "downloads_total"        </span></span>
-<span><span class="co">#&gt;  [9] "dependency_count"        "has_website"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [5] "web_html"                "web_url"                </span></span>
+<span><span class="co">#&gt;  [7] "name"                    "version"                </span></span>
+<span><span class="co">#&gt;  [9] "r_cmd_check_error_count" "downloads_total"        </span></span>
+<span><span class="co">#&gt; [11] "dependency_count"        "has_website"</span></span></code></pre></div>
 <p>Sure enough, <code>"name"</code> is in the list. We can learn a bit
 more about it by pulling this entry from our metrics:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -434,7 +435,7 @@ over a sampling of random packages.</p>
 <span>  main <span class="op">=</span> <span class="st">"Vulnerability Counts Tally"</span>,</span>
 <span>  xlab <span class="op">=</span> <span class="st">"Number of Vulnerabilities"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="adding-metric_files/figure-html/unnamed-chunk-24-1.svg" alt="A histogram of the default integer generating process, showing that nearly all packages show at least one vulnerability." width="672" style="display: block; margin: auto;"></p>
+<p><img src="adding-metric_files/figure-html/unnamed-chunk-24-1.svg" class="r-plt" alt="A histogram of the default integer generating process, showing that nearly all packages show at least one vulnerability." width="672" style="display: block; margin: auto;"></p>
 <p>Well this would be alarming! A majority of packages come with
 vulnerabilities. This is definitely not reflective of the R ecosystem,
 so maybe we want to tone that frequency down a bit.</p>
@@ -461,7 +462,7 @@ reality.</p>
 <span>  main <span class="op">=</span> <span class="st">"Vulnerability Counts Tally"</span>,</span>
 <span>  xlab <span class="op">=</span> <span class="st">"Number of Vulnerabilities"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="adding-metric_files/figure-html/unnamed-chunk-26-1.svg" alt="Another histogram of package vulnerabilities after implementing our own simulation function. This time, the vast majority of packages have no vulnerabilities with only a handful reporting one or more vulnerabilities." width="672" style="display: block; margin: auto;"></p>
+<p><img src="adding-metric_files/figure-html/unnamed-chunk-26-1.svg" class="r-plt" alt="Another histogram of package vulnerabilities after implementing our own simulation function. This time, the vast majority of packages have no vulnerabilities with only a handful reporting one or more vulnerabilities." width="672" style="display: block; margin: auto;"></p>
 <p>Still higher than out in the wild, but perhaps a nice balance between
 being reasonably frequent for the purpose of example, but still far less
 than the half that we were seeing before.</p>
@@ -499,7 +500,7 @@ a footprint to warrant a separate supporting package.</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
