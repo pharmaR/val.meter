@@ -5,7 +5,7 @@ describe("impl_data", {
         "name_character_count",
         overwrite = TRUE,
         quiet = TRUE,
-        function(pkg, ...) {
+        function(pkg, resource, field, ...) {
           nchar(pkg$name)
         }
       )
@@ -18,7 +18,7 @@ describe("impl_data", {
         impl_data(
           "name_character_count",
           overwrite = TRUE,
-          function(pkg, ...) {
+          function(pkg, resource, field, ...) {
             nchar(pkg$name)
           }
         )
@@ -32,7 +32,7 @@ describe("impl_data", {
         "name_character_count",
         overwrite = TRUE,
         quiet = TRUE,
-        function(pkg, ...) {
+        function(pkg, resource, field, ...) {
           nchar(pkg$name)
         }
       )
@@ -45,7 +45,7 @@ describe("impl_data", {
         "name_character_count",
         overwrite = TRUE,
         quiet = TRUE,
-        function(pkg, ...) {
+        function(pkg, resource, field, ...) {
           nchar(pkg$name)
         }
       )
@@ -77,7 +77,7 @@ describe("impl_data", {
         metric = TRUE,
         overwrite = TRUE,
         quiet = TRUE,
-        function(pkg, ...) {
+        function(pkg, resource, field, ...) {
           nchar(pkg$name)
         }
       )

@@ -16,6 +16,7 @@
 #'     install_resource
 #'   ),
 #'   source_resources = list(
+#'     cran_repo_resource,
 #'     repo_resource
 #'   ),
 #'   permissions = class_permissions(FALSE)

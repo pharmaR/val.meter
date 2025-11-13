@@ -37,7 +37,7 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
  \subsection{R CMD check Error Count}{
 \code{<integer>} the number of errors produced when running \code{R CMD check}
 
-  
+\Sexpr[stage=render,results=rd]{if (!is.na(match("execution", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-execution-x-flat-square-green.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[req::execution]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-execution-x-flat-square-red.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[req::execution]}}"} \Sexpr[stage=render,results=rd]{if (length(find.package("rcmdcheck", quiet = TRUE)) > 0) "\\\\ifelse{html}{\\\\figure{badge-dep-rcmdcheck-x-flat-square-green.svg}{options: alt = \\"[rcmdcheck]\\"}}{\\\\strong{[dep::rcmdcheck]}}" else "\\\\ifelse{html}{\\\\figure{badge-dep-rcmdcheck-x-flat-square-red.svg}{options: alt = \\"[rcmdcheck]\\"}}{\\\\strong{[dep::rcmdcheck]}}"} 
 
 \Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}}" }}
 }

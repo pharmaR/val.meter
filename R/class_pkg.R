@@ -26,6 +26,10 @@ pkg <- class_pkg <- new_class(
     #' @param permissions [`permissions`] granted for deriving data. If not
     #'   provided, the default from `policy` will be used.
     permissions = class_permissions
+
+    #' @param policy [`policy`] to use when converting input to resources. Most
+    #'   commonly used for interpreting strings as resources. If `permissions`
+    #'   is specified it will mask the permissions provided in `policy`.
   ),
 
   constructor = function(
@@ -344,10 +348,6 @@ pkgs_from_dcf <- function(x, ...) {
 
 #' @exportS3Method as.data.frame list_of_pkg
 as.data.frame.list_of_pkg <- function(x, ...) {
-  # extract all package data types
-  datas <- lapply(x, function(i) as.list(i@data))
-  all_names <- unique(unlist(lapply(datas, names)))
-
   # build data frame
   df <- data.frame(
     package = vcapply(x, function(xi) xi@resource@package),
@@ -356,7 +356,7 @@ as.data.frame.list_of_pkg <- function(x, ...) {
   )
 
   # populate with data
-  for (name in all_names) {
+  for (name in names(metrics())) {
     df[[name]] <- simplify2array(lapply(x, function(xi) {
       data <- xi@data[[name]]
       is_err <- inherits(data, cnd_type())

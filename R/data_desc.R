@@ -5,7 +5,7 @@ impl_data(
   "desc",
   class = c("description", "R6"),
   for_resource = new_union(source_code_resource, install_resource),
-  function(pkg, resource, ...) {
+  function(pkg, resource, field, ...) {
     desc::desc(resource@path)
   }
 )
@@ -14,7 +14,7 @@ impl_data(
   "name",
   title = "Package name",
   class = class_character,
-  function(pkg, resource, ...) {
+  function(pkg, resource, field, ...) {
     pkg$desc$get_field("Package")
   }
 )
@@ -22,7 +22,7 @@ impl_data(
 impl_data(
   "name",
   for_resource = repo_resource,
-  function(pkg, resource, ...) {
+  function(pkg, resource, field, ...) {
     resource@package
   }
 )
@@ -30,7 +30,7 @@ impl_data(
 impl_data(
   "version",
   class = class_character,
-  function(pkg, resource, ...) {
+  function(pkg, resource, field, ...) {
     pkg$desc$get_field("Version")
   }
 )
@@ -38,7 +38,7 @@ impl_data(
 impl_data(
   "version",
   for_resource = repo_resource,
-  function(pkg, resource, ...) {
+  function(pkg, resource, field, ...) {
     resource@version
   }
 )
@@ -51,7 +51,7 @@ impl_data(
   permissions = c(),
   title = "Dependency Count",
   description = "the number of required dependencies",
-  function(pkg, resource, ...) {
+  function(pkg, resource, field, ...) {
     sum(pkg$desc$get_deps()$type %in% c("Depends", "Imports", "LinkingTo"))
   }
 )
@@ -63,7 +63,7 @@ impl_data(
   permissions = c(),
   title = "Has Website",
   description = "a logical indicating whether the package has a website",
-  function(pkg, resource, ...) {
+  function(pkg, resource, field, ...) {
     length(pkg$desc$get_urls()) > 0
   }
 )
@@ -71,7 +71,7 @@ impl_data(
 impl_data(
   "desc",
   for_resource = mock_resource,
-  function(pkg, resource, ..., deps = NULL) {
+  function(pkg, resource, field, ..., deps = NULL) {
     # mock a desc::desc object given a package cohort, generating data
     # dependencies
     desc <- desc::description$new("!new")

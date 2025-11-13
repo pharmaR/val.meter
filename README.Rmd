@@ -25,6 +25,7 @@ knitr::opts_chunk$set(
 )
 
 Sys.setenv(ASCIICAST_KNITR_SVG = "TRUE")
+
 asciicast::init_knitr_engine(
   startup = quote(library(val.meter)),
   echo = TRUE,
@@ -103,6 +104,7 @@ Once we have declared _what_ we want to assess, we can then start calculating
 metrics.
 
 ```{asciicast metrics-from-pkg}
+#' Timeout: 360
 p <- pkg("../val.meter")
 metrics(p)
 ```
@@ -128,6 +130,7 @@ permissive execution. We pass `permissions(TRUE)` to grant blanket permission
 to all capabilities.
 
 ```{asciicast metrics-permissive, error = TRUE}
+#' Timeout: 360
 p <- pkg("../val.meter", permissions = "network")
 metrics(p)
 ```

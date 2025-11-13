@@ -15,6 +15,7 @@
 #' @family resources
 #' @export
 #' @name resource
+#' @include utils_mirrors.R
 resource <- class_resource <- new_class(
   "resource",
   abstract = TRUE,
@@ -233,10 +234,8 @@ cran_repo_resource <- class_cran_repo_resource <- new_class(
     repo = new_property(
       class_character,
       validator = function(value) {
-        cran_mirrors <- getCRANmirrors(local.only = TRUE)
-        cran_mirror_urls <- cran_mirrors$URL
-        cran_mirror_urls <- c(cran_mirror_urls, contrib.url(cran_mirror_urls))
-        if (!value %in% cran_mirror_urls) {
+        cran_mirrors <- get_cran_mirrors()
+        if (!value %in% cran_mirrors$URL) {
           paste0(
             "CRAN repo url must be among the listed mirrors in",
             "`getCRANmirrors()`"
@@ -441,21 +440,22 @@ method(convert, list(class_character, class_source_code_resource)) <-
 
 #' @importFrom utils available.packages
 method(convert, list(class_character, class_repo_resource)) <-
-  function(from, to, ...) {
-    ap <- available.packages()
-    ap_idx <- Position(function(pkg) identical(from, pkg), ap[, "Package"])
+  method(convert, list(class_character, class_cran_repo_resource)) <-
+    function(from, to, ...) {
+      ap <- available.packages(type = "source")
+      ap_idx <- Position(function(pkg) identical(from, pkg), ap[, "Package"])
 
-    if (!is.na(ap_idx)) {
-      return(to(
-        package = ap[[ap_idx, "Package"]],
-        version = ap[[ap_idx, "Version"]],
-        md5 = ap[[ap_idx, "MD5sum"]],
-        repo = ap[[ap_idx, "Repository"]]
-      ))
+      if (!is.na(ap_idx)) {
+        return(to(
+          package = ap[[ap_idx, "Package"]],
+          version = ap[[ap_idx, "Version"]],
+          md5 = ap[[ap_idx, "MD5sum"]],
+          repo = sub("src/contrib$", "", ap[[ap_idx, "Repository"]])
+        ))
+      }
+
+      stop(fmt("Cannot convert string '{from}' into {.cls to}"))
     }
-
-    stop(fmt("Cannot convert string '{from}' into {.cls to}"))
-  }
 
 #' @importFrom utils install.packages
 method(convert, list(class_repo_resource, class_install_resource)) <-
@@ -469,8 +469,7 @@ method(convert, list(class_repo_resource, class_install_resource)) <-
     install.packages(
       pkgs = from@package,
       lib = lib_path,
-      contriburl = from@repo,
-      repos = NULL,
+      repos = from@repo,
       quiet = quiet
     )
 
@@ -502,8 +501,7 @@ method(convert, list(class_repo_resource, class_source_archive_resource)) <-
     x <- download.packages(
       pkgs = from@package,
       destdir = path,
-      repos = NULL,
-      contriburl = from@repo,
+      repos = from@repo,
       quiet = quiet
     )
 
@@ -521,6 +519,38 @@ method(convert, list(class_repo_resource, class_source_archive_resource)) <-
   }
 
 #' @importFrom utils install.packages
+method(convert, list(class_repo_resource, class_cran_repo_resource)) <-
+  function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
+    assert_permissions("network", policy@permissions)
+
+    cran_ap <- available.packages(
+      repos = "https://cloud.r-project.org/",
+      type = "source"
+    )
+    cran_md5 <- tryCatch(
+      cran_ap[from@package, "MD5sum"],
+      error = function(e) {
+        NA_character_
+      }
+    )
+
+    if (!identical(from@md5, cran_md5)) {
+      stop(fmt("Cannot convert '{.cls from}' into {.cls to}"))
+    } else if (!from@repo %in% get_cran_mirrors()$URL) {
+      from@repo <- "https://cloud.r-project.org/"
+    }
+
+    id <- next_id()
+
+    cran_repo_resource(
+      id = id,
+      package = from@package,
+      version = from@version,
+      md5 = from@md5,
+      repo = from@repo
+    )
+  }
+
 method(convert, list(class_local_source_resource, class_install_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
     assert_permissions("write", policy@permissions)
