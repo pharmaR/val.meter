@@ -13,14 +13,16 @@ impl_data(
     "total number of lifetime downloads, as reported by the Posit ",
     "CRAN mirror through the \\href{https://cranlogs.rpkg.org}{cranlogs} API"
   ),
-  function(pkg, resource, ...) {
+  function(pkg, resource, field, ...) {
     from <- as.Date("1970-01-01")
     to <- as.Date("3000-01-01")
 
     file <- tempfile(paste0(pkg$name, "_downloads"), fileext = ".json")
     url <- sprintf(
       "https://cranlogs.r-pkg.org/downloads/total/%s:%s/%s",
-      from, to, pkg$name
+      from,
+      to,
+      pkg$name
     )
 
     # TODO: handle possible download failure
@@ -34,5 +36,7 @@ impl_data(
 impl_data(
   "downloads_total",
   for_resource = mock_resource,
-  function(...) as.integer(rpois(1, 100)^runif(1, 0.5, 3))
+  function(pkg, resource, field, ...) {
+    as.integer(rpois(1, 100)^runif(1, 0.5, 3))
+  }
 )

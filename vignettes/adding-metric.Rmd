@@ -63,7 +63,7 @@ m$name
 impl_data(
   "name_character_count",
   title = "Package Name Character Count",
-  function(pkg, ...) nchar(pkg$name)
+  function(pkg, resource, field, ...) nchar(pkg$name)
 )
 ```
 
@@ -106,7 +106,7 @@ impl_data(
   "name_character_count",
   title = "Package Name Character Count",
   metric = TRUE,
-  function(pkg, ...) nchar(pkg$name)
+  function(pkg, resource, field, ...) nchar(pkg$name)
 )
 ```
 
@@ -120,7 +120,7 @@ impl_data(
   title = "Package Name Character Count",
   metric = TRUE,
   overwrite = TRUE,
-  function(pkg, ...) nchar(pkg$name)
+  function(pkg, resource, field, ...) nchar(pkg$name)
 )
 ```
 
@@ -143,7 +143,7 @@ impl_data(
   metric = TRUE,
   class = S7::class_integer,
   overwrite = TRUE,
-  function(pkg, ...) nchar(pkg$name)
+  function(pkg, resource, field, ...) nchar(pkg$name)
 )
 ```
 
@@ -252,7 +252,7 @@ impl_data(
   # we'll only implement this for our cran_repo_resource
   for_resource = cran_repo_resource,
 
-  function(pkg, ...) {
+  function(pkg, resource, field, ...) {
     rosv::osv_query(
       name = pkg$name,
       version = pkg$version,
@@ -331,7 +331,7 @@ impl_data(
   description = "Number of vulnerabilities reported for this package version",
   metric = TRUE,
   class = S7::class_integer,
-  function(pkg, ...) {
+  function(pkg, resource, field, ...) {
     nrow(pkg$rosv_vulnerability_df)
   }
 )
@@ -407,7 +407,7 @@ dispatch mechanism to create a custom data-generating process.
 impl_data(
   "vulnerability_count",
   for_resource = mock_resource,
-  function(...) rpois(1, lambda = 0.1)
+  function(pkg, resource, field, ...) rpois(1, lambda = 0.1)
 )
 ```
 
