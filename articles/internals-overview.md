@@ -142,7 +142,7 @@ pkg_data_derive(pkg = rpkg, field = "r_cmd_check_error_count")
 
 Let’s see what code was needed to implement this
 
-    #> function (pkg, resource, ...) 
+    #> function (pkg, resource, field, ...) 
     #> {
     #>     length(pkg$r_cmd_check$errors)
     #> }

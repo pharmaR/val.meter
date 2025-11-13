@@ -47,6 +47,8 @@ The following metrics are provided by
 
 `<integer>` the number of errors produced when running `R CMD check`
 
+![\[execution\]](figures/badge-req-execution-x-flat-square-red.svg)![\[rcmdcheck\]](figures/badge-dep-rcmdcheck-x-flat-square-green.svg)
+
 [![\[execution\]](figures/badge-execution-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
 
 ### Total Downloads

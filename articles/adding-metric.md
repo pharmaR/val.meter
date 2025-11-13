@@ -54,7 +54,7 @@ m$name
 impl_data(
   "name_character_count",
   title = "Package Name Character Count",
-  function(pkg, ...) nchar(pkg$name)
+  function(pkg, resource, field, ...) nchar(pkg$name)
 )
 ```
 
@@ -104,7 +104,7 @@ impl_data(
   "name_character_count",
   title = "Package Name Character Count",
   metric = TRUE,
-  function(pkg, ...) nchar(pkg$name)
+  function(pkg, resource, field, ...) nchar(pkg$name)
 )
 #> Error in impl_data_info(name = name, ..., overwrite = overwrite, quiet = quiet): data info for 'name_character_count' is already implemented. Use overwrite=TRUE to modify.
 ```
@@ -120,7 +120,7 @@ impl_data(
   title = "Package Name Character Count",
   metric = TRUE,
   overwrite = TRUE,
-  function(pkg, ...) nchar(pkg$name)
+  function(pkg, resource, field, ...) nchar(pkg$name)
 )
 #> Error in (function (self, value) : metric data must have an atomic data class
 ```
@@ -146,9 +146,9 @@ impl_data(
   metric = TRUE,
   class = S7::class_integer,
   overwrite = TRUE,
-  function(pkg, ...) nchar(pkg$name)
+  function(pkg, resource, field, ...) nchar(pkg$name)
 )
-#> Overwriting method pkg_data_info(S3<pkg_data_field_name_character_count/pkg_data_field>)
+#> Overwriting method pkg_data_info(S3<pkg_data_field_name_character_count/pkg_data_field>, <MISSING>)
 #> Overwriting method pkg_data_derive(<val.meter::pkg>, <val.meter::resource>, S3<pkg_data_field_name_character_count/pkg_data_field>)
 ```
 
@@ -273,7 +273,7 @@ impl_data(
   # we'll only implement this for our cran_repo_resource
   for_resource = cran_repo_resource,
 
-  function(pkg, ...) {
+  function(pkg, resource, field, ...) {
     rosv::osv_query(
       name = pkg$name,
       version = pkg$version,
@@ -322,9 +322,14 @@ similarly throw an error.
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r)
 p$rosv_vulnerability_df
-#> <error/val_meter_derive_error>
-#> ! when deriving field "rosv_vulnerability_df"
-#> data derivation was not granted permissions: "network"
+#>            id
+#> 1 RSEC-2023-5
+#>                                                                       summary
+#> 1 Infinite loop, memory leak, and heap-based buffer over-read vulnerabilities
+#>                      modified                published  name ecosystem
+#> 1 2025-05-19T19:43:47.336587Z 2023-10-05T05:00:00.600Z haven      CRAN
+#>             purl versions
+#> 1 pkg:cran/haven    0.1.1
 ```
 
 And similarly, if we didn’t have `rosv` installed we’d see something
@@ -336,9 +341,14 @@ p <- pkg(r, permissions = "network")
 p$rosv_vulnerability_df
 ```
 
-    #> <error/val_meter_derive_error>
-    #> ! when deriving field "rosv_vulnerability_df"
-    #> data derivation requires suggests: rosv
+    #>            id
+    #> 1 RSEC-2023-5
+    #>                                                                       summary
+    #> 1 Infinite loop, memory leak, and heap-based buffer over-read vulnerabilities
+    #>                      modified                published  name ecosystem
+    #> 1 2025-05-19T19:43:47.336587Z 2023-10-05T05:00:00.600Z haven      CRAN
+    #>             purl versions
+    #> 1 pkg:cran/haven    0.1.1
 
 Now that we can fetch the `rosv` response, we can process it to derive
 our metric.
@@ -350,7 +360,7 @@ impl_data(
   description = "Number of vulnerabilities reported for this package version",
   metric = TRUE,
   class = S7::class_integer,
-  function(pkg, ...) {
+  function(pkg, resource, field, ...) {
     nrow(pkg$rosv_vulnerability_df)
   }
 )
@@ -435,7 +445,7 @@ data-generating process.
 impl_data(
   "vulnerability_count",
   for_resource = mock_resource,
-  function(...) rpois(1, lambda = 0.1)
+  function(pkg, resource, field, ...) rpois(1, lambda = 0.1)
 )
 ```
 

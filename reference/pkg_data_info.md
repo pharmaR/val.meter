@@ -5,7 +5,7 @@ Retrieve metadata about a data field.
 ## Usage
 
 ``` r
-pkg_data_info(field, ...)
+pkg_data_info(field, resource, ...)
 ```
 
 ## Arguments
@@ -13,6 +13,11 @@ pkg_data_info(field, ...)
 - field:
 
   `character(1L)` field name to retrieve.
+
+- resource:
+
+  [`resource`](https://pharmar.github.io/val.meter/reference/resource.md)
+  providing the resource to be used for retrieving package data info.
 
 - ...:
 

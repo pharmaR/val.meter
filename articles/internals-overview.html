@@ -218,7 +218,7 @@ a “field” (the name for the data in the package object):</p>
 <span><span class="fu"><a href="../reference/pkg_data_derive.html">pkg_data_derive</a></span><span class="op">(</span>pkg <span class="op">=</span> <span class="va">rpkg</span>, field <span class="op">=</span> <span class="st">"r_cmd_check_error_count"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>Let’s see what code was needed to implement this</p>
-<pre><code><span><span class="co">#&gt; function (pkg, resource, ...) </span></span>
+<pre><code><span><span class="co">#&gt; function (pkg, resource, field, ...) </span></span>
 <span><span class="co">#&gt; {</span></span>
 <span><span class="co">#&gt;     length(pkg$r_cmd_check$errors)</span></span>
 <span><span class="co">#&gt; }</span></span>

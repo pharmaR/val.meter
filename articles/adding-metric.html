@@ -126,7 +126,7 @@ more about it by pulling this entry from our metrics:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pkg_data.html">impl_data</a></span><span class="op">(</span></span>
 <span>  <span class="st">"name_character_count"</span>,</span>
 <span>  title <span class="op">=</span> <span class="st">"Package Name Character Count"</span>,</span>
-<span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
+<span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">resource</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Already, we can see that it is added to our list of
 <code><a href="../reference/metrics.html">metrics()</a></code></p>
@@ -165,7 +165,7 @@ overwritten.</p>
 <span>  <span class="st">"name_character_count"</span>,</span>
 <span>  title <span class="op">=</span> <span class="st">"Package Name Character Count"</span>,</span>
 <span>  metric <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
+<span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">resource</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error in impl_data_info(name = name, ..., overwrite = overwrite, quiet = quiet): data info for 'name_character_count' is already implemented. Use overwrite=TRUE to modify.</span></span></code></pre></div>
 <p>Following the suggestion in the error message, we see that we need to
@@ -178,7 +178,7 @@ implementation.</p>
 <span>  title <span class="op">=</span> <span class="st">"Package Name Character Count"</span>,</span>
 <span>  metric <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
+<span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">resource</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error in (function (self, value) : metric data must have an atomic data class</span></span></code></pre></div>
 <p>The next thing we’ll see is that metric data has some additional
@@ -199,9 +199,9 @@ on this data with confidence. <code>val.meter</code> uses
 <span>  metric <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  class <span class="op">=</span> <span class="fu">S7</span><span class="fu">::</span><span class="va"><a href="https://rconsortium.github.io/S7/reference/base_classes.html" class="external-link">class_integer</a></span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
+<span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">resource</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Overwriting method pkg_data_info(S3&lt;pkg_data_field_name_character_count/pkg_data_field&gt;)</span></span>
+<span><span class="co">#&gt; Overwriting method pkg_data_info(S3&lt;pkg_data_field_name_character_count/pkg_data_field&gt;, &lt;MISSING&gt;)</span></span>
 <span><span class="co">#&gt; Overwriting method pkg_data_derive(&lt;val.meter::pkg&gt;, &lt;val.meter::resource&gt;, S3&lt;pkg_data_field_name_character_count/pkg_data_field&gt;)</span></span></code></pre></div>
 <p>And finally, we can again confirm that we’ve registered our metric.
 This time we can avoid passing <code>all = TRUE</code>, as we’ve now
@@ -322,7 +322,7 @@ them.</p>
 <span>  <span class="co"># we'll only implement this for our cran_repo_resource</span></span>
 <span>  for_resource <span class="op">=</span> <span class="va">cran_repo_resource</span>,</span>
 <span></span>
-<span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">resource</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">rosv</span><span class="fu">::</span><span class="fu"><a href="https://al-obrien.github.io/rosv/reference/osv_query.html" class="external-link">osv_query</a></span><span class="op">(</span></span>
 <span>      name <span class="op">=</span> <span class="va">pkg</span><span class="op">$</span><span class="va">name</span>,</span>
 <span>      version <span class="op">=</span> <span class="va">pkg</span><span class="op">$</span><span class="va">version</span>,</span>
@@ -361,18 +361,28 @@ similarly throw an error.</p>
 <code class="sourceCode R"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cran_repo_resource.html">cran_repo_resource</a></span><span class="op">(</span><span class="st">"haven"</span>, <span class="st">"0.1.1"</span>, repo <span class="op">=</span> <span class="st">"https://cloud.r-project.org/"</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pkg.html">pkg</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">$</span><span class="va">rosv_vulnerability_df</span></span>
-<span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">&lt;error/val_meter_derive_error&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> when deriving field "rosv_vulnerability_df"</span></span>
-<span><span class="co">#&gt; data derivation was not granted permissions: "network"</span></span></code></pre></div>
+<span><span class="co">#&gt;            id</span></span>
+<span><span class="co">#&gt; 1 RSEC-2023-5</span></span>
+<span><span class="co">#&gt;                                                                       summary</span></span>
+<span><span class="co">#&gt; 1 Infinite loop, memory leak, and heap-based buffer over-read vulnerabilities</span></span>
+<span><span class="co">#&gt;                      modified                published  name ecosystem</span></span>
+<span><span class="co">#&gt; 1 2025-05-19T19:43:47.336587Z 2023-10-05T05:00:00.600Z haven      CRAN</span></span>
+<span><span class="co">#&gt;             purl versions</span></span>
+<span><span class="co">#&gt; 1 pkg:cran/haven    0.1.1</span></span></code></pre></div>
 <p>And similarly, if we didn’t have <code>rosv</code> installed we’d see
 something like</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">r</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cran_repo_resource.html">cran_repo_resource</a></span><span class="op">(</span><span class="st">"haven"</span>, <span class="st">"0.1.1"</span>, repo <span class="op">=</span> <span class="st">"https://cloud.r-project.org/"</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pkg.html">pkg</a></span><span class="op">(</span><span class="va">r</span>, permissions <span class="op">=</span> <span class="st">"network"</span><span class="op">)</span></span>
 <span><span class="va">p</span><span class="op">$</span><span class="va">rosv_vulnerability_df</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; <span style="color: #0000BB; font-weight: bold;">&lt;error/val_meter_derive_error&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> when deriving field "rosv_vulnerability_df"</span></span>
-<span><span class="co">#&gt; data derivation requires suggests: <span style="color: #0000BB;">rosv</span></span></span></code></pre>
+<pre><code><span><span class="co">#&gt;            id</span></span>
+<span><span class="co">#&gt; 1 RSEC-2023-5</span></span>
+<span><span class="co">#&gt;                                                                       summary</span></span>
+<span><span class="co">#&gt; 1 Infinite loop, memory leak, and heap-based buffer over-read vulnerabilities</span></span>
+<span><span class="co">#&gt;                      modified                published  name ecosystem</span></span>
+<span><span class="co">#&gt; 1 2025-05-19T19:43:47.336587Z 2023-10-05T05:00:00.600Z haven      CRAN</span></span>
+<span><span class="co">#&gt;             purl versions</span></span>
+<span><span class="co">#&gt; 1 pkg:cran/haven    0.1.1</span></span></code></pre>
 <p>Now that we can fetch the <code>rosv</code> response, we can process
 it to derive our metric.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
@@ -382,7 +392,7 @@ it to derive our metric.</p>
 <span>  description <span class="op">=</span> <span class="st">"Number of vulnerabilities reported for this package version"</span>,</span>
 <span>  metric <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  class <span class="op">=</span> <span class="fu">S7</span><span class="fu">::</span><span class="va"><a href="https://rconsortium.github.io/S7/reference/base_classes.html" class="external-link">class_integer</a></span>,</span>
-<span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">resource</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">$</span><span class="va">rosv_vulnerability_df</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -448,7 +458,7 @@ to create a custom data-generating process.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pkg_data.html">impl_data</a></span><span class="op">(</span></span>
 <span>  <span class="st">"vulnerability_count"</span>,</span>
 <span>  for_resource <span class="op">=</span> <span class="va">mock_resource</span>,</span>
-<span>  <span class="kw">function</span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">1</span>, lambda <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
+<span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">resource</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fl">1</span>, lambda <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>If we again simulate some random packages and take a look at how many
 vulnerabilities are reported we get something that is a bit closer to
