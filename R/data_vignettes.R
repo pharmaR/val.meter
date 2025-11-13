@@ -1,3 +1,4 @@
+#' @importFrom xml2 xml_find_all
 #' @include impl_data.R
 
 impl_data(
@@ -20,13 +21,15 @@ impl_data(
 impl_data(
   "vignette_count",
   for_resource = cran_repo_resource,
-  function(pkg, resource, ...) {
+  function(pkg, resource, field, ...) {
     nodes <- xml2::xml_find_all(
       pkg$web_html,
       xpath = '//a[contains(@href,"vignettes")]'
     )
 
-    if (!length(nodes)) return(0)
+    if (!length(nodes)) {
+      return(0)
+    }
 
     nodes |>
       xml2::xml_attr("href") |>
