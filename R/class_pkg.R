@@ -205,7 +205,21 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
     }
 
     x@data[[name]] <- tryCatch(
-      pkg_data_derive(pkg = x, field = name, ...),
+      {
+        info <- pkg_data_info(name)
+        required_permissions <- info@permissions
+        required_suggests <- info@suggests
+
+        assert_permissions(required_permissions, x@permissions)
+        assert_suggests(required_suggests)
+
+        data <- pkg_data_derive(pkg = x, field = name, ...)
+        if (!identical(info@data_class, class_any)) {
+          data <- convert(data, info@data_class)
+        }
+
+        data
+      },
       error = function(e, ...) {
         convert(e, class_val_meter_error, field = name)
       }

@@ -28,7 +28,8 @@ impl_data(
       result <- rcmdcheck::rcmdcheck(
         resource@path,
         quiet = quiet,
-        error_on = "never"
+        error_on = "never",
+        build_args = "--no-manual"
       )
     })
 

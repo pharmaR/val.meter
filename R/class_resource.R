@@ -403,7 +403,12 @@ method(convert, list(class_resource, class_any)) <-
 method(convert, list(class_character, class_install_resource)) <-
   function(from, to, ...) {
     if (dir.exists(from) && file.exists(file.path(from, "INDEX"))) {
-      return(to(path = normalizePath(from)))
+      desc <- read.dcf(file.path(from, "DESCRIPTION"))[1, ]
+      return(to(
+        package = desc[["Package"]],
+        version = desc[["Version"]],
+        path = normalizePath(from)
+      ))
     } else if (length(paths <- find.package(from, quiet = TRUE)) > 0L) {
       return(convert(paths[[1]], to))
     }
