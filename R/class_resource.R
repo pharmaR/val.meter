@@ -445,22 +445,21 @@ method(convert, list(class_character, class_source_code_resource)) <-
 
 #' @importFrom utils available.packages
 method(convert, list(class_character, class_repo_resource)) <-
-  method(convert, list(class_character, class_cran_repo_resource)) <-
-    function(from, to, ...) {
-      ap <- available.packages(type = "source")
-      ap_idx <- Position(function(pkg) identical(from, pkg), ap[, "Package"])
+  function(from, to, ...) {
+    ap <- available.packages(type = "source")
+    ap_idx <- Position(function(pkg) identical(from, pkg), ap[, "Package"])
 
-      if (!is.na(ap_idx)) {
-        return(to(
-          package = ap[[ap_idx, "Package"]],
-          version = ap[[ap_idx, "Version"]],
-          md5 = ap[[ap_idx, "MD5sum"]],
-          repo = sub("src/contrib$", "", ap[[ap_idx, "Repository"]])
-        ))
-      }
-
-      stop(fmt("Cannot convert string '{from}' into {.cls to}"))
+    if (!is.na(ap_idx)) {
+      return(to(
+        package = ap[[ap_idx, "Package"]],
+        version = ap[[ap_idx, "Version"]],
+        md5 = ap[[ap_idx, "MD5sum"]],
+        repo = sub("src/contrib$", "", ap[[ap_idx, "Repository"]])
+      ))
     }
+
+    stop(fmt("Cannot convert string '{from}' into {.cls to}"))
+  }
 
 #' @importFrom utils install.packages
 method(convert, list(class_repo_resource, class_install_resource)) <-
