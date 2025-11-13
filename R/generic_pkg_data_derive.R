@@ -122,9 +122,6 @@ method(
       # real derivation rules for data that is interrelated
       pkg_data_derive(pkg, convert(resource, unknown_resource), field, ...),
 
-      # don't fall back if we've already raised an expected error
-      val_meter_error = identity,
-
       # should that fail, generate using mocking rules
       error = function(e, ...) {
         tryCatch(
@@ -137,11 +134,8 @@ method(
             field_name = field
           ),
 
-          # again, escalate already captured errors
-          val_meter_error = identity,
-
-          # and if a new error is still raised, return it as-is
-          error = function(e, ...) e
+          # should that error, return as-is
+          error = identity
         )
       }
     )
@@ -196,6 +190,13 @@ method(
 #' pkg_data_derive(p, field = derive_field)
 #'
 #' @noRd
+#'
+method(
+  pkg_data_derive,
+  list(class_any, class_mock_resource, new_S3_class("mock_data"))
+) <-
+  function(pkg, resource, field, ...) NA
+
 method(
   pkg_data_derive,
   list(class_any, class_mock_resource, new_S3_class("mock_logical"))

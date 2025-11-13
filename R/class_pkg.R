@@ -28,7 +28,8 @@ pkg <- class_pkg <- new_class(
     permissions = class_permissions
 
     #' @param policy [`policy`] to use when converting input to resources. Most
-    #'   commonly used for interpreting strings as resources.
+    #'   commonly used for interpreting strings as resources. If `permissions`
+    #'   is specified it will mask the permissions provided in `policy`.
   ),
 
   constructor = function(
@@ -38,6 +39,19 @@ pkg <- class_pkg <- new_class(
   ) {
     is_mocked <- S7::S7_inherits(resource, class_mock_resource)
 
+    # discourage mixing policy and permissions arguments
+    if (!missing(policy) && !missing(permissions)) {
+      stop(
+        "only one of parameters `permissions` and `policy` should be ",
+        "provided."
+      )
+    }
+
+    # if provided, mask default permissions with bespoke permissions
+    if (!missing(permissions)) {
+      policy@permissions <- convert(permissions, class_permissions)
+    }
+
     # handle anything that can be converted into a resource - especially
     # useful for character shorthands
     if (!is_mocked) {
@@ -45,18 +59,12 @@ pkg <- class_pkg <- new_class(
       resource <- convert(resource, class_resource, policy = policy)
     }
 
-    if (!missing(permissions)) {
-      permissions <- convert(permissions, class_permissions)
-    } else {
-      permissions <- policy@permissions
-    }
-
     new_object(
       .parent = S7::S7_object(),
       data = new.env(parent = emptyenv()),
       metrics = list(),
       resource = resource,
-      permissions = permissions
+      permissions = policy@permissions
     )
   }
 )
@@ -197,7 +205,21 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
     }
 
     x@data[[name]] <- tryCatch(
-      pkg_data_derive(pkg = x, field = name, ...),
+      {
+        info <- pkg_data_info(name)
+        required_permissions <- info@permissions
+        required_suggests <- info@suggests
+
+        assert_permissions(required_permissions, x@permissions)
+        assert_suggests(required_suggests)
+
+        data <- pkg_data_derive(pkg = x, field = name, ...)
+        if (!identical(info@data_class, class_any)) {
+          data <- convert(data, info@data_class)
+        }
+
+        data
+      },
       error = function(e, ...) {
         convert(e, class_val_meter_error, field = name)
       }

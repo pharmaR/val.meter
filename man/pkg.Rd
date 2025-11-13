@@ -17,7 +17,8 @@ multiple sources, the first source is prioritized.}
 provided, the default from \code{policy} will be used.}
 
 \item{policy}{\code{\link{policy}} to use when converting input to resources. Most
-commonly used for interpreting strings as resources.}
+commonly used for interpreting strings as resources. If \code{permissions}
+is specified it will mask the permissions provided in \code{policy}.}
 }
 \description{
 Aggregates package information, surveying metadata from discovered

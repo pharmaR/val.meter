@@ -16,6 +16,7 @@
 #'     install_resource
 #'   ),
 #'   source_resources = list(
+#'     cran_repo_resource,
 #'     repo_resource
 #'   ),
 #'   permissions = class_permissions(FALSE)
@@ -61,7 +62,7 @@ policy <- class_policy <- new_class(
     #'   can be [`S7::convert()`]ed into a [`source_archive_resource()`].
     source_resources = new_property(
       class_list,
-      default = quote(list(repo_resource))
+      default = quote(list(cran_repo_resource, repo_resource))
     ),
 
     #' @param permissions Behavioral permissions provided for resource
