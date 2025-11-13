@@ -93,8 +93,8 @@ pkg("val.meter") # when installed locally
 #> <val.meter::pkg>
 #> @resource
 #>   <val.meter::install_resource>
-#>    @ package: chr NA
-#>    @ version: chr NA
+#>    @ package: chr "val.meter"
+#>    @ version: chr "0.0.0.9000"
 #>    @ id     : int 1
 #>    @ md5    : chr NA
 #>    @ path   : chr "/home/runner/work/_temp/Library/val.meter"
@@ -127,7 +127,9 @@ in your available repositories.
 pkg("val.meter") # when not installed
 ```
 
-    #> Error in convert(from, to, ...): Unable to discover package resource
+    #> Error: 
+    #> Unable to discover package resource given acceptable policy resource types.
+    #> For more information on how to configure package resource discovery see `?policy`
 
 This default behavior may still evolve, but its intention is clear: We
 want to be decisive about package sources and only permit high quality

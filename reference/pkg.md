@@ -32,4 +32,5 @@ pkg(resource, permissions, policy = opt("policy"))
 
   [`policy`](https://pharmar.github.io/val.meter/reference/policy.md) to
   use when converting input to resources. Most commonly used for
-  interpreting strings as resources.
+  interpreting strings as resources. If `permissions` is specified it
+  will mask the permissions provided in `policy`.

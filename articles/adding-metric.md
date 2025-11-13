@@ -322,14 +322,9 @@ similarly throw an error.
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r)
 p$rosv_vulnerability_df
-#>            id
-#> 1 RSEC-2023-5
-#>                                                                       summary
-#> 1 Infinite loop, memory leak, and heap-based buffer over-read vulnerabilities
-#>                      modified                published  name ecosystem
-#> 1 2025-05-19T19:43:47.336587Z 2023-10-05T05:00:00.600Z haven      CRAN
-#>             purl versions
-#> 1 pkg:cran/haven    0.1.1
+#> <error/val_meter_derive_error>
+#> ! when deriving field "rosv_vulnerability_df"
+#> data derivation was not granted permissions: "network"
 ```
 
 And similarly, if we didn’t have `rosv` installed we’d see something
@@ -341,14 +336,9 @@ p <- pkg(r, permissions = "network")
 p$rosv_vulnerability_df
 ```
 
-    #>            id
-    #> 1 RSEC-2023-5
-    #>                                                                       summary
-    #> 1 Infinite loop, memory leak, and heap-based buffer over-read vulnerabilities
-    #>                      modified                published  name ecosystem
-    #> 1 2025-05-19T19:43:47.336587Z 2023-10-05T05:00:00.600Z haven      CRAN
-    #>             purl versions
-    #> 1 pkg:cran/haven    0.1.1
+    #> <error/val_meter_derive_error>
+    #> ! when deriving field "rosv_vulnerability_df"
+    #> data derivation requires suggests: rosv
 
 Now that we can fetch the `rosv` response, we can process it to derive
 our metric.

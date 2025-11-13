@@ -108,13 +108,13 @@
 <p>To start evaluating metrics, start by create a <code>pkg</code> (package) object. Package objects represent a set of resources from which metadata is pulled and a collection of package metadata. When we pass a <code>character</code> path or package name, <code>val.meter</code> will search for the package from permitted sources.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># calculate some data, using default conservative permissions</span></span>
-<span><span class="fu"><a href="reference/pkg.html">pkg</a></span><span class="op">(</span><span class="st">"../val.meter"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="reference/pkg.html">pkg</a></span><span class="op">(</span><span class="st">"val.meter"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README/pkg.svg" width="100%"></p>
 <p>We can also be declarative about exactly how we want to source our package metadata.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rconsortium.github.io/S7/" class="external-link">S7</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># initialize package with only our installed package as a resource</span></span>
+<span><span class="co"># initialize package with only our source code as a resource</span></span>
 <span><span class="va">resrc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rconsortium.github.io/S7/reference/convert.html" class="external-link">convert</a></span><span class="op">(</span><span class="st">"../val.meter"</span>, <span class="va">source_code_resource</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/pkg.html">pkg</a></span><span class="op">(</span><span class="va">resrc</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README/pkg-explicit.svg" width="100%"></p>
@@ -123,7 +123,7 @@
 </h4>
 <p>Once we have declared <em>what</em> we want to assess, we can then start calculating metrics.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pkg.html">pkg</a></span><span class="op">(</span><span class="st">"../val.meter"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pkg.html">pkg</a></span><span class="op">(</span><span class="st">"val.meter"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/metrics.html">metrics</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README/metrics-from-pkg.svg" width="100%"></p>
 <p>In this case, you’ll notice that some metric calculations raised errors during execution. Here you’ll notice that we have not granted <code>val.meter</code> permission to execute code or fetch data from APIs over the network.</p>
@@ -138,7 +138,7 @@
 </h4>
 <p>We can opt-in to more extensive capabilities by giving our package more permissive execution. We pass <code>permissions(TRUE)</code> to grant blanket permission to all capabilities.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pkg.html">pkg</a></span><span class="op">(</span><span class="st">"../val.meter"</span>, permissions <span class="op">=</span> <span class="st">"network"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pkg.html">pkg</a></span><span class="op">(</span><span class="st">"val.meter"</span>, permissions <span class="op">=</span> <span class="st">"network"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/metrics.html">metrics</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README/metrics-permissive.svg" width="100%"></p>
 <p>And digging a bit deeper, we’ll see that <code>r_cmd_check</code> itself requires additional permissions to grant <code>val.meter</code> the ability to execute code on your machine.</p>

@@ -167,8 +167,8 @@ parameter.</p>
 <span><span class="co">#&gt; &lt;val.meter::pkg&gt;</span></span>
 <span><span class="co">#&gt; @resource</span></span>
 <span><span class="co">#&gt;   &lt;val.meter::install_resource&gt;</span></span>
-<span><span class="co">#&gt;    @ package: chr NA</span></span>
-<span><span class="co">#&gt;    @ version: chr NA</span></span>
+<span><span class="co">#&gt;    @ package: chr "val.meter"</span></span>
+<span><span class="co">#&gt;    @ version: chr "0.0.0.9000"</span></span>
 <span><span class="co">#&gt;    @ id     : int 1</span></span>
 <span><span class="co">#&gt;    @ md5    : chr NA</span></span>
 <span><span class="co">#&gt;    @ path   : chr "/home/runner/work/_temp/Library/val.meter"</span></span>
@@ -196,7 +196,9 @@ but we would fail to discover it if it wasn’t installed, even for
 packages available in your available repositories.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pkg.html">pkg</a></span><span class="op">(</span><span class="st">"val.meter"</span><span class="op">)</span> <span class="co"># when not installed</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; Error in convert(from, to, ...): Unable to discover package resource</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Error: </span></span>
+<span><span class="co">#&gt; Unable to discover package resource given acceptable policy resource types.</span></span>
+<span><span class="co">#&gt; For more information on how to configure package resource discovery see `?policy`</span></span></code></pre>
 <p>This default behavior may still evolve, but its intention is clear:
 We want to be decisive about package sources and only permit high
 quality reproducible sources by default.</p>

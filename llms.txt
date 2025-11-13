@@ -60,7 +60,7 @@ permitted sources.
 
 ``` r
 # calculate some data, using default conservative permissions
-pkg("../val.meter")
+pkg("val.meter")
 ```
 
 ![](reference/figures/README/pkg.svg)
@@ -71,7 +71,7 @@ package metadata.
 ``` r
 library(S7)
 
-# initialize package with only our installed package as a resource
+# initialize package with only our source code as a resource
 resrc <- convert("../val.meter", source_code_resource)
 pkg(resrc)
 ```
@@ -84,7 +84,7 @@ Once we have declared *what* we want to assess, we can then start
 calculating metrics.
 
 ``` r
-p <- pkg("../val.meter")
+p <- pkg("val.meter")
 metrics(p)
 ```
 
@@ -116,7 +116,7 @@ permissive execution. We pass `permissions(TRUE)` to grant blanket
 permission to all capabilities.
 
 ``` r
-p <- pkg("../val.meter", permissions = "network")
+p <- pkg("val.meter", permissions = "network")
 metrics(p)
 ```
 
