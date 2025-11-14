@@ -104,12 +104,17 @@ pkg("val.meter") # when installed locally
 #>   <promise>
 #> $r_cmd_check_error_count
 #>   <promise>
+#> $test_line_coverage_fraction
+#>   <promise>
+#> $test_expression_coverage_fraction
+#>   <promise>
 #> $downloads_total
 #>   <promise>
 #> $dependency_count
 #>   <promise>
 #> $has_website
 #>   <promise>
+#> $covr_coverage (internal)
 #> $r_cmd_check (internal)
 #> $desc (internal)
 #> $archive_md5 (internal)

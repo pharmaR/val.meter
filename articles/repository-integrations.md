@@ -35,8 +35,14 @@ metrics(p)
 #> $r_cmd_check_error_count
 #> [1] 0
 #> 
+#> $test_line_coverage_fraction
+#> [1] 0.847814
+#> 
+#> $test_expression_coverage_fraction
+#> [1] 0.8610332
+#> 
 #> $downloads_total
-#> [1] 690022
+#> [1] 89
 #> 
 #> $dependency_count
 #> [1] 0
@@ -50,7 +56,7 @@ sapply(
   random_pkgs(n = 3, permissions = TRUE),
   function(pkg) pkg$name
 )
-#> [1] "wiseTime" "promotr"  "cheRish"
+#> [1] "eco.data"              "Remarkable"            "joyous.fabulous.peach"
 ```
 
 ## Generating a repostiroy
@@ -69,38 +75,44 @@ ps <- random_pkgs(n = 3, permissions = TRUE)
 # output DCF files
 dcf_str <- to_dcf(ps)
 cat(dcf_str, "\n")
-#> Package: cozygenerousboom
-#> Version: 0.2.5
+#> Package: ProsperousFlatter
+#> Version: 4.0.7
 #> Depends: R
-#> Suggests: thrillGrid, biobreeze
+#> Imports: tRusting, ebullienceEnjoyment
 #> License: Phony License
-#> MD5sum: c919223f198551751b387ec7982d5f81
-#> Metric/vignette_count@R: 5
-#> Metric/r_cmd_check_error_count@R: 0
-#> Metric/downloads_total@R: 161
-#> Metric/dependency_count@R: 1
-#> Metric/has_website@R: FALSE
-#> 
-#> Package: thrillGrid
-#> Version: 2.3.3
-#> Depends: R
-#> Suggests: biobreeze
-#> License: Phony License
-#> MD5sum: 71567f7d47168519de48679a533362a7
-#> Metric/vignette_count@R: 3
-#> Metric/r_cmd_check_error_count@R: 0
-#> Metric/downloads_total@R: 15711
-#> Metric/dependency_count@R: 1
-#> Metric/has_website@R: FALSE
-#> 
-#> Package: biobreeze
-#> Version: 7.4.1
-#> Depends: R
-#> License: Phony License
-#> MD5sum: 53ede02e6e33623057e5b4ff92e3b2a3
+#> MD5sum: 827e06dbacd9ded074d77718d07e8187
 #> Metric/vignette_count@R: 5
 #> Metric/r_cmd_check_error_count@R: 1
-#> Metric/downloads_total@R: 27978
+#> Metric/test_line_coverage_fraction@R: 0.687237440249744
+#> Metric/test_expression_coverage_fraction@R: 0.481768517940372
+#> Metric/downloads_total@R: 183
+#> Metric/dependency_count@R: 3
+#> Metric/has_website@R: FALSE
+#> 
+#> Package: tRusting
+#> Version: 2.5
+#> Depends: R
+#> Suggests: ebullienceEnjoyment
+#> License: Phony License
+#> MD5sum: 4c095313e509a3823b6ce080b205f258
+#> Metric/vignette_count@R: 5
+#> Metric/r_cmd_check_error_count@R: 1
+#> Metric/test_line_coverage_fraction@R: 0.458658098872945
+#> Metric/test_expression_coverage_fraction@R: 0.402414382669119
+#> Metric/downloads_total@R: 6682
+#> Metric/dependency_count@R: 1
+#> Metric/has_website@R: FALSE
+#> 
+#> Package: ebullienceEnjoyment
+#> Version: 1.6.2
+#> Depends: R
+#> License: Phony License
+#> MD5sum: 899de83967d53ccd6400b62556a9088a
+#> Metric/vignette_count@R: 2
+#> Metric/r_cmd_check_error_count@R: 0
+#> Metric/test_line_coverage_fraction@R: 0
+#> Metric/test_expression_coverage_fraction@R: 0.171275144549786
+#> Metric/downloads_total@R: 1003022
 #> Metric/dependency_count@R: 1
 #> Metric/has_website@R: FALSE
 ```
@@ -164,8 +176,9 @@ df$dependency_percentile <- percentile(df$dependency_count)
 
 # find our packages with the most dependencies
 df$package[df$dependency_percentile > 0.95]
-#> [1] "brilliantthankfulmerit" "gorgeouseager"          "geogentleexcitedness"  
-#> [4] "ggdistribution"         "geneRalized"            "favouR"
+#> [1] "tensoR"                  "PopularHallmark"        
+#> [3] "feasibleinestimabledata" "glimmerBrilliance"      
+#> [5] "superData"
 ```
 
 ``` r

@@ -107,8 +107,14 @@ in whether you want to simulate a single or collection of packages.</p>
 <span><span class="co">#&gt; $r_cmd_check_error_count</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
 <span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $test_line_coverage_fraction</span></span>
+<span><span class="co">#&gt; [1] 0.847814</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; $test_expression_coverage_fraction</span></span>
+<span><span class="co">#&gt; [1] 0.8610332</span></span>
+<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $downloads_total</span></span>
-<span><span class="co">#&gt; [1] 690022</span></span>
+<span><span class="co">#&gt; [1] 89</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $dependency_count</span></span>
 <span><span class="co">#&gt; [1] 0</span></span>
@@ -120,7 +126,7 @@ in whether you want to simulate a single or collection of packages.</p>
 <span>  <span class="fu"><a href="../reference/random_pkg.html">random_pkgs</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">3</span>, permissions <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span><span class="op">)</span> <span class="va">pkg</span><span class="op">$</span><span class="va">name</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "wiseTime" "promotr"  "cheRish"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "eco.data"              "Remarkable"            "joyous.fabulous.peach"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="generating-a-repostiroy">Generating a repostiroy<a class="anchor" aria-label="anchor" href="#generating-a-repostiroy"></a>
@@ -139,38 +145,44 @@ CRAN to distribute a listing of packages and package data.</p>
 <span><span class="co"># output DCF files</span></span>
 <span><span class="va">dcf_str</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/to_dcf.html">to_dcf</a></span><span class="op">(</span><span class="va">ps</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="va">dcf_str</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Package: cozygenerousboom</span></span>
-<span><span class="co">#&gt; Version: 0.2.5</span></span>
+<span><span class="co">#&gt; Package: ProsperousFlatter</span></span>
+<span><span class="co">#&gt; Version: 4.0.7</span></span>
 <span><span class="co">#&gt; Depends: R</span></span>
-<span><span class="co">#&gt; Suggests: thrillGrid, biobreeze</span></span>
+<span><span class="co">#&gt; Imports: tRusting, ebullienceEnjoyment</span></span>
 <span><span class="co">#&gt; License: Phony License</span></span>
-<span><span class="co">#&gt; MD5sum: c919223f198551751b387ec7982d5f81</span></span>
-<span><span class="co">#&gt; Metric/vignette_count@R: 5</span></span>
-<span><span class="co">#&gt; Metric/r_cmd_check_error_count@R: 0</span></span>
-<span><span class="co">#&gt; Metric/downloads_total@R: 161</span></span>
-<span><span class="co">#&gt; Metric/dependency_count@R: 1</span></span>
-<span><span class="co">#&gt; Metric/has_website@R: FALSE</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Package: thrillGrid</span></span>
-<span><span class="co">#&gt; Version: 2.3.3</span></span>
-<span><span class="co">#&gt; Depends: R</span></span>
-<span><span class="co">#&gt; Suggests: biobreeze</span></span>
-<span><span class="co">#&gt; License: Phony License</span></span>
-<span><span class="co">#&gt; MD5sum: 71567f7d47168519de48679a533362a7</span></span>
-<span><span class="co">#&gt; Metric/vignette_count@R: 3</span></span>
-<span><span class="co">#&gt; Metric/r_cmd_check_error_count@R: 0</span></span>
-<span><span class="co">#&gt; Metric/downloads_total@R: 15711</span></span>
-<span><span class="co">#&gt; Metric/dependency_count@R: 1</span></span>
-<span><span class="co">#&gt; Metric/has_website@R: FALSE</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Package: biobreeze</span></span>
-<span><span class="co">#&gt; Version: 7.4.1</span></span>
-<span><span class="co">#&gt; Depends: R</span></span>
-<span><span class="co">#&gt; License: Phony License</span></span>
-<span><span class="co">#&gt; MD5sum: 53ede02e6e33623057e5b4ff92e3b2a3</span></span>
+<span><span class="co">#&gt; MD5sum: 827e06dbacd9ded074d77718d07e8187</span></span>
 <span><span class="co">#&gt; Metric/vignette_count@R: 5</span></span>
 <span><span class="co">#&gt; Metric/r_cmd_check_error_count@R: 1</span></span>
-<span><span class="co">#&gt; Metric/downloads_total@R: 27978</span></span>
+<span><span class="co">#&gt; Metric/test_line_coverage_fraction@R: 0.687237440249744</span></span>
+<span><span class="co">#&gt; Metric/test_expression_coverage_fraction@R: 0.481768517940372</span></span>
+<span><span class="co">#&gt; Metric/downloads_total@R: 183</span></span>
+<span><span class="co">#&gt; Metric/dependency_count@R: 3</span></span>
+<span><span class="co">#&gt; Metric/has_website@R: FALSE</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Package: tRusting</span></span>
+<span><span class="co">#&gt; Version: 2.5</span></span>
+<span><span class="co">#&gt; Depends: R</span></span>
+<span><span class="co">#&gt; Suggests: ebullienceEnjoyment</span></span>
+<span><span class="co">#&gt; License: Phony License</span></span>
+<span><span class="co">#&gt; MD5sum: 4c095313e509a3823b6ce080b205f258</span></span>
+<span><span class="co">#&gt; Metric/vignette_count@R: 5</span></span>
+<span><span class="co">#&gt; Metric/r_cmd_check_error_count@R: 1</span></span>
+<span><span class="co">#&gt; Metric/test_line_coverage_fraction@R: 0.458658098872945</span></span>
+<span><span class="co">#&gt; Metric/test_expression_coverage_fraction@R: 0.402414382669119</span></span>
+<span><span class="co">#&gt; Metric/downloads_total@R: 6682</span></span>
+<span><span class="co">#&gt; Metric/dependency_count@R: 1</span></span>
+<span><span class="co">#&gt; Metric/has_website@R: FALSE</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Package: ebullienceEnjoyment</span></span>
+<span><span class="co">#&gt; Version: 1.6.2</span></span>
+<span><span class="co">#&gt; Depends: R</span></span>
+<span><span class="co">#&gt; License: Phony License</span></span>
+<span><span class="co">#&gt; MD5sum: 899de83967d53ccd6400b62556a9088a</span></span>
+<span><span class="co">#&gt; Metric/vignette_count@R: 2</span></span>
+<span><span class="co">#&gt; Metric/r_cmd_check_error_count@R: 0</span></span>
+<span><span class="co">#&gt; Metric/test_line_coverage_fraction@R: 0</span></span>
+<span><span class="co">#&gt; Metric/test_expression_coverage_fraction@R: 0.171275144549786</span></span>
+<span><span class="co">#&gt; Metric/downloads_total@R: 1003022</span></span>
 <span><span class="co">#&gt; Metric/dependency_count@R: 1</span></span>
 <span><span class="co">#&gt; Metric/has_website@R: FALSE</span></span></code></pre></div>
 </div>
@@ -223,8 +235,9 @@ from text format.</p>
 <span></span>
 <span><span class="co"># find our packages with the most dependencies</span></span>
 <span><span class="va">df</span><span class="op">$</span><span class="va">package</span><span class="op">[</span><span class="va">df</span><span class="op">$</span><span class="va">dependency_percentile</span> <span class="op">&gt;</span> <span class="fl">0.95</span><span class="op">]</span></span>
-<span><span class="co">#&gt; [1] "brilliantthankfulmerit" "gorgeouseager"          "geogentleexcitedness"  </span></span>
-<span><span class="co">#&gt; [4] "ggdistribution"         "geneRalized"            "favouR"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "tensoR"                  "PopularHallmark"        </span></span>
+<span><span class="co">#&gt; [3] "feasibleinestimabledata" "glimmerBrilliance"      </span></span>
+<span><span class="co">#&gt; [5] "superData"</span></span></code></pre></div>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/options.html">options</a></span><span class="op">(</span>scipen <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>

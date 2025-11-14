@@ -51,6 +51,20 @@ The following metrics are provided by
 
 [![\[execution\]](figures/badge-execution-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
 
+### Test coverage of package code by line
+
+`<double>` The fraction of lines of package code that are evaluated by
+any test
+
+![\[execution\]](figures/badge-req-execution-x-flat-square-red.svg)![\[covr\]](figures/badge-dep-covr-x-flat-square-green.svg)
+
+### Test coverage of package code by expression
+
+`<double>` The fraction of expressions of package code that are
+evaluated by any test
+
+![\[execution\]](figures/badge-req-execution-x-flat-square-red.svg)![\[covr\]](figures/badge-dep-covr-x-flat-square-green.svg)
+
 ### Total Downloads
 
 `<integer>` total number of lifetime downloads, as reported by the Posit

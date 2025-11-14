@@ -31,12 +31,14 @@ internally calculated data.
 
 ``` r
 names(metrics(all = TRUE))
-#>  [1] "r_cmd_check"             "desc"                   
-#>  [3] "archive_md5"             "vignette_count"         
-#>  [5] "web_html"                "web_url"                
-#>  [7] "name"                    "version"                
-#>  [9] "r_cmd_check_error_count" "downloads_total"        
-#> [11] "dependency_count"        "has_website"
+#>  [1] "covr_coverage"                     "r_cmd_check"                      
+#>  [3] "desc"                              "archive_md5"                      
+#>  [5] "vignette_count"                    "web_html"                         
+#>  [7] "web_url"                           "name"                             
+#>  [9] "version"                           "r_cmd_check_error_count"          
+#> [11] "test_line_coverage_fraction"       "test_expression_coverage_fraction"
+#> [13] "downloads_total"                   "dependency_count"                 
+#> [15] "has_website"
 ```
 
 Sure enough, `"name"` is in the list. We can learn a bit more about it
