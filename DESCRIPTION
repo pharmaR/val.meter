@@ -41,6 +41,7 @@ Imports:
     httr2,
     xml2
 Suggests:
+    covr,
     rcmdcheck,
     igraph,
     knitr,
@@ -79,6 +80,7 @@ Collate:
     'generic_pkg_data_derive.R'
     'impl_data.R'
     'data_archive_md5.R'
+    'data_coverage.R'
     'data_desc.R'
     'data_downloads_total.R'
     'data_r_cmd_check.R'

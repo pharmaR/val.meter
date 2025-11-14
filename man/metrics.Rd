@@ -41,6 +41,20 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 
 \Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}}" }}
 }
+ \subsection{Test coverage of package code by line}{
+\code{<double>} The fraction of lines of package code that are evaluated by any test
+
+\Sexpr[stage=render,results=rd]{if (!is.na(match("execution", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-execution-x-flat-square-green.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[req::execution]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-execution-x-flat-square-red.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[req::execution]}}"} \Sexpr[stage=render,results=rd]{if (length(find.package("covr", quiet = TRUE)) > 0) "\\\\ifelse{html}{\\\\figure{badge-dep-covr-x-flat-square-green.svg}{options: alt = \\"[covr]\\"}}{\\\\strong{[dep::covr]}}" else "\\\\ifelse{html}{\\\\figure{badge-dep-covr-x-flat-square-red.svg}{options: alt = \\"[covr]\\"}}{\\\\strong{[dep::covr]}}"} 
+
+
+}
+ \subsection{Test coverage of package code by expression}{
+\code{<double>} The fraction of expressions of package code that are evaluated by any test
+
+\Sexpr[stage=render,results=rd]{if (!is.na(match("execution", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-execution-x-flat-square-green.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[req::execution]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-execution-x-flat-square-red.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[req::execution]}}"} \Sexpr[stage=render,results=rd]{if (length(find.package("covr", quiet = TRUE)) > 0) "\\\\ifelse{html}{\\\\figure{badge-dep-covr-x-flat-square-green.svg}{options: alt = \\"[covr]\\"}}{\\\\strong{[dep::covr]}}" else "\\\\ifelse{html}{\\\\figure{badge-dep-covr-x-flat-square-red.svg}{options: alt = \\"[covr]\\"}}{\\\\strong{[dep::covr]}}"} 
+
+
+}
  \subsection{Total Downloads}{
 \code{<integer>} total number of lifetime downloads, as reported by the Posit CRAN mirror through the \href{https://cranlogs.rpkg.org}{cranlogs} API
 
