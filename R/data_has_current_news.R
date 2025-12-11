@@ -5,8 +5,9 @@ impl_data(
   metric = TRUE,
   class = class_logical,
   title = "Up to date NEWS",
-  description = "a NEWS file exists and is synced with the current package version",
-  overwrite=TRUE
+  description =
+    "a NEWS file exists and is synced with the current package version",
+  overwrite = TRUE
 )
 
 #' @importFrom xml2 xml_find_all xml_attrs
@@ -14,7 +15,7 @@ impl_data(
 impl_data(
   "has_current_news",
   for_resource = cran_repo_resource,
-  overwrite=TRUE,
+  overwrite = TRUE,
   function(pkg, resource, field, ...) {
     # scrape CRAN html for NEWS link(s)
     news_links <- xml2::xml_find_all(pkg$web_html, xpath = '//a[.="NEWS"]')
@@ -50,7 +51,7 @@ impl_data(
 impl_data(
   "has_current_news",
   for_resource = new_union(install_resource, source_code_resource),
-  overwrite=TRUE,
+  overwrite = TRUE,
   function(pkg, resource, field, ...) {
     files <- resource@path |>
       list.files(pattern = "^NEWS($|\\.)", full.names = TRUE)
