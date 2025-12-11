@@ -9,12 +9,12 @@ impl_data(
   overwrite=TRUE
 )
 
-
 #' @importFrom xml2 xml_find_all xml_attrs
 #' @importFrom httr2 request req_perform resp_body_html
 impl_data(
   "has_current_news",
   for_resource = cran_repo_resource,
+  overwrite=TRUE,
   function(pkg, resource, field, ...) {
     # scrape CRAN html for NEWS link(s)
     news_links <- xml2::xml_find_all(pkg$web_html, xpath = '//a[.="NEWS"]')
@@ -38,7 +38,9 @@ impl_data(
         gsub("(\\.0)+$", "", as.character(pkg$version)) # remove trailing ".0"
       )
     )
-    news_current <- vapply(html_nodes, function(i) length(i) > 0, logical(1L))
+    news_current <-
+      vapply(html_nodes, function(i) length(i) > 0, logical(1L)) |>
+      any()
     has_news & news_current
   }
 )
@@ -48,6 +50,7 @@ impl_data(
 impl_data(
   "has_current_news",
   for_resource = new_union(install_resource, source_code_resource),
+  overwrite=TRUE,
   function(pkg, resource, field, ...) {
     files <- resource@path |>
       list.files(pattern = "^NEWS($|\\.)", full.names = TRUE)
@@ -79,7 +82,8 @@ impl_data(
     # Derive has_news & read news files to see if latest version is present
     has_news <- length(news_lst) > 0
     news_current <- gsub("(\\.0)+$", "", as.character(pkg$version)) |>
-      grepl(news_lst)
+      grepl(news_lst) |>
+      any()
     has_news & news_current
   }
 )
