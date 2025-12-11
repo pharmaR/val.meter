@@ -28,7 +28,7 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 \keyword{workflow}
 \section{Metrics}{The following metrics are provided by \code{\link{val.meter}}.
  \subsection{Up to date NEWS}{
-\code{<logical>} NEWS.md exists and is sync'd with the current package version
+\code{<logical>} a NEWS file exists and is synced with the current package version
 
   
 

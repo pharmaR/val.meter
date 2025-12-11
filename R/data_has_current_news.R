@@ -5,7 +5,8 @@ impl_data(
   metric = TRUE,
   class = class_logical,
   title = "Up to date NEWS",
-  description = "NEWS.md exists and is sync'd with the current package version"
+  description = "a NEWS file exists and is synced with the current package version",
+  overwrite=TRUE
 )
 
 
