@@ -83,6 +83,7 @@ Collate:
     'data_coverage.R'
     'data_desc.R'
     'data_downloads_total.R'
+    'data_has_current_news.R'
     'data_r_cmd_check.R'
     'data_vignettes.R'
     'data_web_html.R'
