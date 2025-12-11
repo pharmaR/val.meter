@@ -10,6 +10,11 @@ Authors@R:
         role = c("aut", "cre")            
       ),
       person(
+        "Aaron", "Clark",
+        email = "clark.aaronchris@gmail.com",
+        role = c("ctb")            
+      ),
+      person(
         "R Validation Hub",
         email = "r-val-hub-maintainers@lists.r-consortium.org",
         comment = c("website" = "https://www.pharmar.org"),
