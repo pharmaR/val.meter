@@ -42,7 +42,7 @@ impl_data(
     news_current <-
       vapply(html_nodes, function(i) length(i) > 0, logical(1L)) |>
       any()
-    has_news & news_current
+    has_news && news_current
   }
 )
 
@@ -68,7 +68,7 @@ impl_data(
         ext <- tools::file_ext(f)
         tryCatch({
           if (tolower(tools::file_ext(f)) == "rd") {
-            content[[i]] <- .tools()$.news_reader_default(f)
+            content[[i]] <- getNamespace("tools")$.news_reader_default(f)
           } else if (tolower(ext) == "md" || nchar(ext) == 0L) {
             # NOTE: should we do validation of markdown format?
             content[[i]] <- readLines(f, warn = FALSE)
@@ -85,7 +85,7 @@ impl_data(
     news_current <- gsub("(\\.0)+$", "", as.character(pkg$version)) |>
       grepl(news_lst) |>
       any()
-    has_news & news_current
+    has_news && news_current
   }
 )
 
