@@ -51,6 +51,16 @@ resources (such as download and installation output) and executing code
 \item{envvar: }{R_VAL_METER_QUIET (evaluated if possible, raw string otherwise)}
 }}
 
+\item{source_control_domains}{\describe{
+Recognized source control hosting domains used when inferring whether a
+package has a source code repository on a recognized hosting platform.
+Customize this to add additional git hosting services (e.g., self-hosted
+GitLab instances or other federated git providers).\item{default: }{\preformatted{c("github.com", "gitlab.com", "bitbucket.org", "r-forge.r-project.org", 
+    "codeberg.org", "sr.ht", "gitea.com", "git.sr.ht")}}
+\item{option: }{val.meter.source_control_domains}
+\item{envvar: }{R_VAL_METER_SOURCE_CONTROL_DOMAINS (evaluated if possible, raw string otherwise)}
+}}
+
 }
 }
 
