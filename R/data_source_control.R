@@ -8,7 +8,8 @@
 #' \describe{
 #'   \item{`recognized_source_url`}{The inferred URL of the package's source
 #'     control repository, extracted from the URL and BugReports fields in the
-#'     DESCRIPTION file and matched against an allow-list of recognized domains.}
+#'     DESCRIPTION file and matched against an allow-list of recognized
+#'     domains.}
 #'   \item{`has_recognized_source`}{A logical indicating whether the package has
 #'     a source code repository on a recognized hosting platform from the
 #'     allow-list.}
@@ -22,7 +23,8 @@
 #'   \item Only URLs matching domains in the allow-list are recognized
 #'   \item Packages may have source control not detected if hosted elsewhere
 #'   \item The allow-list is customizable to include additional domains
-#'   \item Results indicate recognized hosting, not definitive source control presence
+#'   \item Results indicate recognized hosting, not definitive source control
+#'    presence
 #' }
 #'
 #' @section Customization:
@@ -51,7 +53,7 @@
 #'   "gitlab.com",
 #'   "git.mycompany.com"
 #' ))
-#' 
+#'
 #' # Or extend the defaults
 #' default_domains <- opt("source_control_domains")
 #' old_domains <- opt_set("source_control_domains", c(
@@ -59,7 +61,7 @@
 #'   "git.mycompany.com",
 #'   "forge.myorg.net"
 #' ))
-#' 
+#'
 #' # Restore original value
 #' opt_set("source_control_domains", old_domains)
 #' }
@@ -87,24 +89,24 @@ impl_data(
       pkg$desc$get_urls(),
       error = function(e) character(0)
     )
-    
+
     # Get BugReports field if available
     bug_reports <- tryCatch(
       pkg$desc$get_field("BugReports"),
       error = function(e) character(0)
     )
-    
+
     # Combine all URLs to check, filtering out empty strings and NAs
     all_urls <- c(desc_urls, bug_reports)
     all_urls <- all_urls[!is.na(all_urls) & nzchar(all_urls)]
-    
+
     if (length(all_urls) == 0) {
       return(NA_character_)
     }
-    
+
     # Get recognized source control domains from options
     source_control_domains <- opt("source_control_domains")
-    
+
     # Try to find a URL matching known source control domains
     # We use case-insensitive matching for domains
     for (url in all_urls) {
@@ -114,7 +116,7 @@ impl_data(
         }
       }
     }
-    
+
     # No known source control URL found
     NA_character_
   }
