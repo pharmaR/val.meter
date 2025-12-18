@@ -47,7 +47,8 @@ Suggests:
     knitr,
     rmarkdown,
     rosv,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr
 Config/Needs/vignettes:
     knitr,
     rmarkdown,

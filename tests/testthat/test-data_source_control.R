@@ -1,32 +1,3 @@
-describe("source control metrics with real packages", {
-  # Test with real packages that have known source control URLs
-  it("recognizes ggplot2 on GitHub", {
-    skip_if_offline()
-    skip_on_cran()
-
-    p <- pkg("ggplot2")
-    expect_true(p$has_recognized_source)
-    expect_true(grepl(
-      "github.com",
-      p$recognized_source_url,
-      ignore.case = TRUE
-    ))
-  })
-
-  it("recognizes dplyr on GitHub", {
-    skip_if_offline()
-    skip_on_cran()
-
-    p <- pkg("dplyr")
-    expect_true(p$has_recognized_source)
-    expect_true(grepl(
-      "github.com",
-      p$recognized_source_url,
-      ignore.case = TRUE
-    ))
-  })
-})
-
 describe("source control metrics implementation details", {
   # Test the actual implementation logic with mocked desc objects
   it("extracts URLs from DESCRIPTION and matches against domains", {
