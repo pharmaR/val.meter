@@ -26,5 +26,20 @@ define_options(
   "Silences console output during evaluation. This applies when pulling package
   resources (such as download and installation output) and executing code
   (for example, running `R CMD check`)",
-  quiet = TRUE
+  quiet = TRUE,
+
+  fmt("Recognized source control hosting domains used when inferring whether a 
+      package has a source code repository on a recognized hosting platform.
+      Customize this to add additional git hosting services (e.g., self-hosted 
+      GitLab instances or other federated git providers)."),
+  source_control_domains = c(
+    "github.com",
+    "gitlab.com",
+    "bitbucket.org",
+    "r-forge.r-project.org",
+    "codeberg.org",
+    "sr.ht",              # sourcehut
+    "gitea.com",
+    "git.sr.ht"
+  )
 )

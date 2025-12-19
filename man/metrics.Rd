@@ -69,6 +69,13 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 
 \Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}\\n\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}\\n\\\\ifelse{html}{\\\\figure{badge-version--independent-x-flat-square-blue.svg}{options: alt = \\"[version-independent]\\"}}{\\\\strong{[version-independent]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-version--independent-x-flat-square-blue.svg}{options: alt = \\"[version-independent]\\"}}{\\\\strong{[version-independent]}}}" }}
 }
+ \subsection{Has Recognized Source Repository}{
+\code{<logical>} Indicates whether the package has a source code repository on a recognized hosting platform from an allow-list of known domains. Inferred from the URL and BugReports fields in the DESCRIPTION file. See ?options for customizing the allow-list.
+
+  
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}}" }}
+}
  \subsection{Dependency Count}{
 \code{<integer>} the number of required dependencies
 
