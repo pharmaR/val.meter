@@ -10,6 +10,11 @@ Authors@R:
         role = c("aut", "cre")            
       ),
       person(
+        "Aaron", "Clark",
+        email = "clark.aaronchris@gmail.com",
+        role = c("ctb")            
+      ),
+      person(
         "R Validation Hub",
         email = "r-val-hub-maintainers@lists.r-consortium.org",
         comment = c("website" = "https://www.pharmar.org"),
@@ -83,6 +88,7 @@ Collate:
     'data_coverage.R'
     'data_desc.R'
     'data_downloads_total.R'
+    'data_has_current_news.R'
     'data_r_cmd_check.R'
     'data_vignettes.R'
     'data_web_html.R'
