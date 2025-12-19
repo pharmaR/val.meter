@@ -29,20 +29,23 @@ packages.
 ``` r
 p <- random_pkg(permissions = TRUE)
 metrics(p)
+#> $has_current_news
+#> [1] TRUE
+#> 
 #> $vignette_count
-#> [1] 3
+#> [1] 2
 #> 
 #> $r_cmd_check_error_count
 #> [1] 0
 #> 
 #> $test_line_coverage_fraction
-#> [1] 0.847814
+#> [1] 0.9653538
 #> 
 #> $test_expression_coverage_fraction
-#> [1] 0.8610332
+#> [1] 0
 #> 
 #> $downloads_total
-#> [1] 89
+#> [1] 99
 #> 
 #> $dependency_count
 #> [1] 0
@@ -75,44 +78,47 @@ ps <- random_pkgs(n = 3, permissions = TRUE)
 # output DCF files
 dcf_str <- to_dcf(ps)
 cat(dcf_str, "\n")
-#> Package: ProsperousFlatter
-#> Version: 4.0.7
-#> Depends: R
-#> Imports: tRusting, ebullienceEnjoyment
+#> Package: RenownedChemistry
+#> Version: 3.5.2
+#> Depends: R, stimulate.Supple
+#> Imports: magic.fortuitous.glisten
 #> License: Phony License
-#> MD5sum: 827e06dbacd9ded074d77718d07e8187
-#> Metric/vignette_count@R: 5
-#> Metric/r_cmd_check_error_count@R: 1
-#> Metric/test_line_coverage_fraction@R: 0.687237440249744
-#> Metric/test_expression_coverage_fraction@R: 0.481768517940372
-#> Metric/downloads_total@R: 183
+#> MD5sum: 4b5cc51e3d07148f571b475d2b0f49e2
+#> Metric/has_current_news@R: TRUE
+#> Metric/vignette_count@R: 3
+#> Metric/r_cmd_check_error_count@R: 0
+#> Metric/test_line_coverage_fraction@R: 0
+#> Metric/test_expression_coverage_fraction@R: 0.632141583590441
+#> Metric/downloads_total@R: 41548
 #> Metric/dependency_count@R: 3
 #> Metric/has_website@R: FALSE
 #> 
-#> Package: tRusting
-#> Version: 2.5
+#> Package: magic.fortuitous.glisten
+#> Version: 1.1
 #> Depends: R
-#> Suggests: ebullienceEnjoyment
+#> Imports: stimulate.Supple
 #> License: Phony License
-#> MD5sum: 4c095313e509a3823b6ce080b205f258
-#> Metric/vignette_count@R: 5
-#> Metric/r_cmd_check_error_count@R: 1
-#> Metric/test_line_coverage_fraction@R: 0.458658098872945
-#> Metric/test_expression_coverage_fraction@R: 0.402414382669119
-#> Metric/downloads_total@R: 6682
-#> Metric/dependency_count@R: 1
+#> MD5sum: 0a33988f4e830f9996e39141cf2a3760
+#> Metric/has_current_news@R: FALSE
+#> Metric/vignette_count@R: 4
+#> Metric/r_cmd_check_error_count@R: 0
+#> Metric/test_line_coverage_fraction@R: 0.797023667433178
+#> Metric/test_expression_coverage_fraction@R: 0.66651480308287
+#> Metric/downloads_total@R: 710269
+#> Metric/dependency_count@R: 2
 #> Metric/has_website@R: FALSE
 #> 
-#> Package: ebullienceEnjoyment
-#> Version: 1.6.2
+#> Package: stimulate.Supple
+#> Version: 2.5.3
 #> Depends: R
 #> License: Phony License
-#> MD5sum: 899de83967d53ccd6400b62556a9088a
-#> Metric/vignette_count@R: 2
+#> MD5sum: 6d02fd1cf77744edd959b18869eadef7
+#> Metric/has_current_news@R: FALSE
+#> Metric/vignette_count@R: 5
 #> Metric/r_cmd_check_error_count@R: 0
-#> Metric/test_line_coverage_fraction@R: 0
-#> Metric/test_expression_coverage_fraction@R: 0.171275144549786
-#> Metric/downloads_total@R: 1003022
+#> Metric/test_line_coverage_fraction@R: 0.299504536234685
+#> Metric/test_expression_coverage_fraction@R: 0.437048487284843
+#> Metric/downloads_total@R: 145
 #> Metric/dependency_count@R: 1
 #> Metric/has_website@R: FALSE
 ```
@@ -176,9 +182,8 @@ df$dependency_percentile <- percentile(df$dependency_count)
 
 # find our packages with the most dependencies
 df$package[df$dependency_percentile > 0.95]
-#> [1] "tensoR"                  "PopularHallmark"        
-#> [3] "feasibleinestimabledata" "glimmerBrilliance"      
-#> [5] "superData"
+#> [1] "bRavery"       "tendr"         "trumpMerrily"  "FerventWarmth"
+#> [5] "dexteRous"
 ```
 
 ``` r

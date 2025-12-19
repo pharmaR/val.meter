@@ -39,6 +39,11 @@ is or is not provided respectively.
 The following metrics are provided by
 [`val.meter`](https://pharmar.github.io/val.meter/reference/val.meter-package.md).
 
+### Up to date NEWS
+
+`<logical>` a NEWS file exists and is synced with the current package
+version
+
 ### Total Vignettes
 
 `<integer>` total number of vignettes

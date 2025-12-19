@@ -175,13 +175,13 @@ They have tab completion, print out their contents *almost* like a
 ``` r
 names(rpkg)
 #>  [1] "covr_coverage"                     "r_cmd_check"                      
-#>  [3] "desc"                              "archive_md5"                      
-#>  [5] "vignette_count"                    "web_html"                         
-#>  [7] "web_url"                           "name"                             
-#>  [9] "version"                           "r_cmd_check_error_count"          
-#> [11] "test_line_coverage_fraction"       "test_expression_coverage_fraction"
-#> [13] "downloads_total"                   "dependency_count"                 
-#> [15] "has_website"
+#>  [3] "desc"                              "has_current_news"                 
+#>  [5] "archive_md5"                       "vignette_count"                   
+#>  [7] "web_html"                          "web_url"                          
+#>  [9] "name"                              "version"                          
+#> [11] "r_cmd_check_error_count"           "test_line_coverage_fraction"      
+#> [13] "test_expression_coverage_fraction" "downloads_total"                  
+#> [15] "dependency_count"                  "has_website"
 ```
 
 Yep. There they are. All the fields you can just *assume* exist in this
@@ -202,6 +202,8 @@ If we take a peek at our `rpkg` object, we’ll see:
     #>    @ md5    : chr "f1c516596e9ad5015218ead8114487d5"
     #> @permissions
     #>   <val.meter::permissions> chr [1:3] "write" "execution" "network"
+    #> $has_current_news
+    #>   <promise>
     #> $vignette_count
     #>   <promise>
     #> $r_cmd_check_error_count
@@ -246,6 +248,8 @@ new data.
     #>    @ md5    : chr "f1c516596e9ad5015218ead8114487d5"
     #> @permissions
     #>   <val.meter::permissions> chr [1:3] "write" "execution" "network"
+    #> $has_current_news
+    #>   <promise>
     #> $vignette_count
     #>   <promise>
     #> $r_cmd_check_error_count

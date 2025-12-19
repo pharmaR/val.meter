@@ -24,5 +24,7 @@ Useful links:
 
 Other contributors:
 
+- Aaron Clark <clark.aaronchris@gmail.com> \[contributor\]
+
 - R Validation Hub <r-val-hub-maintainers@lists.r-consortium.org>
   (https://www.pharmar.org) \[copyright holder\]

@@ -4,6 +4,8 @@
 
 - **Doug Kelkhoff**. Author, maintainer.
 
+- **Aaron Clark**. Contributor.
+
 - **R Validation Hub**. Copyright holder.  
   https://www.pharmar.org
 

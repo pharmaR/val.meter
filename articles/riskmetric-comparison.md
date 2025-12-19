@@ -100,6 +100,8 @@ pkg("val.meter") # when installed locally
 #>    @ path   : chr "/home/runner/work/_temp/Library/val.meter"
 #> @permissions
 #>   <val.meter::permissions> chr(0) 
+#> $has_current_news
+#>   <promise>
 #> $vignette_count
 #>   <promise>
 #> $r_cmd_check_error_count
