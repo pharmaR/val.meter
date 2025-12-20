@@ -284,9 +284,11 @@ method(convert, list(class_character, class_resource)) <-
     add_resource <- function(resource) {
       resource_type_name <- class_desc(S7::S7_class(resource))
       idx <- match(resource_type_name, all_resource_type_names)
+
       if (is.na(idx) || !is.null(resources[[idx]])) {
         return()
       }
+
       resources[[idx]] <<- resource
       idx
     }
@@ -317,8 +319,8 @@ method(convert, list(class_character, class_resource)) <-
       # iterate over other allowed resource types
       for (to_idx in seq_along(all_resource_types)) {
         # that are not yet populated with a known resource
-        to_resource <- resources[[to_idx]]
-        if (!is.null(to_resource)) {
+        existing_resource <- resources[[to_idx]]
+        if (!is.null(existing_resource)) {
           next
         }
 
@@ -336,7 +338,7 @@ method(convert, list(class_character, class_resource)) <-
         # special handling for error conditions used to test discovery in tests
         if (inherits(result, "test_suite_signal")) {
           stop(result)
-        } else if (inherits(result, "error")) {
+        } else if (is.null(result) || inherits(result, "error")) {
           next
         }
 
@@ -589,7 +591,9 @@ method(convert, list(class_local_source_resource, class_install_resource)) <-
 
 method(convert, list(class_resource, class_unknown_resource)) <-
   function(from, to, ...) {
-    set_props(to(), props(from, names(class_unknown_resource@properties)))
+    out <- to()
+    props(out) <- props(from, prop_names(out))
+    out
   }
 
 method(to_dcf, class_resource) <- function(x, ...) {

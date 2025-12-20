@@ -9,8 +9,10 @@ impl_data(
 impl_data(
   "covr_coverage",
   for_resource = local_source_resource,
-  function(pkg, resource, field, ..., quiet = opt("quiet")) {
-    covr::package_coverage(resource@path, type = "tests", quiet = quiet)
+  function(pkg, resource, field, ...) {
+    # package installs use `system2()` whose output cannot be captured by sink()
+    # so we just execute quietly
+    covr::package_coverage(resource@path, type = "tests", quiet = TRUE)
   }
 )
 
@@ -23,7 +25,7 @@ impl_data(
     "The fraction of expressions of package code that are evaluated by any ",
     "test"
   ),
-  function(pkg, resource, field, ..., quiet = opt("quiet")) {
+  function(pkg, resource, field, ...) {
     tally <- covr::tally_coverage(pkg$covr_coverage, by = "expression")
     mean(tally$value > 0)
   }
@@ -45,7 +47,7 @@ impl_data(
   description = paste0(
     "The fraction of lines of package code that are evaluated by any test"
   ),
-  function(pkg, resource, field, ..., quiet = opt("quiet")) {
+  function(pkg, resource, field, ...) {
     tally <- covr::tally_coverage(pkg$covr_coverage, by = "line")
     mean(tally$value > 0)
   }

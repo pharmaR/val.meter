@@ -9,15 +9,17 @@ ns_tmp_root <- function() {
   dir_create(file.path(tempdir(), packageName()))
 }
 
-pkg_dir <- function(pkg, ..., .root = opt("logs")) {
+pkg_dir <- function(pkg, ..., .root = opt("artifacts")) {
   dir_create(file.path(.root, "pkg", pkg$name, ...))
 }
 
-resource_dir <- function(x, ..., .id = x@id, .root = opt("logs")) {
+resource_dir <- function(x, ..., .id = x@id, .root = opt("artifacts")) {
   dir_create(file.path(.root, "rsrc", .id, ...))
 }
 
 dir_create <- function(path) {
-  if (!dir.exists(path)) dir.create(path, recursive = TRUE)
+  if (!dir.exists(path)) {
+    dir.create(path, recursive = TRUE)
+  }
   path
 }

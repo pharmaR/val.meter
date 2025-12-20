@@ -31,12 +31,11 @@ impl_data(
       return(0)
     }
 
-    nodes |>
-      xml2::xml_attr("href") |>
-      basename() |>
-      tools::file_path_sans_ext() |>
-      unique() |>
-      length()
+    paths <- xml2::xml_attr(nodes, "href")
+    filenames <- basename(paths)
+    filestems <- tools::file_path_sans_ext(filenames)
+
+    length(unique(filestems))
   }
 )
 

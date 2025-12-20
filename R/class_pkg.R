@@ -16,6 +16,11 @@ pkg <- class_pkg <- new_class(
     # necessary data dependencies to be evaluated.
     data = class_environment,
 
+    # logs (not user-facing)
+    # A mutable environment, stores output logs captured using the `evaluate`
+    # package. Should contain an entry for each value in `@data`.
+    logs = class_environment,
+
     #' @param resource [`resource`] (often a [`multi_resource`]), providing the
     #'   resources to be used for deriving packages data. If a
     #'   [`multi_resource`], the order of resources determines the precedence of
@@ -62,12 +67,24 @@ pkg <- class_pkg <- new_class(
     new_object(
       .parent = S7::S7_object(),
       data = new.env(parent = emptyenv()),
+      logs = new.env(parent = emptyenv()),
       metrics = list(),
       resource = resource,
       permissions = policy@permissions
     )
   }
 )
+
+method(convert, list(class_character, class_pkg)) <-
+  function(from, to, ...) {
+    if (endsWith(tolower(from), ".rds")) {
+      convert(readRDS(from), class_pkg)
+    } else if (grepl("\\bPackage:", from[[1L]])) {
+      pkg_from_dcf(from, ...)
+    } else {
+      pkg(from, ...)
+    }
+  }
 
 #' Generate Random Package(s)
 #'
@@ -213,12 +230,13 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
         assert_permissions(required_permissions, x@permissions)
         assert_suggests(required_suggests)
 
-        data <- pkg_data_derive(pkg = x, field = name, ...)
+        capture <- capture_pkg_data_derive(pkg = x, field = name, ...)
+        x@logs[[name]] <- capture$logs
         if (!identical(info@data_class, class_any)) {
-          data <- convert(data, info@data_class)
+          capture$data <- convert(capture$data, info@data_class)
         }
 
-        data
+        capture$data
       },
       error = function(e, ...) {
         convert(e, class_val_meter_error, field = name)
@@ -382,31 +400,59 @@ as.data.frame.list_of_pkg <- function(x, ...) {
 }
 
 #' @include utils_dcf.R
-method(from_dcf, list(class_character, class_pkg)) <-
-  function(x, to, ...) {
-    dcf <- from_dcf(x, class_any)
+method(convert, list(class_list, class_pkg)) <-
+  function(from, to, ...) {
     resource <- unknown_resource(
-      package = dcf[[1, "Package"]],
-      version = dcf[[1, "Version"]],
-      md5 = if ("MD5sum" %in% colnames(dcf)) {
-        dcf[[1, "MD5sum"]]
-      } else {
-        NA_character_
-      }
+      package = from$name %||% from$Package,
+      version = from$version %||% from$Version,
+      md5 = from$MD5sum %||% NA_character_
     )
 
     data <- new.env(parent = emptyenv())
-    prefix <- "Metric/"
-    for (name in colnames(dcf)[startsWith(colnames(dcf), prefix)]) {
-      field <- sub(prefix, "", name)
-      info <- pkg_data_info(field)
-      val <- dcf[[1, name]]
-      val <- metric_coerce(val, info@data_class)
-      data[[field]] <- val
+    for (name in names(from)) {
+      # recover gracefully from unknown fieldnames
+      info <- tryCatch(pkg_data_info(name), error = function(e) NULL)
+      if (is.null(info)) {
+        next
+      }
+
+      data[[name]] <- metric_coerce(from[[name]], info@data_class)
     }
 
     pkg <- pkg(resource)
     pkg@data <- data
 
     pkg
+  }
+
+#' @include utils_dcf.R
+method(from_dcf, list(class_character, class_pkg)) <-
+  function(x, to, ...) {
+    dcf <- from_dcf(x, class_any)
+
+    data <- list()
+    data$name <- dcf[[1, "Package"]]
+    data$version <- dcf[[1, "Version"]]
+    data$md5 <- if ("MD5sum" %in% colnames(dcf)) {
+      dcf[[1, "MD5sum"]]
+    } else {
+      NA_character_
+    }
+
+    prefix <- "Metric/"
+    for (name in colnames(dcf)[startsWith(colnames(dcf), prefix)]) {
+      field <- sub(prefix, "", name)
+
+      # recover gracefully from unknown fieldnames
+      info <- tryCatch(pkg_data_info(field), error = function(e) NULL)
+      if (is.null(info)) {
+        next
+      }
+
+      val <- dcf[[1, name]]
+      val <- metric_coerce(val, info@data_class)
+      data[[field]] <- val
+    }
+
+    convert(data, class_pkg)
   }

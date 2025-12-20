@@ -24,6 +24,53 @@
 #' @export
 pkg_data_derive <- new_generic("pkg_data_derive", c("pkg", "resource", "field"))
 
+#' Derive data and capture output
+#'
+#' Uses `evaluate::evaluate` to capture execution logs.
+#'
+#' @inheritParams pkg_data_derive
+#'
+#' @keywords internal
+capture_pkg_data_derive <- function(
+  pkg,
+  resource,
+  field,
+  ...,
+  quiet = opt("quiet")
+) {
+  # build a prettier call that will be output by evaluate() when not quiet
+  x <- pkg
+  pkg <- list(function() pkg_data_derive(pkg = x, field = field))
+  names(pkg) <- field
+  evaluate_fn <- function() {}
+  body(evaluate_fn) <- as.call(list(call("$", as.symbol("pkg"), field)))
+
+  # format output for a standard console width; force capture of ansi
+  original_opts <- options(
+    width = 80L,
+    crayon.enabled = TRUE,
+    cli.ansi = TRUE,
+    cli.dynamic = FALSE,
+    cli.num_colors = 256L
+  )
+
+  on.exit(options(original_opts))
+
+  capture <- evaluate::evaluate(
+    evaluate_fn,
+    stop_on_error = 1L,
+    debug = !isTRUE(quiet),
+    output_handler = evaluate::new_output_handler(value = identity)
+  )
+
+  list(
+    # omit code echo and return value
+    logs = capture[-c(1, length(capture))],
+    # just the return value
+    data = capture[[length(capture)]]
+  )
+}
+
 #' Derive by Field Name
 #'
 #' When a field is provided by name, create an empty S3 object using the field

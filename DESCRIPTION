@@ -32,6 +32,7 @@ BugReports:
 Imports:
     cli,
     desc,
+    evaluate,
     options,
     S7,
     tools,
@@ -43,6 +44,7 @@ Imports:
 Suggests:
     covr,
     rcmdcheck,
+    htmltools,
     igraph,
     knitr,
     rmarkdown,
@@ -90,13 +92,14 @@ Collate:
     'options.R'
     'package.R'
     'utils_backports.R'
+    'utils_evaluate.R'
     'utils_rand.R'
     'utils_rstudio.R'
     'utils_tmp.R'
     'zzz.R'
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Depends: 
     R (>= 3.5)
 LazyData: true

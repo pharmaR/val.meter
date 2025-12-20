@@ -42,13 +42,15 @@ method(from_dcf, list(class_character, S7::new_S3_class("S7_class"))) <-
 
 method(from_dcf, list(class_character, class_any)) <-
   function(
-      x,
-      to,
-      ...,
-      eval = TRUE,
-      fragment = c("key-values", "key-value", "value")) {
+    x,
+    to,
+    ...,
+    eval = TRUE,
+    fragment = c("key-values", "key-value", "value")
+  ) {
     fragment <- match.arg(fragment)
-    switch(fragment,
+    switch(
+      fragment,
       "key-values" = {
         con <- textConnection(x)
         x <- as.data.frame(read.dcf(con, all = TRUE))

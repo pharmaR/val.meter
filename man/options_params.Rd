@@ -8,6 +8,9 @@
 types of information various metrics contain. For more details, see
 \code{\link[=tags]{tags()}}. (Defaults to \code{tags(TRUE)}, overwritable using option 'val.meter.tags' or environment variable 'R_VAL_METER_TAGS')}
 
+\item{artifacts}{Directory where artifacts will be stored. This includes installation logs,
+package source code and temporary libraries used while evaluating packages. (Defaults to \code{ns_tmp_root()}, overwritable using option 'val.meter.artifacts' or environment variable 'R_VAL_METER_ARTIFACTS')}
+
 \item{quiet}{Silences console output during evaluation. This applies when pulling package
 resources (such as download and installation output) and executing code
 (for example, running \verb{R CMD check}) (Defaults to \code{TRUE}, overwritable using option 'val.meter.quiet' or environment variable 'R_VAL_METER_QUIET')}
@@ -16,8 +19,7 @@ resources (such as download and installation output) and executing code
 resources will be discovered and what permissions are granted when
 calculating metrics. (Defaults to \code{policy()}, overwritable using option 'val.meter.policy' or environment variable 'R_VAL_METER_POLICY')}
 
-\item{logs}{Logging directory where artifacts will be stored. Defaults to a temporary
-directory. (Defaults to \code{ns_tmp_root()}, overwritable using option 'val.meter.logs' or environment variable 'R_VAL_METER_LOGS')}
+\item{logs}{Whether output should be captured during the evaluation of metrics. (Defaults to \code{TRUE}, overwritable using option 'val.meter.logs' or environment variable 'R_VAL_METER_LOGS')}
 }
 \description{
 Options As Parameters

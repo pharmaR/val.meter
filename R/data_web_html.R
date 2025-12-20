@@ -20,9 +20,8 @@ impl_data(
   for_resource = cran_repo_resource,
   permissions = "network",
   function(pkg, resource, field, ...) {
-    pkg$web_url |>
-      httr2::request() |>
-      httr2::req_perform() |>
-      httr2::resp_body_html()
+    req <- httr2::request(pkg$web_url)
+    resp <- httr2::req_perform(req)
+    httr2::resp_body_html(resp)
   }
 )

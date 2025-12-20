@@ -37,10 +37,16 @@ types of information various metrics contain. For more details, see
 }}
 
 \item{logs}{\describe{
-Logging directory where artifacts will be stored. Defaults to a temporary
-directory.\item{default: }{\preformatted{ns_tmp_root()}}
+Whether output should be captured during the evaluation of metrics.\item{default: }{\preformatted{TRUE}}
 \item{option: }{val.meter.logs}
 \item{envvar: }{R_VAL_METER_LOGS (evaluated if possible, raw string otherwise)}
+}}
+
+\item{artifacts}{\describe{
+Directory where artifacts will be stored. This includes installation logs,
+package source code and temporary libraries used while evaluating packages.\item{default: }{\preformatted{ns_tmp_root()}}
+\item{option: }{val.meter.artifacts}
+\item{envvar: }{R_VAL_METER_ARTIFACTS (evaluated if possible, raw string otherwise)}
 }}
 
 \item{quiet}{\describe{
