@@ -49,6 +49,13 @@ package source code and temporary libraries used while evaluating packages.\item
 \item{envvar: }{R_VAL_METER_ARTIFACTS (evaluated if possible, raw string otherwise)}
 }}
 
+\item{logging}{\describe{
+Whether logs are captured during execution. When enabled, the \code{evaluate}
+package is used to store console output during metric execution.\item{default: }{\preformatted{TRUE}}
+\item{option: }{val.meter.logging}
+\item{envvar: }{R_VAL_METER_LOGGING (evaluated if possible, raw string otherwise)}
+}}
+
 \item{quiet}{\describe{
 Silences console output during evaluation. This applies when pulling package
 resources (such as download and installation output) and executing code

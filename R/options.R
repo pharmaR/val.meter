@@ -32,6 +32,12 @@ define_options(
   ),
   artifacts = ns_tmp_root(),
 
+  fmt(
+    "Whether logs are captured during execution. When enabled, the `evaluate`
+    package is used to store console output during metric execution."
+  ),
+  logging = TRUE,
+
   "Silences console output during evaluation. This applies when pulling package
   resources (such as download and installation output) and executing code
   (for example, running `R CMD check`)",

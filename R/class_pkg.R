@@ -196,6 +196,8 @@ random_repo <- function(..., path = tempfile("repo")) {
 #' @param x [`pkg`] object to derive data for
 #' @param name `character(1L)` field name for the data to derive
 #' @param ... Additional arguments unused
+#' @param logging `logical(1L)` flag indicating whether console output should be
+#'   captured during execution.
 #' @param .raise `logical(1L)` flag indicating whether errors should be raised
 #'   or captured. This flag is not intended to be set directly, it is exposed
 #'   so that recursive calls can raise lower-level errors while capturing them
@@ -206,7 +208,13 @@ random_repo <- function(..., path = tempfile("repo")) {
 #'
 #' @keywords internal
 #' @include utils_err.R
-get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
+get_pkg_data <- function(
+  x,
+  name,
+  ...,
+  logging = opt("logging"),
+  .raise = .state$raise
+) {
   # RStudio, when trying to produce completions,will try to evaluate our lazy
   # list elements. Intercept those calls and return only the existing values.
   if (is_rs_rpc_get_completions_call()) {
@@ -230,13 +238,19 @@ get_pkg_data <- function(x, name, ..., .raise = .state$raise) {
         assert_permissions(required_permissions, x@permissions)
         assert_suggests(required_suggests)
 
-        capture <- capture_pkg_data_derive(pkg = x, field = name, ...)
-        x@logs[[name]] <- capture$logs
-        if (!identical(info@data_class, class_any)) {
-          capture$data <- convert(capture$data, info@data_class)
+        if (logging) {
+          capture <- capture_pkg_data_derive(pkg = x, field = name, ...)
+          data <- capture$data
+          x@logs[[name]] <- capture$logs
+        } else {
+          data <- pkg_data_derive(pkg = x, field = name, ...)
         }
 
-        capture$data
+        if (!identical(info@data_class, class_any)) {
+          data <- convert(data, info@data_class)
+        }
+
+        data
       },
       error = function(e, ...) {
         convert(e, class_val_meter_error, field = name)

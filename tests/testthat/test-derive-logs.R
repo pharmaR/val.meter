@@ -33,3 +33,33 @@ test_that("logs are captured during package data evaluation", {
   # expect that we can produce an html div from our logs
   expect_s3_class(html_logs <- format(logs, style = "html"), "shiny.tag")
 })
+
+test_that("logging can be disabled by global option", {
+  old <- options(val.meter.logging = FALSE)
+  on.exit(options(old))
+
+  impl_data(
+    "logs_test_name_character_count",
+    metric = TRUE,
+    class = class_integer,
+    overwrite = TRUE,
+    quiet = TRUE,
+    function(pkg, resource, field, ...) {
+      cat("text\n")
+      message("message")
+      warning("warning")
+      cli::cat_line(cli::col_blue("blue"))
+      nchar(pkg$name)
+    }
+  )
+
+  # expect that we have produced some logs
+  p <- pkg(mock_resource(package = "test", version = "1.2.3"))
+  expect_message({
+    expect_warning({
+      expect_output(p$logs_test_name_character_count)
+    })
+  })
+
+  expect_true(is.null(logs <- p@logs[["logs_test_name_character_count"]]))
+})
