@@ -1,4 +1,7 @@
 test_that("logs are captured during package data evaluation", {
+  old <- options(val.meter.logging = TRUE)
+  on.exit(options(old))
+
   impl_data(
     "logs_test_name_character_count",
     metric = TRUE,

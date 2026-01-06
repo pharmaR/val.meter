@@ -20,7 +20,7 @@ resources will be discovered and what permissions are granted when
 calculating metrics. (Defaults to \code{policy()}, overwritable using option 'val.meter.policy' or environment variable 'R_VAL_METER_POLICY')}
 
 \item{logging}{Whether logs are captured during execution. When enabled, the \code{evaluate}
-package is used to store console output during metric execution. (Defaults to \code{TRUE}, overwritable using option 'val.meter.logging' or environment variable 'R_VAL_METER_LOGGING')}
+package is used to store console output during metric execution. (Defaults to \code{FALSE}, overwritable using option 'val.meter.logging' or environment variable 'R_VAL_METER_LOGGING')}
 
 \item{logs}{Whether output should be captured during the evaluation of metrics. (Defaults to \code{TRUE}, overwritable using option 'val.meter.logs' or environment variable 'R_VAL_METER_LOGS')}
 }

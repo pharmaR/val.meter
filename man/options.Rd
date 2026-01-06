@@ -51,7 +51,7 @@ package source code and temporary libraries used while evaluating packages.\item
 
 \item{logging}{\describe{
 Whether logs are captured during execution. When enabled, the \code{evaluate}
-package is used to store console output during metric execution.\item{default: }{\preformatted{TRUE}}
+package is used to store console output during metric execution.\item{default: }{\preformatted{FALSE}}
 \item{option: }{val.meter.logging}
 \item{envvar: }{R_VAL_METER_LOGGING (evaluated if possible, raw string otherwise)}
 }}
