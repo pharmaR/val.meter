@@ -196,7 +196,7 @@ random_repo <- function(..., path = tempfile("repo")) {
 #' @param x [`pkg`] object to derive data for
 #' @param name `character(1L)` field name for the data to derive
 #' @param ... Additional arguments unused
-#' @param logging `logical(1L)` flag indicating whether console output should be
+#' @param logs `logical(1L)` flag indicating whether console output should be
 #'   captured during execution.
 #' @param .raise `logical(1L)` flag indicating whether errors should be raised
 #'   or captured. This flag is not intended to be set directly, it is exposed
@@ -212,7 +212,7 @@ get_pkg_data <- function(
   x,
   name,
   ...,
-  logging = opt("logging"),
+  logs = opt("logs"),
   .raise = .state$raise
 ) {
   # RStudio, when trying to produce completions,will try to evaluate our lazy
@@ -238,7 +238,7 @@ get_pkg_data <- function(
         assert_permissions(required_permissions, x@permissions)
         assert_suggests(required_suggests)
 
-        if (logging) {
+        if (logs) {
           capture <- capture_pkg_data_derive(pkg = x, field = name, ...)
           data <- capture$data
           x@logs[[name]] <- capture$logs

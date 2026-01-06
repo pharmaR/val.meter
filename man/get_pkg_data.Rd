@@ -4,7 +4,7 @@
 \alias{get_pkg_data}
 \title{Get \code{\link{pkg}} object data}
 \usage{
-get_pkg_data(x, name, ..., logging = opt("logging"), .raise = .state$raise)
+get_pkg_data(x, name, ..., logs = opt("logs"), .raise = .state$raise)
 }
 \arguments{
 \item{x}{\code{\link{pkg}} object to derive data for}
@@ -13,7 +13,7 @@ get_pkg_data(x, name, ..., logging = opt("logging"), .raise = .state$raise)
 
 \item{...}{Additional arguments unused}
 
-\item{logging}{\code{logical(1L)} flag indicating whether console output should be
+\item{logs}{\code{logical(1L)} flag indicating whether console output should be
 captured during execution.}
 
 \item{.raise}{\code{logical(1L)} flag indicating whether errors should be raised

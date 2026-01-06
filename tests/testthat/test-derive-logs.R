@@ -1,5 +1,5 @@
 test_that("logs are captured during package data evaluation", {
-  old <- options(val.meter.logging = TRUE)
+  old <- options(val.meter.logs = TRUE)
   on.exit(options(old))
 
   impl_data(
@@ -38,7 +38,7 @@ test_that("logs are captured during package data evaluation", {
 })
 
 test_that("logging can be disabled by global option", {
-  old <- options(val.meter.logging = FALSE)
+  old <- options(val.meter.logs = FALSE)
   on.exit(options(old))
 
   impl_data(

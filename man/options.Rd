@@ -37,7 +37,7 @@ types of information various metrics contain. For more details, see
 }}
 
 \item{logs}{\describe{
-Whether output should be captured during the evaluation of metrics.\item{default: }{\preformatted{TRUE}}
+Whether output should be captured during the evaluation of metrics.\item{default: }{\preformatted{FALSE}}
 \item{option: }{val.meter.logs}
 \item{envvar: }{R_VAL_METER_LOGS (evaluated if possible, raw string otherwise)}
 }}
@@ -47,13 +47,6 @@ Directory where artifacts will be stored. This includes installation logs,
 package source code and temporary libraries used while evaluating packages.\item{default: }{\preformatted{ns_tmp_root()}}
 \item{option: }{val.meter.artifacts}
 \item{envvar: }{R_VAL_METER_ARTIFACTS (evaluated if possible, raw string otherwise)}
-}}
-
-\item{logging}{\describe{
-Whether logs are captured during execution. When enabled, the \code{evaluate}
-package is used to store console output during metric execution.\item{default: }{\preformatted{FALSE}}
-\item{option: }{val.meter.logging}
-\item{envvar: }{R_VAL_METER_LOGGING (evaluated if possible, raw string otherwise)}
 }}
 
 \item{quiet}{\describe{

@@ -24,19 +24,13 @@ define_options(
   tags = tags(TRUE),
 
   fmt("Whether output should be captured during the evaluation of metrics."),
-  logs = TRUE,
+  logs = FALSE,
 
   fmt(
     "Directory where artifacts will be stored. This includes installation logs,
     package source code and temporary libraries used while evaluating packages."
   ),
   artifacts = ns_tmp_root(),
-
-  fmt(
-    "Whether logs are captured during execution. When enabled, the `evaluate`
-    package is used to store console output during metric execution."
-  ),
-  logging = FALSE,
 
   "Silences console output during evaluation. This applies when pulling package
   resources (such as download and installation output) and executing code
