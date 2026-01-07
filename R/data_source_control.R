@@ -30,24 +30,24 @@ impl_data(
     all_urls <- all_urls[!is.na(all_urls) & nzchar(all_urls)]
 
     if (length(all_urls) == 0) {
-      return(NA_character_)
+      return(character(0))
     }
 
     # Get recognized source control domains from options
     source_control_domains <- opt("source_control_domains")
 
-    # Try to find a URL matching known source control domains
-    # We use case-insensitive matching for domains
-    for (url in all_urls) {
-      for (domain in source_control_domains) {
-        if (grepl(domain, url, ignore.case = TRUE)) {
-          return(url)
-        }
-      }
-    }
+    # Find all URLs matching known source control domains
+    # We use case-insensitive matching by converting to lowercase
+    # and fixed = TRUE to avoid regex special character issues (e.g., '.')
+    is_src_url <- vapply(
+      tolower(source_control_domains),
+      grepl,
+      logical(length(all_urls)),
+      x = tolower(all_urls),
+      fixed = TRUE
+    )
 
-    # No known source control URL found
-    NA_character_
+    all_urls[rowSums(is_src_url) > 0]
   }
 )
 
@@ -66,7 +66,7 @@ impl_data(
     "allow-list."
   ),
   function(pkg, resource, field, ...) {
-    !is.na(pkg$recognized_source_url)
+    length(pkg$recognized_source_url) > 0L
   }
 )
 
