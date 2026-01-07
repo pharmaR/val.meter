@@ -28,7 +28,7 @@ describe("source control metrics implementation details", {
     })))
   })
 
-  it("returns NA when no URLs match recognized domains", {
+  it("returns empty vector when no URLs match recognized domains", {
     tmp_dir <- withr::local_tempdir()
     desc_file <- file.path(tmp_dir, "DESCRIPTION")
 
