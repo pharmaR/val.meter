@@ -10,6 +10,11 @@ Authors@R:
         role = c("aut", "cre")            
       ),
       person(
+        "Aaron", "Clark",
+        email = "clark.aaronchris@gmail.com",
+        role = c("ctb")            
+      ),
+      person(
         "R Validation Hub",
         email = "r-val-hub-maintainers@lists.r-consortium.org",
         comment = c("website" = "https://www.pharmar.org"),
@@ -49,7 +54,8 @@ Suggests:
     knitr,
     rmarkdown,
     rosv,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr
 Config/Needs/vignettes:
     knitr,
     rmarkdown,
@@ -85,7 +91,9 @@ Collate:
     'data_coverage.R'
     'data_desc.R'
     'data_downloads_total.R'
+    'data_has_current_news.R'
     'data_r_cmd_check.R'
+    'data_recognized_source.R'
     'data_vignettes.R'
     'data_web_html.R'
     'generic_metric_coerce.R'

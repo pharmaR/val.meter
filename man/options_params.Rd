@@ -20,6 +20,11 @@ resources will be discovered and what permissions are granted when
 calculating metrics. (Defaults to \code{policy()}, overwritable using option 'val.meter.policy' or environment variable 'R_VAL_METER_POLICY')}
 
 \item{logs}{Whether output should be captured during the evaluation of metrics. (Defaults to \code{FALSE}, overwritable using option 'val.meter.logs' or environment variable 'R_VAL_METER_LOGS')}
+
+\item{source_control_domains}{Recognized source control hosting domains used when inferring whether a
+package has a source code repository on a recognized hosting platform.
+Customize this to add additional git hosting services (e.g., self-hosted
+GitLab instances or other federated git providers). (Defaults to \verb{c("github.com", "gitlab.com", "bitbucket.org", "r-forge.r-project.org", ;     "codeberg.org", "sr.ht", "gitea.com", "git.sr.ht")}, overwritable using option 'val.meter.source_control_domains' or environment variable 'R_VAL_METER_SOURCE_CONTROL_DOMAINS')}
 }
 \description{
 Options As Parameters

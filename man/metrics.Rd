@@ -27,6 +27,13 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 }
 \keyword{workflow}
 \section{Metrics}{The following metrics are provided by \code{\link{val.meter}}.
+ \subsection{Up to date NEWS}{
+\code{<logical>} a NEWS file exists and is synced with the current package version
+
+  
+
+
+}
  \subsection{Total Vignettes}{
 \code{<integer>} total number of vignettes
 
@@ -61,6 +68,13 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 \Sexpr[stage=render,results=rd]{if (!is.na(match("network", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-green.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-red.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}"}  
 
 \Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}\\n\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}\\n\\\\ifelse{html}{\\\\figure{badge-version--independent-x-flat-square-blue.svg}{options: alt = \\"[version-independent]\\"}}{\\\\strong{[version-independent]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-version--independent-x-flat-square-blue.svg}{options: alt = \\"[version-independent]\\"}}{\\\\strong{[version-independent]}}}" }}
+}
+ \subsection{Has Recognized Source Repository}{
+\code{<logical>} Indicates whether the package has a source code repository on a recognized hosting platform from an allow-list of known domains. Inferred from the \acronym{URL} and \code{BugReports} fields in the \code{DESCRIPTION} file. See \code{?options} for customizing the allow-list.
+
+  
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}}" }}
 }
  \subsection{Dependency Count}{
 \code{<integer>} the number of required dependencies
