@@ -112,6 +112,8 @@ pkg("val.meter") # when installed locally
 #>   <promise>
 #> $downloads_total
 #>   <promise>
+#> $has_recognized_source
+#>   <promise>
 #> $dependency_count
 #>   <promise>
 #> $has_website
@@ -124,6 +126,7 @@ pkg("val.meter") # when installed locally
 #> $web_url (internal)
 #> $name (internal)
 #> $version (internal)
+#> $recognized_source_url (internal)
 ```
 
 Here we discover our local installation of `val.meter`, but we would
@@ -134,7 +137,8 @@ in your available repositories.
 pkg("val.meter") # when not installed
 ```
 
-    #> Error: 
+    #> Error:
+    #> ! 
     #> Unable to discover package resource given acceptable policy resource types.
     #> For more information on how to configure package resource discovery see `?policy`
 

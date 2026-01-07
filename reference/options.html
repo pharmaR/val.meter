@@ -131,6 +131,25 @@ resources (such as download and installation output) and executing code
 </dl></dd>
 
 
+<dt>source_control_domains</dt>
+<dd><dl>
+Recognized source control hosting domains used when inferring whether a
+package has a source code repository on a recognized hosting platform.
+Customize this to add additional git hosting services (e.g., self-hosted
+GitLab instances or other federated git providers).<dt>default: </dt>
+<dd><div class="sourceCode"><pre><code><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"github.com"</span>, <span class="st">"gitlab.com"</span>, <span class="st">"bitbucket.org"</span>, <span class="st">"r-forge.r-project.org"</span>,</span>
+<span>    <span class="st">"codeberg.org"</span>, <span class="st">"sr.ht"</span>, <span class="st">"gitea.com"</span>, <span class="st">"git.sr.ht"</span><span class="op">)</span></span></code></pre></div></dd>
+
+<dt>option: </dt>
+<dd><p>val.meter.source_control_domains</p></dd>
+
+<dt>envvar: </dt>
+<dd><p>R_VAL_METER_SOURCE_CONTROL_DOMAINS (evaluated if possible, raw string otherwise)</p></dd>
+
+
+</dl></dd>
+
+
 
 </dl></div>
     <div class="section level2">

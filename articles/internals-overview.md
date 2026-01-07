@@ -181,7 +181,8 @@ names(rpkg)
 #>  [9] "name"                              "version"                          
 #> [11] "r_cmd_check_error_count"           "test_line_coverage_fraction"      
 #> [13] "test_expression_coverage_fraction" "downloads_total"                  
-#> [15] "dependency_count"                  "has_website"
+#> [15] "has_recognized_source"             "recognized_source_url"            
+#> [17] "dependency_count"                  "has_website"
 ```
 
 Yep. There they are. All the fields you can just *assume* exist in this
@@ -214,6 +215,8 @@ If we take a peek at our `rpkg` object, we’ll see:
     #>   <promise>
     #> $downloads_total
     #>   <promise>
+    #> $has_recognized_source
+    #>   <promise>
     #> $dependency_count
     #>   <promise>
     #> $has_website
@@ -226,6 +229,7 @@ If we take a peek at our `rpkg` object, we’ll see:
     #> $web_url (internal)
     #> $name (internal)
     #> $version (internal)
+    #> $recognized_source_url (internal)
 
 You’ll see that there’s a lot of data missing in there, but that doesn’t
 mean we can’t use it! If we try to use one of these fields we’ll get
@@ -260,6 +264,8 @@ new data.
     #>   <promise>
     #> $downloads_total
     #>   <promise>
+    #> $has_recognized_source
+    #>   <promise>
     #> $dependency_count
     #>   <promise>
     #> $has_website
@@ -272,6 +278,7 @@ new data.
     #> $web_url (internal)
     #> $name (internal)
     #> $version (internal)
+    #> $recognized_source_url (internal)
 
 After we accessed our data, the package object did the work to compute
 it. In fact, it also computed any necessary dependent data like the

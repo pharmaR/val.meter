@@ -47,6 +47,9 @@ metrics(p)
 #> $downloads_total
 #> [1] 99
 #> 
+#> $has_recognized_source
+#> [1] TRUE
+#> 
 #> $dependency_count
 #> [1] 0
 #> 
@@ -59,7 +62,7 @@ sapply(
   random_pkgs(n = 3, permissions = TRUE),
   function(pkg) pkg$name
 )
-#> [1] "eco.data"              "Remarkable"            "joyous.fabulous.peach"
+#> [1] "suRv"            "shinycppliking"  "ecodistribution"
 ```
 
 ## Generating a repostiroy
@@ -78,47 +81,49 @@ ps <- random_pkgs(n = 3, permissions = TRUE)
 # output DCF files
 dcf_str <- to_dcf(ps)
 cat(dcf_str, "\n")
-#> Package: RenownedChemistry
-#> Version: 3.5.2
-#> Depends: R, stimulate.Supple
-#> Imports: magic.fortuitous.glisten
+#> Package: shaRp
+#> Version: 3.4.5
+#> Depends: R
+#> Imports: instRuctive, sharpStimulative
 #> License: Phony License
-#> MD5sum: 4b5cc51e3d07148f571b475d2b0f49e2
+#> MD5sum: a2b3df93f00b854f17fc6cb64b65365c
 #> Metric/has_current_news@R: TRUE
-#> Metric/vignette_count@R: 3
+#> Metric/vignette_count@R: 7
 #> Metric/r_cmd_check_error_count@R: 0
-#> Metric/test_line_coverage_fraction@R: 0
-#> Metric/test_expression_coverage_fraction@R: 0.632141583590441
-#> Metric/downloads_total@R: 41548
+#> Metric/test_line_coverage_fraction@R: 0.994351838177906
+#> Metric/test_expression_coverage_fraction@R: 0.909111095759237
+#> Metric/downloads_total@R: 26162
+#> Metric/has_recognized_source@R: TRUE
 #> Metric/dependency_count@R: 3
 #> Metric/has_website@R: FALSE
 #> 
-#> Package: magic.fortuitous.glisten
-#> Version: 1.1
-#> Depends: R
-#> Imports: stimulate.Supple
+#> Package: instRuctive
+#> Version: 1.6.2
+#> Depends: R, sharpStimulative
 #> License: Phony License
-#> MD5sum: 0a33988f4e830f9996e39141cf2a3760
+#> MD5sum: a81e8735e4a8ec590e2b97245ea06304
 #> Metric/has_current_news@R: FALSE
-#> Metric/vignette_count@R: 4
+#> Metric/vignette_count@R: 2
 #> Metric/r_cmd_check_error_count@R: 0
-#> Metric/test_line_coverage_fraction@R: 0.797023667433178
-#> Metric/test_expression_coverage_fraction@R: 0.66651480308287
-#> Metric/downloads_total@R: 710269
+#> Metric/test_line_coverage_fraction@R: 0.906662331125857
+#> Metric/test_expression_coverage_fraction@R: 0.960161495629324
+#> Metric/downloads_total@R: 170075
+#> Metric/has_recognized_source@R: TRUE
 #> Metric/dependency_count@R: 2
 #> Metric/has_website@R: FALSE
 #> 
-#> Package: stimulate.Supple
-#> Version: 2.5.3
+#> Package: sharpStimulative
+#> Version: 1.4-5
 #> Depends: R
 #> License: Phony License
-#> MD5sum: 6d02fd1cf77744edd959b18869eadef7
-#> Metric/has_current_news@R: FALSE
-#> Metric/vignette_count@R: 5
-#> Metric/r_cmd_check_error_count@R: 0
-#> Metric/test_line_coverage_fraction@R: 0.299504536234685
-#> Metric/test_expression_coverage_fraction@R: 0.437048487284843
-#> Metric/downloads_total@R: 145
+#> MD5sum: 9e8f6d1ea03552aa73428606af53c4cc
+#> Metric/has_current_news@R: TRUE
+#> Metric/vignette_count@R: 4
+#> Metric/r_cmd_check_error_count@R: 2
+#> Metric/test_line_coverage_fraction@R: 0.437048487284843
+#> Metric/test_expression_coverage_fraction@R: 0.935847098165898
+#> Metric/downloads_total@R: 11
+#> Metric/has_recognized_source@R: TRUE
 #> Metric/dependency_count@R: 1
 #> Metric/has_website@R: FALSE
 ```
@@ -182,8 +187,9 @@ df$dependency_percentile <- percentile(df$dependency_count)
 
 # find our packages with the most dependencies
 df$package[df$dependency_percentile > 0.95]
-#> [1] "bRavery"       "tendr"         "trumpMerrily"  "FerventWarmth"
-#> [5] "dexteRous"
+#> [1] "luckyWord"                 "veRsatility"              
+#> [3] "spatialspaciousprotection" "bioc.spatial.decisiveness"
+#> [5] "strong.cushy.lucky"
 ```
 
 ``` r

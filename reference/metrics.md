@@ -81,6 +81,18 @@ CRAN mirror through the [cranlogs](https://cranlogs.rpkg.org) API
 [![\[transient\]](figures/badge-transient-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
 [![\[version-independent\]](figures/badge-version--independent-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
 
+### Has Recognized Source Repository
+
+`<logical>` Indicates whether the package has a source code repository
+on a recognized hosting platform from an allow-list of known domains.
+Inferred from the URL and `BugReports` fields in the `DESCRIPTION` file.
+See
+[`?options`](https://pharmar.github.io/val.meter/reference/options.md)
+for customizing the allow-list.
+
+[![\[best
+practice\]](figures/badge-best_practice-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
+
 ### Dependency Count
 
 `<integer>` the number of required dependencies

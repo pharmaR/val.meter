@@ -186,6 +186,8 @@ parameter.</p>
 <span><span class="co">#&gt;   &lt;promise&gt;</span></span>
 <span><span class="co">#&gt; $downloads_total</span></span>
 <span><span class="co">#&gt;   &lt;promise&gt;</span></span>
+<span><span class="co">#&gt; $has_recognized_source</span></span>
+<span><span class="co">#&gt;   &lt;promise&gt;</span></span>
 <span><span class="co">#&gt; $dependency_count</span></span>
 <span><span class="co">#&gt;   &lt;promise&gt;</span></span>
 <span><span class="co">#&gt; $has_website</span></span>
@@ -197,13 +199,15 @@ parameter.</p>
 <span><span class="co">#&gt; $web_html (internal)</span></span>
 <span><span class="co">#&gt; $web_url (internal)</span></span>
 <span><span class="co">#&gt; $name (internal)</span></span>
-<span><span class="co">#&gt; $version (internal)</span></span></code></pre></div>
+<span><span class="co">#&gt; $version (internal)</span></span>
+<span><span class="co">#&gt; $recognized_source_url (internal)</span></span></code></pre></div>
 <p>Here we discover our local installation of <code>val.meter</code>,
 but we would fail to discover it if it wasn’t installed, even for
 packages available in your available repositories.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/pkg.html">pkg</a></span><span class="op">(</span><span class="st">"val.meter"</span><span class="op">)</span> <span class="co"># when not installed</span></span></code></pre></div>
-<pre><code><span><span class="co">#&gt; Error: </span></span>
+<pre><code><span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> </span></span>
 <span><span class="co">#&gt; Unable to discover package resource given acceptable policy resource types.</span></span>
 <span><span class="co">#&gt; For more information on how to configure package resource discovery see `?policy`</span></span></code></pre>
 <p>This default behavior may still evolve, but its intention is clear:

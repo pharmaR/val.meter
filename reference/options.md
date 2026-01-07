@@ -72,6 +72,22 @@ package name to `env`.
 
   :   R_VAL_METER_QUIET (evaluated if possible, raw string otherwise)
 
+- source_control_domains:
+
+  default:
+
+  :   c("github.com", "gitlab.com", "bitbucket.org", "r-forge.r-project.org",
+              "codeberg.org", "sr.ht", "gitea.com", "git.sr.ht")
+
+  option:
+
+  :   val.meter.source_control_domains
+
+  envvar:
+
+  :   R_VAL_METER_SOURCE_CONTROL_DOMAINS (evaluated if possible, raw
+      string otherwise)
+
 ## See also
 
 options getOption Sys.setenv Sys.getenv

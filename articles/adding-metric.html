@@ -113,7 +113,8 @@ data.</p>
 <span><span class="co">#&gt;  [9] "name"                              "version"                          </span></span>
 <span><span class="co">#&gt; [11] "r_cmd_check_error_count"           "test_line_coverage_fraction"      </span></span>
 <span><span class="co">#&gt; [13] "test_expression_coverage_fraction" "downloads_total"                  </span></span>
-<span><span class="co">#&gt; [15] "dependency_count"                  "has_website"</span></span></code></pre></div>
+<span><span class="co">#&gt; [15] "has_recognized_source"             "recognized_source_url"            </span></span>
+<span><span class="co">#&gt; [17] "dependency_count"                  "has_website"</span></span></code></pre></div>
 <p>Sure enough, <code>"name"</code> is in the list. We can learn a bit
 more about it by pulling this entry from our metrics:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -169,7 +170,8 @@ overwritten.</p>
 <span>  metric <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">resource</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in impl_data_info(name = name, ..., overwrite = overwrite, quiet = quiet): data info for 'name_character_count' is already implemented. Use overwrite=TRUE to modify.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `impl_data_info()`:</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> data info for 'name_character_count' is already implemented. Use overwrite=TRUE to modify.</span></span></code></pre></div>
 <p>Following the suggestion in the error message, we see that we need to
 confirm that we want to overwrite our existing data. Generally this is
 only needed when you’re developing a metric and want to iterate on the
@@ -182,7 +184,8 @@ implementation.</p>
 <span>  overwrite <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  <span class="kw">function</span><span class="op">(</span><span class="va">pkg</span>, <span class="va">resource</span>, <span class="va">field</span>, <span class="va">...</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/nchar.html" class="external-link">nchar</a></span><span class="op">(</span><span class="va">pkg</span><span class="op">$</span><span class="va">name</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in (function (self, value) : metric data must have an atomic data class</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> metric data must have an atomic data class</span></span></code></pre></div>
 <p>The next thing we’ll see is that metric data has some additional
 constraints imposed on the accepted data class. Metrics should be
 summarized, straightforward data in an easy-to-use format, and for that

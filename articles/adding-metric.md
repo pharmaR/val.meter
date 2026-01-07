@@ -38,7 +38,8 @@ names(metrics(all = TRUE))
 #>  [9] "name"                              "version"                          
 #> [11] "r_cmd_check_error_count"           "test_line_coverage_fraction"      
 #> [13] "test_expression_coverage_fraction" "downloads_total"                  
-#> [15] "dependency_count"                  "has_website"
+#> [15] "has_recognized_source"             "recognized_source_url"            
+#> [17] "dependency_count"                  "has_website"
 ```
 
 Sure enough, `"name"` is in the list. We can learn a bit more about it
@@ -108,7 +109,8 @@ impl_data(
   metric = TRUE,
   function(pkg, resource, field, ...) nchar(pkg$name)
 )
-#> Error in impl_data_info(name = name, ..., overwrite = overwrite, quiet = quiet): data info for 'name_character_count' is already implemented. Use overwrite=TRUE to modify.
+#> Error in `impl_data_info()`:
+#> ! data info for 'name_character_count' is already implemented. Use overwrite=TRUE to modify.
 ```
 
 Following the suggestion in the error message, we see that we need to
@@ -124,7 +126,8 @@ impl_data(
   overwrite = TRUE,
   function(pkg, resource, field, ...) nchar(pkg$name)
 )
-#> Error in (function (self, value) : metric data must have an atomic data class
+#> Error:
+#> ! metric data must have an atomic data class
 ```
 
 The next thing we’ll see is that metric data has some additional
