@@ -37,6 +37,50 @@ test_that("logs are captured during package data evaluation", {
   expect_s3_class(html_logs <- format(logs, style = "html"), "shiny.tag")
 })
 
+test_that("logging disabled does not intercept error messages", {
+  old <- options(val.meter.logs = FALSE)
+  on.exit(options(old))
+
+  impl_data(
+    "logs_test_name_character_count",
+    metric = TRUE,
+    class = class_integer,
+    overwrite = TRUE,
+    quiet = TRUE,
+    function(pkg, resource, field, ...) {
+      stop("error!!")
+      cli::cat_line(cli::col_blue("blue"))
+      nchar(pkg$name)
+    }
+  )
+
+  p <- pkg(test_path("..", "fixtures", "pkg.local.source"))
+  expect_s3_class(p$logs_test_name_character_count, "error")
+  expect_equal(p$logs_test_name_character_count$body, "error!!")
+})
+
+test_that("logging enabled does not intercept error messages", {
+  old <- options(val.meter.logs = TRUE)
+  on.exit(options(old))
+
+  impl_data(
+    "logs_test_name_character_count",
+    metric = TRUE,
+    class = class_integer,
+    overwrite = TRUE,
+    quiet = TRUE,
+    function(pkg, resource, field, ...) {
+      stop("error!!")
+      cli::cat_line(cli::col_blue("blue"))
+      nchar(pkg$name)
+    }
+  )
+
+  p <- pkg(test_path("..", "fixtures", "pkg.local.source"))
+  expect_s3_class(p$logs_test_name_character_count, "error")
+  expect_equal(p$logs_test_name_character_count$body, "error!!")
+})
+
 test_that("logging can be disabled by global option", {
   old <- options(val.meter.logs = FALSE)
   on.exit(options(old))

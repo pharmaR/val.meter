@@ -40,7 +40,7 @@ capture_pkg_data_derive <- function(
 ) {
   # build a prettier call that will be output by evaluate() when not quiet
   x <- pkg
-  pkg <- list(function() pkg_data_derive(pkg = x, field = field))
+  pkg <- list(function() pkg_data_derive(pkg = x, field = field, ...))
   names(pkg) <- field
   evaluate_fn <- function() {}
   body(evaluate_fn) <- as.call(list(call("$", as.symbol("pkg"), field)))
@@ -62,6 +62,10 @@ capture_pkg_data_derive <- function(
     debug = !isTRUE(quiet),
     output_handler = evaluate::new_output_handler(value = identity)
   )
+
+  if (inherits(result_error <- capture[[length(capture)]], "error")) {
+    stop(result_error)
+  }
 
   list(
     # omit code echo and return value
