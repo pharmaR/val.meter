@@ -6,11 +6,11 @@ impl_data(
   class = class_character,
   title = "Recognized Source Control URL",
   description = paste(
-    "The URL of the package's source control repository on a recognized",
-    "hosting platform, determined by matching against an allow-list of",
-    "known domains. Extracted from the URL and BugReports fields in the",
-    "DESCRIPTION file. The allow-list can be customized; see ?options for",
-    "details."
+    "The \\acronym{URL} of the package's source control repository on a",
+    "recognized hosting platform, determined by matching against an",
+    "allow-list of known domains. Extracted from the \\acronym{URL} and",
+    "\\code{BugReports} fields in the \\code{DESCRIPTION} file. The",
+    "allow-list can be customized; see \\code{?options} for details."
   ),
   function(pkg, resource, field, ...) {
     # Get URLs from DESCRIPTION file
@@ -61,8 +61,9 @@ impl_data(
   description = paste(
     "Indicates whether the package has a source code repository on a",
     "recognized hosting platform from an allow-list of known domains.",
-    "Inferred from the URL and BugReports fields in the DESCRIPTION file.",
-    "See ?options for customizing the allow-list."
+    "Inferred from the \\acronym{URL} and \\code{BugReports} fields in the",
+    "\\code{DESCRIPTION} file. See \\code{?options} for customizing the",
+    "allow-list."
   ),
   function(pkg, resource, field, ...) {
     !is.na(pkg$recognized_source_url)
