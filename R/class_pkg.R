@@ -242,6 +242,11 @@ get_pkg_data <- function(
           capture <- capture_pkg_data_derive(pkg = x, field = name, ...)
           data <- capture$data
           x@logs[[name]] <- capture$logs
+
+          # re-throw error after storing logs if one was produced
+          if (inherits(data, "error")) {
+            stop(data)
+          }
         } else {
           data <- pkg_data_derive(pkg = x, field = name, ...)
         }

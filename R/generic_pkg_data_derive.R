@@ -63,10 +63,6 @@ capture_pkg_data_derive <- function(
     output_handler = evaluate::new_output_handler(value = identity)
   )
 
-  if (inherits(result_error <- capture[[length(capture)]], "error")) {
-    stop(result_error)
-  }
-
   list(
     # omit code echo and return value
     logs = capture[-c(1, length(capture))],
