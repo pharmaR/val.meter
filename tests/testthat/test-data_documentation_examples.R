@@ -1,3 +1,202 @@
+# Helper function tests
+
+describe("extract_rd_aliases helper", {
+  it("extracts aliases from an Rd object", {
+    # Create a simple Rd object with aliases
+    rd <- structure(
+      list(
+        structure("function_name", Rd_tag = "\\alias"),
+        structure("another_alias", Rd_tag = "\\alias"),
+        structure("Some title", Rd_tag = "\\title")
+      ),
+      class = "Rd"
+    )
+    
+    result <- extract_rd_aliases(rd)
+    expect_equal(result, c("function_name", "another_alias"))
+  })
+  
+  it("returns empty character vector when no aliases present", {
+    rd <- structure(
+      list(
+        structure("Some title", Rd_tag = "\\title"),
+        structure("Description text", Rd_tag = "\\description")
+      ),
+      class = "Rd"
+    )
+    
+    result <- extract_rd_aliases(rd)
+    expect_equal(result, character(0))
+  })
+  
+  it("handles multi-part alias content", {
+    rd <- structure(
+      list(
+        structure(list("multi", "_", "part"), Rd_tag = "\\alias")
+      ),
+      class = "Rd"
+    )
+    
+    result <- extract_rd_aliases(rd)
+    expect_equal(result, "multi_part")
+  })
+})
+
+describe("get_rd_db_tags helper", {
+  it("extracts tags for all help pages", {
+    rd_db <- list(
+      page1 = structure(
+        list(
+          structure("alias1", Rd_tag = "\\alias"),
+          structure("Title", Rd_tag = "\\title")
+        ),
+        class = "Rd"
+      ),
+      page2 = structure(
+        list(
+          structure("alias2", Rd_tag = "\\alias"),
+          structure("Example code", Rd_tag = "\\examples")
+        ),
+        class = "Rd"
+      )
+    )
+    
+    result <- get_rd_db_tags(rd_db)
+    
+    expect_length(result, 2)
+    expect_equal(names(result), c("page1", "page2"))
+    expect_equal(result$page1, c("\\alias", "\\title"))
+    expect_equal(result$page2, c("\\alias", "\\examples"))
+  })
+})
+
+describe("map_exports_to_pages helper", {
+  it("maps exports to their help pages", {
+    rd_db <- list(
+      page1 = structure(
+        list(
+          structure("export1", Rd_tag = "\\alias"),
+          structure("export2", Rd_tag = "\\alias")
+        ),
+        class = "Rd"
+      ),
+      page2 = structure(
+        list(
+          structure("export3", Rd_tag = "\\alias")
+        ),
+        class = "Rd"
+      )
+    )
+    
+    rd_db_tags <- get_rd_db_tags(rd_db)
+    exports <- c("export1", "export2", "export3")
+    
+    result <- map_exports_to_pages(rd_db, rd_db_tags, exports)
+    
+    expect_equal(result$export1, "page1")
+    expect_equal(result$export2, "page1")
+    expect_equal(result$export3, "page2")
+  })
+  
+  it("ignores aliases that are not exports", {
+    rd_db <- list(
+      page1 = structure(
+        list(
+          structure("exported_func", Rd_tag = "\\alias"),
+          structure("internal_helper", Rd_tag = "\\alias")
+        ),
+        class = "Rd"
+      )
+    )
+    
+    rd_db_tags <- get_rd_db_tags(rd_db)
+    exports <- c("exported_func")
+    
+    result <- map_exports_to_pages(rd_db, rd_db_tags, exports)
+    
+    expect_equal(names(result), "exported_func")
+    expect_false("internal_helper" %in% names(result))
+  })
+})
+
+describe("find_pages_with_examples helper", {
+  it("identifies pages with examples sections", {
+    rd_db <- list(
+      page1 = structure(list(), class = "Rd"),
+      page2 = structure(list(), class = "Rd"),
+      page3 = structure(list(), class = "Rd")
+    )
+    
+    rd_db_tags <- list(
+      page1 = c("\\alias", "\\title"),
+      page2 = c("\\alias", "\\title", "\\examples"),
+      page3 = c("\\alias", "\\title", "\\examples")
+    )
+    
+    result <- find_pages_with_examples(rd_db, rd_db_tags)
+    
+    expect_equal(result, c("page2", "page3"))
+  })
+  
+  it("returns empty when no pages have examples", {
+    rd_db <- list(
+      page1 = structure(list(), class = "Rd"),
+      page2 = structure(list(), class = "Rd")
+    )
+    
+    rd_db_tags <- list(
+      page1 = c("\\alias", "\\title"),
+      page2 = c("\\alias", "\\title")
+    )
+    
+    result <- find_pages_with_examples(rd_db, rd_db_tags)
+    
+    expect_equal(result, character(0))
+  })
+})
+
+describe("analyze_documentation_examples helper", {
+  it("analyzes documentation for an installed package", {
+    skip_if_not_installed("dplyr")
+    
+    result <- analyze_documentation_examples("dplyr")
+    
+    expect_type(result, "list")
+    expect_named(result, c(
+      "exported_count",
+      "help_page_count",
+      "help_pages_with_examples_count",
+      "documented_exports_count",
+      "undocumented_exports",
+      "help_pages_with_examples"
+    ))
+    
+    expect_type(result$exported_count, "integer")
+    expect_type(result$help_page_count, "integer")
+    expect_type(result$help_pages_with_examples_count, "integer")
+    expect_type(result$documented_exports_count, "integer")
+    expect_type(result$undocumented_exports, "character")
+    expect_type(result$help_pages_with_examples, "character")
+    
+    # Sanity checks
+    expect_gte(result$exported_count, 0)
+    expect_gte(result$help_page_count, 0)
+    expect_lte(result$help_pages_with_examples_count, result$help_page_count)
+    expect_lte(result$documented_exports_count, result$exported_count)
+  })
+  
+  it("handles NA pkg_path by finding package", {
+    skip_if_not_installed("dplyr")
+    
+    result <- analyze_documentation_examples("dplyr", NA_character_)
+    
+    expect_type(result, "list")
+    expect_gte(result$exported_count, 0)
+  })
+})
+
+# Metric tests
+
 describe("documentation examples metrics", {
   it("can analyze a well-documented package", {
     skip_if_not_installed("dplyr")
