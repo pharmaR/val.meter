@@ -1,5 +1,127 @@
 #' @include impl_data.R
 
+# Documentation examples analysis helpers
+
+#' Extract aliases from an Rd object
+#'
+#' @param rd An Rd object from tools::Rd_db()
+#' @return Character vector of aliases
+#' @noRd
+extract_rd_aliases <- function(rd) {
+  tags <- vapply(rd, function(x) attr(x, "Rd_tag"), character(1))
+  alias_indices <- which(tags == "\\alias")
+  
+  if (length(alias_indices) == 0) {
+    return(character(0))
+  }
+  
+  vapply(
+    alias_indices,
+    function(i) paste(unlist(rd[[i]]), collapse = ""),
+    character(1)
+  )
+}
+
+#' Get tags for all help pages in an Rd database
+#'
+#' @param rd_db Help database from tools::Rd_db()
+#' @return List of character vectors, one per help page
+#' @noRd
+get_rd_db_tags <- function(rd_db) {
+  lapply(
+    rd_db,
+    function(rd) {
+      vapply(rd, function(x) attr(x, "Rd_tag"), character(1))
+    }
+  )
+}
+
+#' Build mapping of exports to help pages
+#'
+#' @param rd_db Help database from tools::Rd_db()
+#' @param rd_db_tags List of tags for each help page
+#' @param exports Character vector of package exports
+#' @return Named list mapping export names to help page names
+#' @noRd
+map_exports_to_pages <- function(rd_db, rd_db_tags, exports) {
+  export_to_page <- list()
+  
+  for (i in seq_along(rd_db)) {
+    page_name <- names(rd_db)[i]
+    aliases <- extract_rd_aliases(rd_db[[i]])
+    
+    for (alias in aliases) {
+      if (alias %in% exports) {
+        export_to_page[[alias]] <- c(export_to_page[[alias]], page_name)
+      }
+    }
+  }
+  
+  export_to_page
+}
+
+#' Find help pages that contain examples
+#'
+#' @param rd_db Help database from tools::Rd_db()
+#' @param rd_db_tags List of tags for each help page
+#' @return Character vector of help page names with examples
+#' @noRd
+find_pages_with_examples <- function(rd_db, rd_db_tags) {
+  has_examples <- vapply(
+    rd_db_tags,
+    function(tags) "\\examples" %in% tags,
+    logical(1)
+  )
+  
+  names(rd_db)[has_examples]
+}
+
+#' Analyze documentation examples for a package
+#'
+#' @param pkg_name Package name
+#' @param pkg_path Path to installed package (or NA to auto-detect)
+#' @return List with documentation statistics
+#' @noRd
+analyze_documentation_examples <- function(pkg_name, pkg_path = NA_character_) {
+  # Find package path if not provided
+  if (is.na(pkg_path)) {
+    pkg_path <- find.package(pkg_name)
+  }
+  
+  # Get exports from NAMESPACE
+  ns <- parseNamespaceFile(basename(pkg_path), dirname(pkg_path))
+  exports <- ns$exports
+  exported_count <- length(exports)
+  
+  # Get help database
+  lib_loc <- dirname(pkg_path)
+  rd_db <- tools::Rd_db(package = pkg_name, lib.loc = lib_loc)
+  help_page_count <- length(rd_db)
+  
+  # Get tags for all help pages
+  rd_db_tags <- get_rd_db_tags(rd_db)
+  
+  # Build export-to-page mapping
+  export_to_page <- map_exports_to_pages(rd_db, rd_db_tags, exports)
+  
+  # Find documented and undocumented exports
+  documented_exports <- names(export_to_page)
+  undocumented_exports <- setdiff(exports, documented_exports)
+  
+  # Find pages with examples
+  pages_with_examples <- find_pages_with_examples(rd_db, rd_db_tags)
+  
+  # Return documentation stats
+  list(
+    exported_count = exported_count,
+    help_page_count = help_page_count,
+    help_pages_with_examples_count = length(pages_with_examples),
+    documented_exports_count = length(documented_exports),
+    undocumented_exports = undocumented_exports,
+    help_pages_with_examples = pages_with_examples
+  )
+}
+
 impl_data(
   "documentation_examples",
   class = class_any,
@@ -11,85 +133,7 @@ impl_data(
   ),
   for_resource = install_resource,
   function(pkg, resource, field, ...) {
-    # Use pkg$name from DESCRIPTION rather than resource@package
-    # resource@path may be NA, so we try to find it
-    pkg_name <- pkg$name
-
-    # Find package path if not provided
-    pkg_path <- resource@path
-    if (is.na(pkg_path)) {
-      pkg_path <- find.package(pkg_name)
-    }
-
-    # Get exports from NAMESPACE
-    ns <- parseNamespaceFile(basename(pkg_path), dirname(pkg_path))
-    exports <- ns$exports
-    exported_count <- length(exports)
-
-    # Get help database - extract lib.loc from pkg_path
-    lib_loc <- dirname(pkg_path)
-    rd_db <- tools::Rd_db(package = pkg_name, lib.loc = lib_loc)
-    help_page_count <- length(rd_db)
-
-    # For each of the help pages, get its tags
-    rd_db_tags <- lapply(
-      rd_db,
-      function(rd) {
-        vapply(rd, function(x) attr(x, "Rd_tag"), character(1))
-      }
-    )
-
-    # Build mapping of exports to help pages via aliases
-    export_to_page <- list()
-    for (i in seq_along(rd_db)) {
-      page_name <- names(rd_db)[i]
-      entries <- rd_db[[i]]
-      entry_tags <- rd_db_tags[[i]]
-      alias_indices <- which(entry_tags == "\\alias")
-
-      aliases <- if (length(alias_indices) == 0) {
-        character(0)
-      } else {
-        vapply(
-          alias_indices,
-          function(j) {
-            paste(unlist(entries[[j]]), collapse = "")
-          },
-          character(1)
-        )
-      }
-
-      for (alias in aliases) {
-        if (alias %in% exports) {
-          export_to_page[[alias]] <- c(export_to_page[[alias]], page_name)
-        }
-      }
-    }
-
-    # Find which exports have documentation
-    documented_exports <- names(export_to_page)
-    undocumented_exports <- setdiff(exports, documented_exports)
-
-    # Find help pages with examples
-    pages_with_examples <- names(rd_db)[
-      vapply(
-        rd_db_tags,
-        function(rd_tags) {
-          "\\examples" %in% rd_tags
-        },
-        logical(1)
-      )
-    ]
-
-    # Return documentation stats
-    list(
-      exported_count = exported_count,
-      help_page_count = help_page_count,
-      help_pages_with_examples_count = length(pages_with_examples),
-      documented_exports_count = length(documented_exports),
-      undocumented_exports = undocumented_exports,
-      help_pages_with_examples = pages_with_examples
-    )
+    analyze_documentation_examples(pkg$name, resource@path)
   }
 )
 
