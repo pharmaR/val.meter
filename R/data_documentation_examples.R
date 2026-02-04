@@ -10,11 +10,11 @@
 extract_rd_aliases <- function(rd) {
   tags <- vapply(rd, function(x) attr(x, "Rd_tag"), character(1))
   alias_indices <- which(tags == "\\alias")
-  
+
   if (length(alias_indices) == 0) {
     return(character(0))
   }
-  
+
   vapply(
     alias_indices,
     function(i) paste(unlist(rd[[i]]), collapse = ""),
@@ -45,18 +45,18 @@ get_rd_db_tags <- function(rd_db) {
 #' @noRd
 map_exports_to_pages <- function(rd_db, rd_db_tags, exports) {
   export_to_page <- list()
-  
+
   for (i in seq_along(rd_db)) {
     page_name <- names(rd_db)[i]
     aliases <- extract_rd_aliases(rd_db[[i]])
-    
+
     for (alias in aliases) {
       if (alias %in% exports) {
         export_to_page[[alias]] <- c(export_to_page[[alias]], page_name)
       }
     }
   }
-  
+
   export_to_page
 }
 
@@ -72,7 +72,7 @@ find_pages_with_examples <- function(rd_db, rd_db_tags) {
     function(tags) "\\examples" %in% tags,
     logical(1)
   )
-  
+
   names(rd_db)[has_examples]
 }
 
@@ -87,30 +87,30 @@ analyze_documentation_examples <- function(pkg_name, pkg_path = NA_character_) {
   if (is.na(pkg_path)) {
     pkg_path <- find.package(pkg_name)
   }
-  
+
   # Get exports from NAMESPACE
   ns <- parseNamespaceFile(basename(pkg_path), dirname(pkg_path))
   exports <- ns$exports
   exported_count <- length(exports)
-  
+
   # Get help database
   lib_loc <- dirname(pkg_path)
   rd_db <- tools::Rd_db(package = pkg_name, lib.loc = lib_loc)
   help_page_count <- length(rd_db)
-  
+
   # Get tags for all help pages
   rd_db_tags <- get_rd_db_tags(rd_db)
-  
+
   # Build export-to-page mapping
   export_to_page <- map_exports_to_pages(rd_db, rd_db_tags, exports)
-  
+
   # Find documented and undocumented exports
   documented_exports <- names(export_to_page)
   undocumented_exports <- setdiff(exports, documented_exports)
-  
+
   # Find pages with examples
   pages_with_examples <- find_pages_with_examples(rd_db, rd_db_tags)
-  
+
   # Return documentation stats
   list(
     exported_count = exported_count,
