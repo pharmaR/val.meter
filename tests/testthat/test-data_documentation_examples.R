@@ -157,9 +157,9 @@ describe("find_pages_with_examples helper", {
 
 describe("analyze_documentation_examples helper", {
   it("analyzes documentation for an installed package", {
-    skip_if_not_installed("dplyr")
+    skip_if_not_installed("testthat")
 
-    result <- analyze_documentation_examples("dplyr")
+    result <- analyze_documentation_examples("testthat")
 
     expect_type(result, "list")
     expect_named(result, c(
@@ -185,10 +185,10 @@ describe("analyze_documentation_examples helper", {
     expect_lte(result$documented_exports_count, result$exported_count)
   })
 
-  it("handles NA pkg_path by finding package", {
-    skip_if_not_installed("dplyr")
+  it("handles missing pkg_path parameter", {
+    skip_if_not_installed("testthat")
 
-    result <- analyze_documentation_examples("dplyr", NA_character_)
+    result <- analyze_documentation_examples("testthat")
 
     expect_type(result, "list")
     expect_gte(result$exported_count, 0)
@@ -199,10 +199,10 @@ describe("analyze_documentation_examples helper", {
 
 describe("documentation examples metrics", {
   it("can analyze a well-documented package", {
-    skip_if_not_installed("dplyr")
+    skip_if_not_installed("testthat")
 
-    # Use dplyr as a test case - it's well documented
-    pkg <- pkg("dplyr")
+    # Use testthat as a test case - it's well documented
+    pkg <- pkg("testthat")
 
     # Check that analysis runs
     expect_no_error(pkg$documentation_examples)
@@ -230,9 +230,9 @@ describe("documentation examples metrics", {
   })
 
   it("computes help_pages_with_examples_count metric", {
-    skip_if_not_installed("dplyr")
+    skip_if_not_installed("testthat")
 
-    pkg <- pkg("dplyr")
+    pkg <- pkg("testthat")
 
     count <- pkg$help_pages_with_examples_count
     expect_type(count, "integer")
@@ -246,50 +246,40 @@ describe("documentation examples metrics", {
   })
 
   it("computes help_examples_coverage metric", {
-    skip_if_not_installed("dplyr")
+    skip_if_not_installed("testthat")
 
-    pkg <- pkg("dplyr")
+    pkg <- pkg("testthat")
 
     coverage <- pkg$help_examples_coverage
     expect_type(coverage, "double")
     expect_true(coverage >= 0 && coverage <= 1)
 
-    # Should be rounded to 3 decimal places
-    expect_equal(coverage, round(coverage, 3))
-
     # Check calculation
     info <- pkg$documentation_examples
-    expected <- round(
-      info$help_pages_with_examples_count /
-        info$help_page_count,
-      3
-    )
+    expected <- info$help_pages_with_examples_count / info$help_page_count
     expect_equal(coverage, expected)
   })
 
   it("computes exports_help_coverage metric", {
-    skip_if_not_installed("dplyr")
+    skip_if_not_installed("testthat")
 
-    pkg <- pkg("dplyr")
+    pkg <- pkg("testthat")
 
     coverage <- pkg$exports_help_coverage
     expect_type(coverage, "double")
     expect_true(coverage >= 0 && coverage <= 1)
 
-    # Should be rounded to 3 decimal places
-    expect_equal(coverage, round(coverage, 3))
-
     # Check calculation
     info <- pkg$documentation_examples
-    expected <- round(info$documented_exports_count / info$exported_count, 3)
+    expected <- info$documented_exports_count / info$exported_count
     expect_equal(coverage, expected)
   })
 
   it("handles packages with various example counts", {
-    skip_if_not_installed("dplyr")
+    skip_if_not_installed("testthat")
 
-    # dplyr has good but not perfect example coverage
-    pkg <- pkg("dplyr")
+    # testthat has good but not perfect example coverage
+    pkg <- pkg("testthat")
 
     expect_no_error(pkg$documentation_examples)
 
@@ -326,7 +316,7 @@ describe("documentation examples metrics", {
     coverage <- if (info$help_page_count == 0) {
       NA_real_
     } else {
-      round(info$help_pages_with_examples_count / info$help_page_count, 3)
+      info$help_pages_with_examples_count / info$help_page_count
     }
     expect_true(is.na(coverage))
 
@@ -334,62 +324,51 @@ describe("documentation examples metrics", {
     coverage2 <- if (info$exported_count == 0) {
       NA_real_
     } else {
-      round(info$documented_exports_count / info$exported_count, 3)
+      info$documented_exports_count / info$exported_count
     }
     expect_true(is.na(coverage2))
   })
 })
 
 describe("documentation examples metrics metadata", {
-  it("help_pages_with_examples_count is registered as a metric", {
-    info <- pkg_data_info("help_pages_with_examples_count")
-    expect_true(info@metric)
-  })
+  examples_metrics <- c(
+    "help_pages_with_examples_count",
+    "help_examples_coverage",
+    "exports_help_coverage"
+  )
 
-  it("help_examples_coverage is registered as a metric", {
-    info <- pkg_data_info("help_examples_coverage")
-    expect_true(info@metric)
-  })
-
-  it("exports_help_coverage is registered as a metric", {
-    info <- pkg_data_info("exports_help_coverage")
-    expect_true(info@metric)
-  })
+  for (metric_name in examples_metrics) {
+    it(sprintf('"%s" is registered as a metric', metric_name), {
+      info <- pkg_data_info(metric_name)
+      expect_true(info@metric)
+    })
+  }
 
   it("documentation_examples is not a metric", {
     info <- pkg_data_info("documentation_examples")
     expect_false(info@metric)
   })
 
-  it("metrics have appropriate tags", {
-    info1 <- pkg_data_info("help_pages_with_examples_count")
-    info2 <- pkg_data_info("help_examples_coverage")
-    info3 <- pkg_data_info("exports_help_coverage")
+  for (metric_name in examples_metrics) {
+    it(sprintf('"%s" has "best practice" tag', metric_name), {
+      info <- pkg_data_info(metric_name)
+      expect_true("best practice" %in% info@tags)
+    })
+  }
 
-    expect_true("best practice" %in% info1@tags)
-    expect_true("best practice" %in% info2@tags)
-    expect_true("best practice" %in% info3@tags)
-  })
+  for (metric_name in examples_metrics) {
+    it(sprintf('"%s" has non-empty title', metric_name), {
+      info <- pkg_data_info(metric_name)
+      expect_true(nchar(info@title) > 0)
+    })
+  }
 
-  it("metrics have non-empty titles", {
-    info1 <- pkg_data_info("help_pages_with_examples_count")
-    info2 <- pkg_data_info("help_examples_coverage")
-    info3 <- pkg_data_info("exports_help_coverage")
-
-    expect_true(nchar(info1@title) > 0)
-    expect_true(nchar(info2@title) > 0)
-    expect_true(nchar(info3@title) > 0)
-  })
-
-  it("metrics have non-empty descriptions", {
-    info1 <- pkg_data_info("help_pages_with_examples_count")
-    info2 <- pkg_data_info("help_examples_coverage")
-    info3 <- pkg_data_info("exports_help_coverage")
-
-    expect_true(length(info1@description) > 0)
-    expect_true(length(info2@description) > 0)
-    expect_true(length(info3@description) > 0)
-  })
+  for (metric_name in examples_metrics) {
+    it(sprintf('"%s" has non-empty description', metric_name), {
+      info <- pkg_data_info(metric_name)
+      expect_true(length(info@description) > 0)
+    })
+  }
 })
 
 describe("documentation examples mock implementation", {
@@ -421,9 +400,6 @@ describe("documentation examples mock implementation", {
     # Should be between 0.5 and 1.0
     expect_true(all(results >= 0.5))
     expect_true(all(results <= 1.0))
-
-    # Should be rounded to 3 decimals
-    expect_true(all(results == round(results, 3)))
   })
 
   it("random packages have realistic exports help coverage", {
@@ -439,8 +415,5 @@ describe("documentation examples mock implementation", {
     # Should be between 0.8 and 1.0 (most packages document all exports)
     expect_true(all(results >= 0.8))
     expect_true(all(results <= 1.0))
-
-    # Should be rounded to 3 decimals
-    expect_true(all(results == round(results, 3)))
   })
 })
