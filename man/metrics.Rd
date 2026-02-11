@@ -27,12 +27,33 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 }
 \keyword{workflow}
 \section{Metrics}{The following metrics are provided by \code{\link{val.meter}}.
+ \subsection{All Repositories Reverse Dependencies Count}{
+\code{<integer>} The total number of packages across \acronym{CRAN} and \emph{Bioconductor} that directly depend on this package through \code{Depends}, \code{Imports}, or \code{LinkingTo} fields. This provides a comprehensive view of adoption across the entire R ecosystem. For \acronym{CRAN} packages, this includes reverse dependencies from both \acronym{CRAN} and \emph{Bioconductor}. For \emph{Bioconductor} packages, only \emph{Bioconductor} reverse dependencies are counted (as Bioconductor packages cannot be strong dependencies of \acronym{CRAN} packages). Requires the \code{BiocManager} package.
+
+\Sexpr[stage=render,results=rd]{if (!is.na(match("network", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-green.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-red.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}"} \Sexpr[stage=render,results=rd]{if (length(find.package("BiocManager", quiet = TRUE)) > 0) "\\\\ifelse{html}{\\\\figure{badge-dep-BiocManager-x-flat-square-green.svg}{options: alt = \\"[BiocManager]\\"}}{\\\\strong{[dep::BiocManager]}}" else "\\\\ifelse{html}{\\\\figure{badge-dep-BiocManager-x-flat-square-red.svg}{options: alt = \\"[BiocManager]\\"}}{\\\\strong{[dep::BiocManager]}}"} 
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}\\n\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}}" }}
+}
+ \subsection{Bioconductor Reverse Dependencies Count}{
+\code{<integer>} The number of packages on \emph{Bioconductor} that directly depend on this package through \code{Depends}, \code{Imports}, or \code{LinkingTo} fields. This metric is particularly relevant for packages in the bioinformatics and computational biology domains. For \acronym{CRAN} packages, this counts Bioconductor packages that depend on them. Requires the \code{BiocManager} package.
+
+\Sexpr[stage=render,results=rd]{if (!is.na(match("network", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-green.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-red.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}"} \Sexpr[stage=render,results=rd]{if (length(find.package("BiocManager", quiet = TRUE)) > 0) "\\\\ifelse{html}{\\\\figure{badge-dep-BiocManager-x-flat-square-green.svg}{options: alt = \\"[BiocManager]\\"}}{\\\\strong{[dep::BiocManager]}}" else "\\\\ifelse{html}{\\\\figure{badge-dep-BiocManager-x-flat-square-red.svg}{options: alt = \\"[BiocManager]\\"}}{\\\\strong{[dep::BiocManager]}}"} 
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}\\n\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}}" }}
+}
  \subsection{Up to date NEWS}{
 \code{<logical>} a NEWS file exists and is synced with the current package version
 
   
 
 
+}
+ \subsection{CRAN Reverse Dependencies Count}{
+\code{<integer>} The number of packages on \acronym{CRAN} that directly depend on this package through \code{Depends}, \code{Imports}, or \code{LinkingTo} fields. This metric reflects adoption within the CRAN ecosystem and indicates how many packages would be affected by breaking changes. Higher counts suggest wider usage and community trust, but also greater responsibility for maintaining backward compatibility.
+
+\Sexpr[stage=render,results=rd]{if (!is.na(match("network", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-green.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-red.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}"}  
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}\\n\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}}" }}
 }
  \subsection{Total Vignettes}{
 \code{<integer>} total number of vignettes

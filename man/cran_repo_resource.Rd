@@ -41,6 +41,7 @@ is also a CRAN mirror, please follow instructions in
 }
 \seealso{
 Other resources: 
+\code{\link{bioc_repo_resource}()},
 \code{\link{git_resource}()},
 \code{\link{install_resource}()},
 \code{\link{local_resource}()},

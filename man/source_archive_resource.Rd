@@ -38,6 +38,7 @@ The extracted source code from a package's build archive.
 }
 \seealso{
 Other resources: 
+\code{\link{bioc_repo_resource}()},
 \code{\link{cran_repo_resource}()},
 \code{\link{git_resource}()},
 \code{\link{install_resource}()},

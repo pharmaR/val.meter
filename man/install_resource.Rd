@@ -38,6 +38,7 @@ An installed version of a package, as would be found in a package library.
 }
 \seealso{
 Other resources: 
+\code{\link{bioc_repo_resource}()},
 \code{\link{cran_repo_resource}()},
 \code{\link{git_resource}()},
 \code{\link{local_resource}()},

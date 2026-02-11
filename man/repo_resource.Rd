@@ -38,6 +38,7 @@ A reference to a listing in an R package repository.
 }
 \seealso{
 Other resources: 
+\code{\link{bioc_repo_resource}()},
 \code{\link{cran_repo_resource}()},
 \code{\link{git_resource}()},
 \code{\link{install_resource}()},

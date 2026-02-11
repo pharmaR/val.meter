@@ -16,6 +16,11 @@ resources (such as download and installation output) and executing code
 resources will be discovered and what permissions are granted when
 calculating metrics. (Defaults to \code{policy()}, overwritable using option 'val.meter.policy' or environment variable 'R_VAL_METER_POLICY')}
 
+\item{bioc_site_repository}{Additional Bioconductor site repositories to include when constructing
+\code{\link[=bioc_repo_resource]{bioc_repo_resource()}} or calculating Bioconductor reverse dependencies.
+Can be set to e.g. an URL to an organization's internal Bioconductor repository
+or a custom mirror. This value is passed to \code{BiocManager::repositories()}. (Defaults to \code{character()}, overwritable using option 'val.meter.bioc_site_repository' or environment variable 'R_VAL_METER_BIOC_SITE_REPOSITORY')}
+
 \item{logs}{Logging directory where artifacts will be stored. Defaults to a temporary
 directory. (Defaults to \code{ns_tmp_root()}, overwritable using option 'val.meter.logs' or environment variable 'R_VAL_METER_LOGS')}
 

@@ -35,6 +35,7 @@ commonly when a package object is reconstructed from a \code{PACKAGES} file.
 }
 \seealso{
 Other resources: 
+\code{\link{bioc_repo_resource}()},
 \code{\link{cran_repo_resource}()},
 \code{\link{git_resource}()},
 \code{\link{install_resource}()},

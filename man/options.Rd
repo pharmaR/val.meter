@@ -61,6 +61,15 @@ GitLab instances or other federated git providers).\item{default: }{\preformatte
 \item{envvar: }{R_VAL_METER_SOURCE_CONTROL_DOMAINS (evaluated if possible, raw string otherwise)}
 }}
 
+\item{bioc_site_repository}{\describe{
+Additional Bioconductor site repositories to include when constructing
+\code{\link[=bioc_repo_resource]{bioc_repo_resource()}} or calculating Bioconductor reverse dependencies.
+Can be set to e.g. an URL to an organization's internal Bioconductor repository
+or a custom mirror. This value is passed to \code{BiocManager::repositories()}.\item{default: }{\preformatted{character()}}
+\item{option: }{val.meter.bioc_site_repository}
+\item{envvar: }{R_VAL_METER_BIOC_SITE_REPOSITORY (evaluated if possible, raw string otherwise)}
+}}
+
 }
 }
 
