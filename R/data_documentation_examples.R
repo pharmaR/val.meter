@@ -185,7 +185,7 @@ impl_data(
   function(pkg, resource, field, ...) {
     info <- pkg$documentation_examples
     if (info$exported_count == 0) return(NA_real_)
-    round(info$documented_exports_count / info$exported_count, 3)
+    info$documented_exports_count / info$exported_count
   }
 )
 
@@ -204,7 +204,7 @@ impl_data(
   for_resource = mock_resource,
   function(pkg, resource, field, ...) {
     # Random coverage between 0.5 and 1.0 (most packages have decent coverage)
-    round(runif(1, min = 0.5, max = 1.0), 3)
+    runif(1, min = 0.5, max = 1.0)
   }
 )
 
@@ -213,6 +213,6 @@ impl_data(
   for_resource = mock_resource,
   function(pkg, resource, field, ...) {
     # Most well-maintained packages document all exports
-    round(runif(1, min = 0.8, max = 1.0), 3)
+    runif(1, min = 0.8, max = 1.0)
   }
 )
