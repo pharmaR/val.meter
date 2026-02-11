@@ -31,7 +31,7 @@ get_rd_db_tags <- function(rd_db) {
   lapply(
     rd_db,
     function(rd) {
-      vapply(rd, function(x) attr(x, "Rd_tag"), character(1))
+      vcapply(rd, function(x) attr(x, "Rd_tag"))
     }
   )
 }
@@ -67,10 +67,9 @@ map_exports_to_pages <- function(rd_db, rd_db_tags, exports) {
 #' @return Character vector of help page names with examples
 #' @noRd
 find_pages_with_examples <- function(rd_db, rd_db_tags) {
-  has_examples <- vapply(
+  has_examples <- vlapply(
     rd_db_tags,
-    function(tags) "\\examples" %in% tags,
-    logical(1)
+    function(tags) "\\examples" %in% tags
   )
 
   names(rd_db)[has_examples]
