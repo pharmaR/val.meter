@@ -81,7 +81,10 @@ find_pages_with_examples <- function(rd_db, rd_db_tags) {
 #' @param pkg_path Path to installed package (or NA to auto-detect)
 #' @return List with documentation statistics
 #' @noRd
-analyze_documentation_examples <- function(pkg_name, pkg_path = find.package(pkg_name)) {
+analyze_documentation_examples <- function(
+  pkg_name,
+  pkg_path = find.package(pkg_name)
+) {
 
   # Get exports from NAMESPACE
   ns <- parseNamespaceFile(basename(pkg_path), dirname(pkg_path))
@@ -165,7 +168,7 @@ impl_data(
   function(pkg, resource, field, ...) {
     info <- pkg$documentation_examples
     if (info$help_page_count == 0) return(NA_real_)
-    round(info$help_pages_with_examples_count / info$help_page_count, 3)
+    info$help_pages_with_examples_count / info$help_page_count
   }
 )
 
