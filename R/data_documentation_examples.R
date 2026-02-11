@@ -47,7 +47,7 @@ map_exports_to_pages <- function(rd_db, rd_db_tags, exports) {
   export_to_page <- list()
 
   for (i in seq_along(rd_db)) {
-    page_name <- names(rd_db)[i]
+    page_name <- names(rd_db)[[i]]
     aliases <- extract_rd_aliases(rd_db[[i]])
 
     for (alias in aliases) {
