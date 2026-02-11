@@ -246,6 +246,42 @@ cran_repo_resource <- class_cran_repo_resource <- new_class(
   )
 )
 
+#' Package Bioconductor Repository Resource Class
+#'
+#' A reference to a listing in Bioconductor. Bioconductor Resources must be from
+#' one of the repositories listed in [`BiocManager::repositories()`].
+#'
+#' @family resources
+#' @export
+bioc_repo_resource <- class_bioc_repo_resource <- new_class(
+  "bioc_repo_resource",
+  #' @inheritParams repo_resource
+  parent = repo_resource,
+  properties = list(
+    repo = new_property(
+      class_character,
+      validator = function(value) {
+        # Only validate if BiocManager is available
+        if (!requireNamespace("BiocManager", quietly = TRUE)) {
+          return(NULL)  # Skip validation if BiocManager not available
+        }
+        
+        bioc_repos <- tryCatch(
+          suppressMessages(BiocManager::repositories()),
+          error = function(e) character(0)
+        )
+        
+        if (length(bioc_repos) > 0 && !value %in% bioc_repos) {
+          paste0(
+            "Bioconductor repo url must be among the repositories in ",
+            "`BiocManager::repositories()`"
+          )
+        }
+      }
+    )
+  )
+)
+
 #' Package `git` Resource Class
 #'
 #' A reference to a listing in an R package git source code repository.
