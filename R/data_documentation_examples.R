@@ -81,11 +81,7 @@ find_pages_with_examples <- function(rd_db, rd_db_tags) {
 #' @param pkg_path Path to installed package (or NA to auto-detect)
 #' @return List with documentation statistics
 #' @noRd
-analyze_documentation_examples <- function(pkg_name, pkg_path = NA_character_) {
-  # Find package path if not provided
-  if (is.na(pkg_path)) {
-    pkg_path <- find.package(pkg_name)
-  }
+analyze_documentation_examples <- function(pkg_name, pkg_path = find.package(pkg_name)) {
 
   # Get exports from NAMESPACE
   ns <- parseNamespaceFile(basename(pkg_path), dirname(pkg_path))
