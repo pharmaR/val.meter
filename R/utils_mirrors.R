@@ -57,3 +57,30 @@ get_bioc_repos <- function() {
   
   bioc_repos
 }
+
+#' Get Bioconductor software repository URL
+#'
+#' Retrieves the Bioconductor software repository URL from the available
+#' repositories. Prefers the first named repostiory that is not P3M or CRAN,
+#'
+#' @return Character scalar with the Bioconductor software repository URL,
+#'   or character(0) if no suitable repository is found.
+#'
+#' @keywords internal
+#' @noRd
+get_bioc_software_repo <- function() {
+  bioc_repos <- get_bioc_repos()
+  
+  if (length(bioc_repos) == 0) {
+    return(character(0))
+  }
+
+  bioc_only <- bioc_repos[!names(bioc_repos) %in% c("CRAN", "P3M")]
+  
+  # Return first remaining repository, or empty if none found
+  if (length(bioc_only) > 0) {
+    bioc_only[[1]]
+  } else {
+    character(0)
+  }
+}
