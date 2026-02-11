@@ -103,16 +103,18 @@ impl_data(
   function(pkg, resource, field, ...) {
     pkg_name <- pkg$name
     
-    # Check if BiocManager is available
-    if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    # Get Bioconductor repositories
+    bioc_repos <- get_bioc_repos()
+    
+    if (length(bioc_repos) == 0) {
       stop("BiocManager package required for Bioconductor metrics")
     }
     
-    # Get Bioconductor repositories
-    bioc_repos <- BiocManager::repositories()[["BioCsoft"]]
+    # Use BioCsoft repository
+    bioc_soft <- bioc_repos[["BioCsoft"]]
     
     # Fetch Bioconductor packages
-    bioc_matrix <- fetch_packages_matrix(repos = bioc_repos)
+    bioc_matrix <- fetch_packages_matrix(repos = bioc_soft)
     
     # Count reverse dependencies
     count_reverse_deps(
@@ -190,12 +192,14 @@ impl_data(
     
     # Try to get Bioconductor reverse dependencies if BiocManager is available
     bioc_count <- tryCatch({
-      if (!requireNamespace("BiocManager", quietly = TRUE)) {
+      bioc_repos <- get_bioc_repos()
+      
+      if (length(bioc_repos) == 0) {
         return(0L)
       }
       
-      bioc_repos <- BiocManager::repositories()[["BioCsoft"]]
-      bioc_matrix <- fetch_packages_matrix(repos = bioc_repos)
+      bioc_soft <- bioc_repos[["BioCsoft"]]
+      bioc_matrix <- fetch_packages_matrix(repos = bioc_soft)
       count_reverse_deps(
         pkg_name,
         bioc_matrix,
