@@ -582,6 +582,48 @@ method(convert, list(class_repo_resource, class_cran_repo_resource)) <-
     )
   }
 
+method(convert, list(class_repo_resource, class_bioc_repo_resource)) <-
+  function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
+    assert_permissions("network", policy@permissions)
+
+    # Get site repositories from options
+    site_repos <- opt("bioc_site_repository")
+    
+    # Get Bioconductor software repository
+    bioc_soft <- get_bioc_software_repo()
+    
+    if (length(bioc_soft) == 0) {
+      stop(fmt("Cannot convert '{.cls from}' into {.cls to}"))
+    }
+    
+    bioc_ap <- available.packages(
+      repos = bioc_soft,
+      type = "source"
+    )
+    bioc_md5 <- tryCatch(
+      bioc_ap[from@package, "MD5sum"],
+      error = function(e) {
+        NA_character_
+      }
+    )
+
+    if (!identical(from@md5, bioc_md5)) {
+      stop(fmt("Cannot convert '{.cls from}' into {.cls to}"))
+    } else if (!from@repo %in% get_bioc_repos(site_repository = site_repos)) {
+      from@repo <- bioc_soft
+    }
+
+    id <- next_id()
+
+    bioc_repo_resource(
+      id = id,
+      package = from@package,
+      version = from@version,
+      md5 = from@md5,
+      repo = from@repo
+    )
+  }
+
 method(convert, list(class_local_source_resource, class_install_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
     assert_permissions("write", policy@permissions)
