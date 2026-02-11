@@ -37,21 +37,25 @@ get_cran_mirrors <- function(all = FALSE, local.only = TRUE) {
 #'
 #' Retrieves Bioconductor repositories using BiocManager if available.
 #' Suppresses messages from BiocManager to avoid cluttering output.
-#'
+#' @param site_repository Optional character vector of additional Bioconductor
+#'   site repositories to include.
+#' 
 #' @return Named character vector of Bioconductor repository URLs.
 #'   Returns empty character vector if BiocManager is not available.
 #'   Typical repositories include BioCsoft, BioCann, BioCexp, and BioCworkflows.
 #'
 #' @keywords internal
 #' @noRd
-get_bioc_repos <- function() {
+get_bioc_repos <- function(site_repository = opt("bioc_site_repository")) {
   # Check if BiocManager is available
   if (!requireNamespace("BiocManager", quietly = TRUE)) {
     return(character(0))
   }
   
   bioc_repos <- tryCatch(
-    suppressMessages(BiocManager::repositories()),
+    suppressMessages(
+      BiocManager::repositories(site_repository = site_repository)
+    ),
     error = function(e) character(0)
   )
   

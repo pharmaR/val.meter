@@ -41,5 +41,11 @@ define_options(
     "sr.ht",              # sourcehut
     "gitea.com",
     "git.sr.ht"
-  )
+  ),
+
+  fmt("Additional Bioconductor site repositories to include when constructing
+      [`bioc_repo_resource()`] or calculating Bioconductor reverse dependencies. 
+      Can be set to e.g. an URL to an organization's internal Bioconductor repository
+      or a custom mirror. This value is passed to `BiocManager::repositories()`."),
+  bioc_site_repository = character()
 )
