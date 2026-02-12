@@ -86,3 +86,11 @@ reference:
   - subtitle: Miscellaneous
   - contents:
       - error
+
+  - title: >
+      Package Extensions
+
+  - subtitle: Knitr
+  - contents:
+      - starts_with("knit_print")
+      - format_output

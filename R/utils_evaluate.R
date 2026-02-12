@@ -3,7 +3,9 @@
 #' @inheritParams knitr::knit_print
 #'
 #' @export
+# nolint start
 knit_print.evaluate_evaluation <- function(x, ...) {
+  # nolint end
   res <- format_output(evaluate::replay(x))
   if (!is.character(res) && requireNamespace("knitr", quietly = TRUE)) {
     knitr::knit_print(res)
