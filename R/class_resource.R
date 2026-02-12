@@ -588,14 +588,14 @@ method(convert, list(class_repo_resource, class_bioc_repo_resource)) <-
 
     # Get site repositories from options
     site_repos <- opt("bioc_site_repository")
-    
+
     # Get Bioconductor software repository
     bioc_soft <- get_bioc_software_repo()
-    
+
     if (length(bioc_soft) == 0) {
       stop(fmt("Cannot convert '{.cls from}' into {.cls to}"))
     }
-    
+
     bioc_ap <- available.packages(
       repos = bioc_soft,
       type = "source"

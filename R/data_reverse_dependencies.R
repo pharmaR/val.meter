@@ -14,12 +14,16 @@ fetch_packages_matrix <- function(repos) {
 #' Count reverse dependencies for a package
 #'
 #' @param pkg_name Character string, name of the package
-#' @param installed_matrix Matrix of available packages from available.packages()
+#' @param installed_matrix Matrix of available packages from
+#'   available.packages()
 #' @param dependencies Character vector of dependency types
 #' @return Integer count of reverse dependencies
 #' @noRd
-count_reverse_deps <- function(pkg_name, installed_matrix, 
-                               dependencies = c("Depends", "Imports", "LinkingTo")) {
+count_reverse_deps <- function(
+  pkg_name,
+  installed_matrix,
+  dependencies = c("Depends", "Imports", "LinkingTo")
+) {
   # Use tools::dependsOnPkgs to find packages that depend on pkg_name
   revdeps <- tools::dependsOnPkgs(
     pkgs = pkg_name,
@@ -27,7 +31,7 @@ count_reverse_deps <- function(pkg_name, installed_matrix,
     recursive = FALSE,  # Direct dependencies only
     installed = installed_matrix
   )
-  
+
   length(revdeps)
 }
 
@@ -40,13 +44,14 @@ impl_data(
   permissions = c("network"),
   suggests = character(0),
   title = "CRAN Reverse Dependencies Count",
-  
+
   description = paste(
-    "The number of packages on \\acronym{CRAN} that directly depend on this package",
-    "through \\code{Depends}, \\code{Imports}, or \\code{LinkingTo} fields.",
-    "This metric reflects adoption within the CRAN ecosystem and indicates how many",
-    "packages would be affected by breaking changes. Higher counts suggest wider usage",
-    "and community trust, but also greater responsibility for maintaining backward compatibility."
+    "The number of packages on \\acronym{CRAN} that directly depend on this",
+    "package through \\code{Depends}, \\code{Imports}, or \\code{LinkingTo}",
+    "fields. This metric reflects adoption within the CRAN ecosystem and",
+    "indicates how many packages would be affected by breaking changes.",
+    "Higher counts suggest wider usage and community trust, but also greater",
+    "responsibility for maintaining backward compatibility."
   )
 )
 
@@ -55,10 +60,10 @@ impl_data(
   for_resource = cran_repo_resource,
   function(pkg, resource, field, ...) {
     pkg_name <- pkg$name
-    
+
     # Fetch CRAN packages using available.packages()
     cran_matrix <- fetch_packages_matrix(repos = resource@repo)
-    
+
     # Count reverse dependencies
     count_reverse_deps(
       pkg_name,
@@ -86,13 +91,14 @@ impl_data(
   permissions = c("network"),
   suggests = c("BiocManager"),
   title = "Bioconductor Reverse Dependencies Count",
-  
+
   description = paste(
-    "The number of packages on \\emph{Bioconductor} that directly depend on this package",
-    "through \\code{Depends}, \\code{Imports}, or \\code{LinkingTo} fields.",
-    "This metric is particularly relevant for packages in the bioinformatics and",
-    "computational biology domains. For \\acronym{CRAN} packages, this counts",
-    "Bioconductor packages that depend on them. Requires the \\code{BiocManager} package."
+    "The number of packages on \\emph{Bioconductor} that directly depend on",
+    "this package through \\code{Depends}, \\code{Imports}, or",
+    "\\code{LinkingTo} fields. This metric is particularly relevant for",
+    "packages in the bioinformatics and computational biology domains. For",
+    "\\acronym{CRAN} packages, this counts Bioconductor packages that depend",
+    "on them. Requires the \\code{BiocManager} package."
   )
 )
 
@@ -102,17 +108,17 @@ impl_data(
   for_resource = cran_repo_resource,
   function(pkg, resource, field, ...) {
     pkg_name <- pkg$name
-    
+
     # Get Bioconductor software repository
     bioc_soft <- get_bioc_software_repo()
-    
+
     if (length(bioc_soft) == 0) {
       stop("BiocManager package required for Bioconductor metrics")
     }
-    
+
     # Fetch Bioconductor packages
     bioc_matrix <- fetch_packages_matrix(repos = bioc_soft)
-    
+
     # Count reverse dependencies
     count_reverse_deps(
       pkg_name,
@@ -128,10 +134,10 @@ impl_data(
   for_resource = bioc_repo_resource,
   function(pkg, resource, field, ...) {
     pkg_name <- pkg$name
-    
+
     # Fetch Bioconductor packages using the resource's repo
     bioc_matrix <- fetch_packages_matrix(repos = resource@repo)
-    
+
     # Count reverse dependencies
     count_reverse_deps(
       pkg_name,
@@ -159,16 +165,18 @@ impl_data(
   permissions = c("network"),
   suggests = c("BiocManager"),
   title = "All Repositories Reverse Dependencies Count",
-  
+
   description = paste(
-    "The total number of packages across \\acronym{CRAN} and \\emph{Bioconductor} that",
-    "directly depend on this package through \\code{Depends}, \\code{Imports}, or",
-    "\\code{LinkingTo} fields. This provides a comprehensive view of adoption across",
-    "the entire R ecosystem. For \\acronym{CRAN} packages, this includes reverse",
-    "dependencies from both \\acronym{CRAN} and \\emph{Bioconductor}. For",
-    "\\emph{Bioconductor} packages, only \\emph{Bioconductor} reverse dependencies",
-    "are counted (as Bioconductor packages cannot be strong dependencies of",
-    "\\acronym{CRAN} packages). Requires the \\code{BiocManager} package."
+    "The total number of packages across \\acronym{CRAN} and",
+    "\\emph{Bioconductor} that directly depend on this package through",
+    "\\code{Depends}, \\code{Imports}, or \\code{LinkingTo} fields.",
+    "This provides a comprehensive view of adoption across the entire R",
+    "ecosystem. For \\acronym{CRAN} packages, this includes reverse",
+    "dependencies from both \\acronym{CRAN} and \\emph{Bioconductor}.",
+    "For \\emph{Bioconductor} packages, only \\emph{Bioconductor} reverse",
+    "dependencies are counted (as Bioconductor packages cannot be strong",
+    "dependencies of \\acronym{CRAN} packages). Requires the",
+    "\\code{BiocManager} package."
   )
 )
 
@@ -178,7 +186,7 @@ impl_data(
   for_resource = cran_repo_resource,
   function(pkg, resource, field, ...) {
     pkg_name <- pkg$name
-    
+
     # Fetch CRAN packages
     cran_matrix <- fetch_packages_matrix(repos = resource@repo)
     cran_count <- count_reverse_deps(
@@ -186,15 +194,15 @@ impl_data(
       cran_matrix,
       dependencies = c("Depends", "Imports", "LinkingTo")
     )
-    
+
     # Try to get Bioconductor reverse dependencies if BiocManager is available
     bioc_count <- tryCatch({
       bioc_soft <- get_bioc_software_repo()
-      
+
       if (length(bioc_soft) == 0) {
         return(0L)
       }
-      
+
       bioc_matrix <- fetch_packages_matrix(repos = bioc_soft)
       count_reverse_deps(
         pkg_name,
@@ -202,7 +210,7 @@ impl_data(
         dependencies = c("Depends", "Imports", "LinkingTo")
       )
     }, error = function(e) 0L)
-    
+
     cran_count + bioc_count
   }
 )
@@ -214,10 +222,10 @@ impl_data(
   for_resource = bioc_repo_resource,
   function(pkg, resource, field, ...) {
     pkg_name <- pkg$name
-    
+
     # Fetch Bioconductor packages
     bioc_matrix <- fetch_packages_matrix(repos = resource@repo)
-    
+
     # Count reverse dependencies
     count_reverse_deps(
       pkg_name,

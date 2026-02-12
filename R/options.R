@@ -9,7 +9,7 @@ NULL
 
 #' @include utils_cli.R
 define_options(
-  fmt("Set the default `{packageName()}` policies, specifying how package 
+  fmt("Set the default `{packageName()}` policies, specifying how package
       resources will be discovered and what permissions are granted when
       calculating metrics."),
   policy = policy(),
@@ -28,9 +28,9 @@ define_options(
   (for example, running `R CMD check`)",
   quiet = TRUE,
 
-  fmt("Recognized source control hosting domains used when inferring whether a 
+  fmt("Recognized source control hosting domains used when inferring whether a
       package has a source code repository on a recognized hosting platform.
-      Customize this to add additional git hosting services (e.g., self-hosted 
+      Customize this to add additional git hosting services (e.g., self-hosted
       GitLab instances or other federated git providers)."),
   source_control_domains = c(
     "github.com",
@@ -44,8 +44,9 @@ define_options(
   ),
 
   fmt("Additional Bioconductor site repositories to include when constructing
-      [`bioc_repo_resource()`] or calculating Bioconductor reverse dependencies. 
-      Can be set to e.g. an URL to an organization's internal Bioconductor repository
-      or a custom mirror. This value is passed to `BiocManager::repositories()`."),
+      [`bioc_repo_resource()`] or calculating Bioconductor reverse dependencies.
+      Can be set to e.g. an URL to an organization's internal Bioconductor
+      repository or a custom mirror. This value is passed to 
+      `BiocManager::repositories()`."),
   bioc_site_repository = character()
 )
