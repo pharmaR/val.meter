@@ -99,6 +99,7 @@ Collate:
     'generic_metric_coerce.R'
     'options.R'
     'package.R'
+    'share-register-s3.R'
     'utils_backports.R'
     'utils_evaluate.R'
     'utils_rand.R'
