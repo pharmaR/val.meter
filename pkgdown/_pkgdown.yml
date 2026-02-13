@@ -11,9 +11,38 @@ template:
     border-color: transparent
     border-radius: 0.15rem
     btn-border-radius: 0.25rem
+  includes:
+    in_header: |
+      <!-- Google Translate Web Element -->
+      <script type="text/javascript">
+        function googleTranslateElementInit() {
+          new google.translate.TranslateElement(
+            {
+              pageLanguage: 'en',
+              includedLanguages: 'es,fr,de,zh-CN',
+              layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            },
+            'dropdown-translate'
+          );
+        }
+      </script>
+      <script
+        type="text/javascript"
+        src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+      ></script>
 
 navbar:
   bg: primary
+  structure: 
+    left:  [intro, reference, articles, tutorials, news]
+    right: [search, github, translate, lightswitch]
+  components:
+    translate:
+      icon: fa-language
+      id: translate
+      href: ""
+      aria-label: Translate
+      menu: []
 
 # minimally customized from example in
 # https://pkgdown.r-lib.org/reference/build_reference.html#figures
