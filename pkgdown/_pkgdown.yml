@@ -20,8 +20,7 @@ template:
             {
               pageLanguage: 'en',
               includedLanguages: 'es,fr,de,zh-CN',
-              layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-              autoDisplay: false
+              layout: google.translate.TranslateElement.InlineLayout.SIMPLE
             },
             'dropdown-translate'
           );

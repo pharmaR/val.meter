@@ -7,6 +7,11 @@ body:has(> div.skiptranslate:not([style*="display:"]) > iframe) nav {
   top: 40px;
 }
 
+// disable default translate glow effect
+iframe.skiptranslate {
+  box-shadow: none;
+}
+
 // hide the original dropdown menu from pkgdown
 #dropdown-translate + .dropdown-menu {
   display: none;
