@@ -50,6 +50,7 @@ Suggests:
     rcmdcheck,
     igraph,
     knitr,
+    lintr,
     rmarkdown,
     rosv,
     testthat (>= 3.0.0),
@@ -94,6 +95,7 @@ Collate:
     'data_r_cmd_check.R'
     'data_recognized_source.R'
     'data_reverse_dependencies.R'
+    'data_robustness_lints.R'
     'data_vignettes.R'
     'data_web_html.R'
     'generic_metric_coerce.R'
