@@ -19,7 +19,7 @@ fetch_packages_matrix <- function(repos) {
 #' @return Character vector of package names that depend on pkg_name
 #' @noRd
 #' @importFrom tools dependsOnPkgs
-get_reverse_deps <- function(pkg_name, installed_matrix, 
+get_reverse_deps <- function(pkg_name, installed_matrix,
                              dependencies = c("Depends", "Imports", "LinkingTo")) {
   dependsOnPkgs(
     pkgs = pkg_name,
@@ -62,7 +62,7 @@ impl_data(
   function(pkg, resource, field, ...) {
     # Simulate reverse dependencies with a random sample of package names
     sample(
-      paste0("mockpkg", seq_len(10)), 
+      paste0("mockpkg", seq_len(10)),
       size = min(rpois(1, 2), 10), # Simulate a small number of reverse dependencies
       replace = FALSE
     )
@@ -77,7 +77,7 @@ impl_data(
   tags = c("adoption", "transient"),
   permissions = c(),
   title = "CRAN Reverse Dependencies Count",
-  
+
   description = paste(
     "The number of packages on \\acronym{CRAN} that directly depend on this package",
     "through \\code{Depends}, \\code{Imports}, or \\code{LinkingTo} fields.",
