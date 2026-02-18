@@ -92,6 +92,7 @@ Collate:
     'data_has_current_news.R'
     'data_r_cmd_check.R'
     'data_recognized_source.R'
+    'data_reverse_dependencies.R'
     'data_vignettes.R'
     'data_web_html.R'
     'generic_metric_coerce.R'
