@@ -33,13 +33,15 @@ internally calculated data.
 names(metrics(all = TRUE))
 #>  [1] "covr_coverage"                     "r_cmd_check"                      
 #>  [3] "desc"                              "has_current_news"                 
-#>  [5] "archive_md5"                       "vignette_count"                   
-#>  [7] "web_html"                          "web_url"                          
-#>  [9] "name"                              "version"                          
-#> [11] "r_cmd_check_error_count"           "test_line_coverage_fraction"      
-#> [13] "test_expression_coverage_fraction" "downloads_total"                  
-#> [15] "has_recognized_source"             "recognized_source_url"            
-#> [17] "dependency_count"                  "has_website"
+#>  [5] "archive_md5"                       "documentation_examples"           
+#>  [7] "vignette_count"                    "web_html"                         
+#>  [9] "web_url"                           "name"                             
+#> [11] "version"                           "r_cmd_check_error_count"          
+#> [13] "test_line_coverage_fraction"       "test_expression_coverage_fraction"
+#> [15] "exports_help_coverage"             "downloads_total"                  
+#> [17] "help_pages_with_examples_count"    "has_recognized_source"            
+#> [19] "recognized_source_url"             "help_examples_coverage"           
+#> [21] "dependency_count"                  "has_website"
 ```
 
 Sure enough, `"name"` is in the list. We can learn a bit more about it

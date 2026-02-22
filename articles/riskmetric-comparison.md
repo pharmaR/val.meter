@@ -110,9 +110,15 @@ pkg("val.meter") # when installed locally
 #>   <promise>
 #> $test_expression_coverage_fraction
 #>   <promise>
+#> $exports_help_coverage
+#>   <promise>
 #> $downloads_total
 #>   <promise>
+#> $help_pages_with_examples_count
+#>   <promise>
 #> $has_recognized_source
+#>   <promise>
+#> $help_examples_coverage
 #>   <promise>
 #> $dependency_count
 #>   <promise>
@@ -122,6 +128,7 @@ pkg("val.meter") # when installed locally
 #> $r_cmd_check (internal)
 #> $desc (internal)
 #> $archive_md5 (internal)
+#> $documentation_examples (internal)
 #> $web_html (internal)
 #> $web_url (internal)
 #> $name (internal)

@@ -63,6 +63,16 @@ any test
 
 ![\[execution\]](figures/badge-req-execution-x-flat-square-red.svg)![\[covr\]](figures/badge-dep-covr-x-flat-square-green.svg)
 
+### Exports Help Coverage
+
+`<double>` The fraction of exported objects that have help pages.
+Calculated by matching package exports against `\alias` tags in help
+pages. Values range from 0.0 (no exports documented) to 1.0 (all exports
+have help pages).
+
+[![\[best
+practice\]](figures/badge-best_practice-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
+
 ### Test coverage of package code by expression
 
 `<double>` The fraction of expressions of package code that are
@@ -81,6 +91,15 @@ CRAN mirror through the [cranlogs](https://cranlogs.rpkg.org) API
 [![\[transient\]](figures/badge-transient-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
 [![\[version-independent\]](figures/badge-version--independent-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
 
+### Help Pages with Examples Count
+
+`<integer>` The number of help pages that include an `\examples`
+section. This provides an absolute count of how many documentation pages
+demonstrate the package functionality with example code.
+
+[![\[best
+practice\]](figures/badge-best_practice-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
+
 ### Has Recognized Source Repository
 
 `<logical>` Indicates whether the package has a source code repository
@@ -89,6 +108,16 @@ Inferred from the URL and `BugReports` fields in the `DESCRIPTION` file.
 See
 [`?options`](https://pharmar.github.io/val.meter/reference/options.md)
 for customizing the allow-list.
+
+[![\[best
+practice\]](figures/badge-best_practice-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
+
+### Help Pages Examples Coverage
+
+`<double>` The fraction of help pages that include an `\examples`
+section. Calculated as the number of help pages with examples divided by
+the total number of help pages. Values range from 0.0 (no examples) to
+1.0 (all pages have examples).
 
 [![\[best
 practice\]](figures/badge-best_practice-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
