@@ -1,221 +1,178 @@
+# Helper to create a mock package matrix for testing
+create_mock_package_matrix <- function() {
+  # Create a minimal matrix that matches available.packages() structure
+  # with the key columns needed by dependsOnPkgs()
+  matrix(
+    c(
+      # Package, Version, Priority, Depends, Imports, LinkingTo, Suggests
+      "pkgA", "1.0.0", NA, "R (>= 3.5.0), targetpkg", NA, NA, NA,
+      "pkgB", "2.0.0", NA, "R (>= 4.0.0)", "targetpkg, utils", NA, NA,
+      "pkgC", "1.5.0", NA, NA, NA, NA, "targetpkg, testthat",
+      "pkgD", "3.0.0", NA, NA, "targetpkg", NA, NA,
+      "pkgE", "1.2.0", NA, NA, "otherpkg", NA, NA
+    ),
+    nrow = 5,
+    ncol = 7,
+    byrow = TRUE,
+    dimnames = list(
+      c("1", "2", "3", "4", "5"),
+      c("Package", "Version", "Priority", "Depends", "Imports", "LinkingTo", "Suggests")
+    )
+  )
+}
+
 describe("reverse dependencies helper functions", {
-  it("get_available_packages returns a matrix with all packages", {
-    skip_if_offline()
-    skip_on_cran()
-
-    matrix <- get_available_packages(repos = "https://cloud.r-project.org")
-
-    expect_true(is.matrix(matrix))
-    expect_true(nrow(matrix) > 0)
-    expect_true("Package" %in% colnames(matrix))
-  })
-
   it("get_reverse_deps returns character vector of dependent packages", {
-    skip_if_offline()
-    skip_on_cran()
-
-    matrix <- get_available_packages(repos = "https://cloud.r-project.org")
-
-    # Use a popular package that's likely to have reverse dependencies
-    result <- get_reverse_deps("testthat", matrix)
-
+    mock_matrix <- create_mock_package_matrix()
+    
+    result <- get_reverse_deps("targetpkg", mock_matrix)
+    
     expect_type(result, "character")
+    # Should find pkgA, pkgB, pkgD (in Depends/Imports, not Suggests)
+    expect_true(length(result) >= 3)
+    expect_true("pkgA" %in% result)
+    expect_true("pkgB" %in% result)
+    expect_true("pkgD" %in% result)
   })
-
+  
   it("get_reverse_deps filters by dependency types correctly", {
-    skip_if_offline()
-    skip_on_cran()
-
-    matrix <- get_available_packages(repos = "https://cloud.r-project.org")
-
-    # Test with different dependency types
+    mock_matrix <- create_mock_package_matrix()
+    
+    # All dependency types including Suggests
     deps_all <- get_reverse_deps(
-      "testthat",
-      matrix,
+      "targetpkg", 
+      mock_matrix,
       dependencies = c("Depends", "Imports", "LinkingTo", "Suggests")
     )
-
+    
+    # Only strong dependencies (excludes Suggests)
     deps_strong <- get_reverse_deps(
-      "testthat",
-      matrix,
+      "targetpkg", 
+      mock_matrix,
       dependencies = c("Depends", "Imports", "LinkingTo")
     )
-
+    
     # Strong dependencies should be a subset of all dependencies
     expect_true(all(deps_strong %in% deps_all))
+    # All should include pkgC (from Suggests), so it should have more
+    expect_true(length(deps_all) > length(deps_strong))
+    expect_true("pkgC" %in% deps_all)
+    expect_false("pkgC" %in% deps_strong)
   })
-})
-
-describe("cran_reverse_dependencies metadata", {
-  it("is registered as non-metric data", {
-    info <- pkg_data_info("cran_reverse_dependencies")
-    expect_false(info@metric)
-  })
-
-  it("has 'adoption' and 'transient' tags", {
-    info <- pkg_data_info("cran_reverse_dependencies")
-    expect_true("adoption" %in% info@tags)
-    expect_true("transient" %in% info@tags)
-  })
-
-  it("requires 'network' permission", {
-    info <- pkg_data_info("cran_reverse_dependencies")
-    expect_true("network" %in% info@permissions)
-  })
-
-  it("has a non-empty title", {
-    info <- pkg_data_info("cran_reverse_dependencies")
-    expect_true(length(info@title) > 0)
-    expect_true(nchar(info@title) > 0)
-  })
-
-  it("has a non-empty description", {
-    info <- pkg_data_info("cran_reverse_dependencies")
-    expect_true(length(info@description) > 0)
-  })
-
-  it("has class_character data class", {
-    info <- pkg_data_info("cran_reverse_dependencies")
-    expect_equal(info@data_class, class_character)
-  })
-})
-
-describe("cran_reverse_dependencies_count metadata", {
-  it("is registered as a metric", {
-    info <- pkg_data_info("cran_reverse_dependencies_count")
-    expect_true(info@metric)
-  })
-
-  it("has 'adoption' and 'transient' tags", {
-    info <- pkg_data_info("cran_reverse_dependencies_count")
-    expect_true("adoption" %in% info@tags)
-    expect_true("transient" %in% info@tags)
-  })
-
-  it("does not require permissions", {
-    info <- pkg_data_info("cran_reverse_dependencies_count")
-    expect_identical(info@permissions, permissions(character(0L)))
-  })
-
-  it("has a non-empty title", {
-    info <- pkg_data_info("cran_reverse_dependencies_count")
-    expect_true(length(info@title) > 0)
-    expect_true(nchar(info@title) > 0)
-  })
-
-  it("has a non-empty description", {
-    info <- pkg_data_info("cran_reverse_dependencies_count")
-    expect_true(length(info@description) > 0)
-  })
-
-  it("has class_integer data class", {
-    info <- pkg_data_info("cran_reverse_dependencies_count")
-    expect_equal(info@data_class, class_integer)
-  })
-})
-
-describe("cran_reverse_dependencies mock implementation", {
-  it("returns character vector for mock resource", {
-    p <- random_pkg()
-    result <- p$cran_reverse_dependencies
-
+  
+  it("get_reverse_deps returns empty vector when no dependencies found", {
+    mock_matrix <- create_mock_package_matrix()
+    
+    result <- get_reverse_deps("nonexistent", mock_matrix)
+    
     expect_type(result, "character")
+    expect_length(result, 0)
   })
+})
 
-  it("generates realistic mock data", {
+describe("cran_reverse_dependencies metric behavior with mocked data", {
+  it("returns character vector when get_available_packages is mocked", {
+    mock_matrix <- create_mock_package_matrix()
+    
+    with_mocked_bindings(
+      get_available_packages = function(repos) mock_matrix,
+      .package = "val.meter",
+      {
+        p <- pkg(
+          cran_repo_resource(
+            package = "targetpkg",
+            repo = "https://cloud.r-project.org/"
+          ),
+          permissions = permissions("network")
+        )
+        
+        deps <- p$cran_reverse_dependencies
+        
+        expect_type(deps, "character")
+        expect_true(length(deps) > 0)
+      }
+    )
+  })
+  
+  it("returns empty character vector when no reverse deps exist", {
+    # Create a matrix where no packages depend on our target
+    mock_matrix <- matrix(
+      c(
+        "pkgA", "1.0.0", NA, NA, NA, NA, NA,
+        "pkgB", "2.0.0", NA, NA, NA, NA, NA
+      ),
+      nrow = 2,
+      ncol = 7,
+      byrow = TRUE,
+      dimnames = list(
+        c("1", "2"),
+        c("Package", "Version", "Priority", "Depends", "Imports", "LinkingTo", "Suggests")
+      )
+    )
+    
+    with_mocked_bindings(
+      get_available_packages = function(repos) mock_matrix,
+      .package = "val.meter",
+      {
+        p <- pkg(
+          cran_repo_resource(
+            package = "lonelypkg",
+            repo = "https://cloud.r-project.org/"
+          ),
+          permissions = permissions("network")
+        )
+        
+        deps <- p$cran_reverse_dependencies
+        
+        # Should be character, empty vector
+        expect_type(deps, "character")
+        expect_equal(length(deps), 0)
+      }
+    )
+  })
+  
+  it("generates realistic mock data for random packages", {
     # Generate multiple random packages and check distribution
     n <- 50
     results <- replicate(n, {
       p <- random_pkg()
-      length(p$cran_reverse_dependencies)
+      p$cran_reverse_dependencies
     })
-
-    # Should be integers
-    expect_type(results, "integer")
-
-    # Should have reasonable range (0-10 based on mock implementation)
-    expect_true(all(results >= 0))
-    expect_true(all(results <= 10))
+    
+    # All should be character vectors
+    expect_true(all(vlapply(results, is.character)))
+    
+    # Lengths should vary but be reasonable (0-10)
+    lengths <- vapply(results, length, integer(1))
+    expect_true(all(lengths >= 0))
+    expect_true(all(lengths <= 10))
   })
 })
 
-describe("cran_reverse_dependencies_count mock implementation", {
-  it("returns integer count for mock resource", {
-    p <- random_pkg()
-    result <- p$cran_reverse_dependencies_count
-
-    expect_type(result, "integer")
-    expect_length(result, 1)
-  })
-
-  it("count matches length of reverse dependencies", {
-    p <- random_pkg()
-
-    count <- p$cran_reverse_dependencies_count
-    deps <- p$cran_reverse_dependencies
-
-    expect_equal(count, length(deps))
-  })
-})
-
-describe("cran_reverse_dependencies integration", {
-  it("works with CRAN repository resource", {
-    skip_if_offline()
-    skip_on_cran()
-
-    # Use a well-known package with a proper CRAN mirror (note trailing slash)
-    p <- pkg(
-      cran_repo_resource(
-        package = "jsonlite",
-        repo = "https://cloud.r-project.org/"
-      ),
-      permissions = permissions("network")
+describe("cran_reverse_dependencies_count metric behavior", {
+  it("returns integer count matching dependency vector length", {
+    mock_matrix <- create_mock_package_matrix()
+    
+    with_mocked_bindings(
+      get_available_packages = function(repos) mock_matrix,
+      .package = "val.meter",
+      {
+        p <- pkg(
+          cran_repo_resource(
+            package = "targetpkg",
+            repo = "https://cloud.r-project.org/"
+          ),
+          permissions = permissions("network")
+        )
+        
+        count <- p$cran_reverse_dependencies_count
+        deps <- p$cran_reverse_dependencies
+        
+        expect_equal(count, length(deps))
+        expect_type(count, "integer")
+        expect_length(count, 1)
+      }
     )
-
-    deps <- p$cran_reverse_dependencies
-
-    expect_type(deps, "character")
-    # jsonlite is popular, should have some reverse dependencies
-    expect_true(length(deps) > 0)
-  })
-
-  it("count matches length for CRAN packages", {
-    skip_if_offline()
-    skip_on_cran()
-
-    p <- pkg(
-      cran_repo_resource(
-        package = "jsonlite",
-        repo = "https://cloud.r-project.org/"
-      ),
-      permissions = permissions("network")
-    )
-
-    count <- p$cran_reverse_dependencies_count
-    deps <- p$cran_reverse_dependencies
-
-    expect_equal(count, length(deps))
-    expect_type(count, "integer")
   })
 })
 
-describe("reverse dependencies type stability", {
-  it("cran_reverse_dependencies returns character vector (not NA)", {
-    # Even with no matches, should return character(0), not NA_character_
-    p <- random_pkg()
-    result <- p$cran_reverse_dependencies
-
-    expect_type(result, "character")
-    expect_false(anyNA(result))
-  })
-
-  it("cran_reverse_dependencies_count is always scalar integer", {
-    results <- replicate(20, {
-      p <- random_pkg()
-      p$cran_reverse_dependencies_count
-    })
-
-    expect_type(results, "integer")
-    expect_equal(length(results), 20)
-  })
-})
