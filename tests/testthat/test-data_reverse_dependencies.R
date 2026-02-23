@@ -1,20 +1,20 @@
 describe("reverse dependencies helper functions", {
-  it("fetch_packages_matrix returns a matrix", {
+  it("get_available_packages returns a matrix with all packages", {
     skip_if_offline()
     skip_on_cran()
 
-    matrix <- fetch_packages_matrix(repos = "https://cloud.r-project.org")
+    matrix <- get_available_packages(repos = "https://cloud.r-project.org")
 
     expect_true(is.matrix(matrix))
     expect_true(nrow(matrix) > 0)
     expect_true("Package" %in% colnames(matrix))
   })
 
-  it("get_reverse_deps returns character vector", {
+  it("get_reverse_deps returns character vector of dependent packages", {
     skip_if_offline()
     skip_on_cran()
 
-    matrix <- fetch_packages_matrix(repos = "https://cloud.r-project.org")
+    matrix <- get_available_packages(repos = "https://cloud.r-project.org")
 
     # Use a popular package that's likely to have reverse dependencies
     result <- get_reverse_deps("testthat", matrix)
@@ -22,11 +22,11 @@ describe("reverse dependencies helper functions", {
     expect_type(result, "character")
   })
 
-  it("get_reverse_deps filters by dependency types", {
+  it("get_reverse_deps filters by dependency types correctly", {
     skip_if_offline()
     skip_on_cran()
 
-    matrix <- fetch_packages_matrix(repos = "https://cloud.r-project.org")
+    matrix <- get_available_packages(repos = "https://cloud.r-project.org")
 
     # Test with different dependency types
     deps_all <- get_reverse_deps(

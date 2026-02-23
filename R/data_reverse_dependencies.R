@@ -2,12 +2,17 @@
 
 # Reverse dependencies metrics implementation
 
-#' Fetch package database using available.packages()
+#' Fetch package database for reverse dependency analysis
+#'
+#' Uses only the "duplicates" filter (not the default filters) because we want
+#' to find ALL packages that depend on the target package, regardless of R
+#' version or OS compatibility. The default filters would exclude packages for
+#' other R versions/OS, giving an incomplete view of the package's adoption.
 #'
 #' @param repos Character vector of repository URLs
 #' @return Matrix of available packages with dependency information
 #' @noRd
-fetch_packages_matrix <- function(repos) {
+get_available_packages <- function(repos) {
   available.packages(repos = repos, filters = "duplicates")
 }
 
@@ -51,7 +56,7 @@ impl_data(
   "cran_reverse_dependencies",
   for_resource = cran_repo_resource,
   function(pkg, resource, field, ...) {
-    cran_matrix <- fetch_packages_matrix(repos = resource@repo)
+    cran_matrix <- get_available_packages(repos = resource@repo)
 
     get_reverse_deps(
       pkg$name,
