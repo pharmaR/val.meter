@@ -74,11 +74,11 @@ describe("reverse dependencies helper functions", {
 })
 
 describe("cran_reverse_dependencies metric behavior with mocked data", {
-  it("returns character vector when get_available_packages is mocked", {
+  it("returns character vector when viable_revdep_packages is mocked", {
     mock_matrix <- create_mock_package_matrix()
 
     with_mocked_bindings(
-      get_available_packages = function(repos) mock_matrix,
+      viable_revdep_packages = function(repos) mock_matrix,
       .package = "val.meter",
       {
         p <- pkg(
@@ -117,7 +117,7 @@ describe("cran_reverse_dependencies metric behavior with mocked data", {
     )
 
     with_mocked_bindings(
-      get_available_packages = function(repos) mock_matrix,
+      viable_revdep_packages = function(repos) mock_matrix,
       .package = "val.meter",
       {
         p <- pkg(
@@ -160,7 +160,7 @@ describe("cran_reverse_dependencies_count metric behavior", {
     mock_matrix <- create_mock_package_matrix()
 
     with_mocked_bindings(
-      get_available_packages = function(repos) mock_matrix,
+      viable_revdep_packages = function(repos) mock_matrix,
       .package = "val.meter",
       {
         p <- pkg(

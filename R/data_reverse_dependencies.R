@@ -12,7 +12,7 @@
 #' @param repos Character vector of repository URLs
 #' @return Matrix of available packages with dependency information
 #' @noRd
-get_available_packages <- function(repos) {
+viable_revdep_packages <- function(repos) {
   available.packages(repos = repos, filters = "duplicates")
 }
 
@@ -56,7 +56,7 @@ impl_data(
   "cran_reverse_dependencies",
   for_resource = cran_repo_resource,
   function(pkg, resource, field, ...) {
-    cran_matrix <- get_available_packages(repos = resource@repo)
+    cran_matrix <- viable_revdep_packages(repos = resource@repo)
 
     get_reverse_deps(
       pkg$name,
