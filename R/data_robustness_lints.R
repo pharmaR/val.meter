@@ -6,9 +6,17 @@
 impl_data(
   "robustness_lints",
   class = S7::new_S3_class("lints"),
+  metric = FALSE, # Explicitly mark as auxiliary data, not a metric
   tags = c("execution"),
   suggests = "lintr",
   permissions = "execution",
+  title = "Robustness Lint Results",
+  description = paste(
+    "Full \\pkg{lintr} robustness lint results for the package.",
+    "Contains detailed information about each lint including line numbers,",
+    "column positions, and lint messages. This is auxiliary data used to",
+    "derive the \\code{robustness_lint_count} metric."
+  )
 )
 
 impl_data(
@@ -20,13 +28,13 @@ impl_data(
     } else {
       identity
     }
-    
+
     wrapper({
       # Suppress lintr messages to avoid stdout output from subprocess
       result <- lintr::lint_package(
         path = resource@path,
         linters = lintr::linters_with_tags("robustness"),
-        parse_settings = FALSE  # Don't read .lintr config for consistency
+        parse_settings = FALSE # Don't read .lintr config for consistency
       )
     })
 
@@ -39,7 +47,7 @@ impl_data(
   "robustness_lint_count",
   metric = TRUE,
   class = class_integer,
-  tags = tags("best practice"),
+  tags = c("best practice"), # Use c() for consistency
   title = "Robustness Lint Count",
   description = paste(
     "Count of robustness lints identified by \\pkg{lintr}.",
