@@ -34,6 +34,13 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 
 
 }
+ \subsection{CRAN Reverse Dependencies Count}{
+\code{<integer>} The number of packages on \acronym{CRAN} that directly depend on this package through \code{Depends}, \code{Imports}, or \code{LinkingTo} fields. This metric reflects adoption within the CRAN ecosystem and indicates how many packages would be affected by breaking changes. Higher counts suggest wider usage and community trust, but also greater responsibility for maintaining backward compatibility.
+
+  
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}\\n\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-adoption-x-flat-square-blue.svg}{options: alt = \\"[adoption]\\"}}{\\\\strong{[adoption]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}}" }}
+}
  \subsection{Total Vignettes}{
 \code{<integer>} total number of vignettes
 
