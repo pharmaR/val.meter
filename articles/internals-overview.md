@@ -178,13 +178,14 @@ names(rpkg)
 #>  [3] "desc"                              "has_current_news"                 
 #>  [5] "archive_md5"                       "documentation_examples"           
 #>  [7] "vignette_count"                    "web_html"                         
-#>  [9] "web_url"                           "name"                             
-#> [11] "version"                           "r_cmd_check_error_count"          
-#> [13] "test_line_coverage_fraction"       "test_expression_coverage_fraction"
-#> [15] "exports_help_coverage"             "downloads_total"                  
-#> [17] "help_pages_with_examples_count"    "has_recognized_source"            
-#> [19] "recognized_source_url"             "help_examples_coverage"           
-#> [21] "dependency_count"                  "has_website"
+#>  [9] "cran_reverse_dependencies_count"   "cran_reverse_dependencies"        
+#> [11] "web_url"                           "name"                             
+#> [13] "version"                           "r_cmd_check_error_count"          
+#> [15] "test_line_coverage_fraction"       "test_expression_coverage_fraction"
+#> [17] "exports_help_coverage"             "downloads_total"                  
+#> [19] "help_pages_with_examples_count"    "has_recognized_source"            
+#> [21] "recognized_source_url"             "help_examples_coverage"           
+#> [23] "dependency_count"                  "has_website"
 ```
 
 Yep. There they are. All the fields you can just *assume* exist in this
@@ -208,6 +209,8 @@ If we take a peek at our `rpkg` object, we’ll see:
     #> $has_current_news
     #>   <promise>
     #> $vignette_count
+    #>   <promise>
+    #> $cran_reverse_dependencies_count
     #>   <promise>
     #> $r_cmd_check_error_count
     #>   <promise>
@@ -235,6 +238,7 @@ If we take a peek at our `rpkg` object, we’ll see:
     #> $archive_md5 (internal)
     #> $documentation_examples (internal)
     #> $web_html (internal)
+    #> $cran_reverse_dependencies (internal)
     #> $web_url (internal)
     #> $name (internal)
     #> $version (internal)
@@ -265,6 +269,8 @@ new data.
     #>   <promise>
     #> $vignette_count
     #>   <promise>
+    #> $cran_reverse_dependencies_count
+    #>   <promise>
     #> $r_cmd_check_error_count
     #>   [1] 0
     #> $test_line_coverage_fraction
@@ -291,6 +297,7 @@ new data.
     #> $archive_md5 (internal)
     #> $documentation_examples (internal)
     #> $web_html (internal)
+    #> $cran_reverse_dependencies (internal)
     #> $web_url (internal)
     #> $name (internal)
     #> $version (internal)

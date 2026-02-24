@@ -35,13 +35,14 @@ names(metrics(all = TRUE))
 #>  [3] "desc"                              "has_current_news"                 
 #>  [5] "archive_md5"                       "documentation_examples"           
 #>  [7] "vignette_count"                    "web_html"                         
-#>  [9] "web_url"                           "name"                             
-#> [11] "version"                           "r_cmd_check_error_count"          
-#> [13] "test_line_coverage_fraction"       "test_expression_coverage_fraction"
-#> [15] "exports_help_coverage"             "downloads_total"                  
-#> [17] "help_pages_with_examples_count"    "has_recognized_source"            
-#> [19] "recognized_source_url"             "help_examples_coverage"           
-#> [21] "dependency_count"                  "has_website"
+#>  [9] "cran_reverse_dependencies_count"   "cran_reverse_dependencies"        
+#> [11] "web_url"                           "name"                             
+#> [13] "version"                           "r_cmd_check_error_count"          
+#> [15] "test_line_coverage_fraction"       "test_expression_coverage_fraction"
+#> [17] "exports_help_coverage"             "downloads_total"                  
+#> [19] "help_pages_with_examples_count"    "has_recognized_source"            
+#> [21] "recognized_source_url"             "help_examples_coverage"           
+#> [23] "dependency_count"                  "has_website"
 ```
 
 Sure enough, `"name"` is in the list. We can learn a bit more about it

@@ -104,6 +104,8 @@ pkg("val.meter") # when installed locally
 #>   <promise>
 #> $vignette_count
 #>   <promise>
+#> $cran_reverse_dependencies_count
+#>   <promise>
 #> $r_cmd_check_error_count
 #>   <promise>
 #> $test_line_coverage_fraction
@@ -130,6 +132,7 @@ pkg("val.meter") # when installed locally
 #> $archive_md5 (internal)
 #> $documentation_examples (internal)
 #> $web_html (internal)
+#> $cran_reverse_dependencies (internal)
 #> $web_url (internal)
 #> $name (internal)
 #> $version (internal)

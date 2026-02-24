@@ -44,6 +44,18 @@ The following metrics are provided by
 `<logical>` a NEWS file exists and is synced with the current package
 version
 
+### CRAN Reverse Dependencies Count
+
+`<integer>` The number of packages on CRAN that directly depend on this
+package through `Depends`, `Imports`, or `LinkingTo` fields. This metric
+reflects adoption within the CRAN ecosystem and indicates how many
+packages would be affected by breaking changes. Higher counts suggest
+wider usage and community trust, but also greater responsibility for
+maintaining backward compatibility.
+
+[![\[adoption\]](figures/badge-adoption-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
+[![\[transient\]](figures/badge-transient-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
+
 ### Total Vignettes
 
 `<integer>` total number of vignettes

@@ -35,29 +35,32 @@ metrics(p)
 #> $vignette_count
 #> [1] 2
 #> 
+#> $cran_reverse_dependencies_count
+#> [1] 1
+#> 
 #> $r_cmd_check_error_count
-#> [1] 0
+#> [1] 1
 #> 
 #> $test_line_coverage_fraction
-#> [1] 0.9653538
+#> [1] 0.9370817
 #> 
 #> $test_expression_coverage_fraction
-#> [1] 0
+#> [1] 0.3868454
 #> 
 #> $exports_help_coverage
-#> [1] 0.9356761
+#> [1] 0.9961079
 #> 
 #> $downloads_total
-#> [1] 949259
+#> [1] 4980
 #> 
 #> $help_pages_with_examples_count
-#> [1] 25
+#> [1] 38
 #> 
 #> $has_recognized_source
-#> [1] FALSE
+#> [1] TRUE
 #> 
 #> $help_examples_coverage
-#> [1] 0.7651062
+#> [1] 0.5156152
 #> 
 #> $dependency_count
 #> [1] 0
@@ -71,8 +74,8 @@ sapply(
   random_pkgs(n = 3, permissions = TRUE),
   function(pkg) pkg$name
 )
-#> [1] "bettr"                       "swankir"                    
-#> [3] "ecstaticorderlydistribution"
+#> [1] "ecstaticorderlydistribution" "fulfillmentMastery"         
+#> [3] "clevr"
 ```
 
 ## Generating a repostiroy
@@ -91,60 +94,63 @@ ps <- random_pkgs(n = 3, permissions = TRUE)
 # output DCF files
 dcf_str <- to_dcf(ps)
 cat(dcf_str, "\n")
-#> Package: InvulnerableRectification
-#> Version: 1.4-5
+#> Package: gwplyr
+#> Version: 0.4-1
 #> Depends: R
-#> Imports: jovialhero
-#> Suggests: CHEMREASSURANCE
+#> LinkingTo: oasis.Time
+#> Suggests: ProminentHale
 #> License: Phony License
-#> MD5sum: 2a0b0e22324ec9f4c9d6f3ec24faf59b
-#> Metric/has_current_news@R: FALSE
-#> Metric/vignette_count@R: 2
-#> Metric/r_cmd_check_error_count@R: 0
-#> Metric/test_line_coverage_fraction@R: 0
-#> Metric/test_expression_coverage_fraction@R: 0.171275144549786
-#> Metric/exports_help_coverage@R: 0.916273208800703
-#> Metric/downloads_total@R: 41857
-#> Metric/help_pages_with_examples_count@R: 11
-#> Metric/has_recognized_source@R: TRUE
-#> Metric/help_examples_coverage@R: 0.860879864660092
-#> Metric/dependency_count@R: 2
-#> Metric/has_website@R: FALSE
-#> 
-#> Package: jovialhero
-#> Version: 1.3-4
-#> Depends: R
-#> Imports: CHEMREASSURANCE
-#> License: Phony License
-#> MD5sum: 4f398c52c4db3b2f4f6fc96ac68166b7
+#> MD5sum: 7dc0112968a14ce1499d466f5505868e
 #> Metric/has_current_news@R: TRUE
 #> Metric/vignette_count@R: 2
+#> Metric/cran_reverse_dependencies_count@R: 3
 #> Metric/r_cmd_check_error_count@R: 0
-#> Metric/test_line_coverage_fraction@R: 0
-#> Metric/test_expression_coverage_fraction@R: 0.352980367622344
-#> Metric/exports_help_coverage@R: 0.881594640295953
-#> Metric/downloads_total@R: 25
-#> Metric/help_pages_with_examples_count@R: 48
-#> Metric/has_recognized_source@R: FALSE
-#> Metric/help_examples_coverage@R: 0.926422401680611
+#> Metric/test_line_coverage_fraction@R: 0.89233595332421
+#> Metric/test_expression_coverage_fraction@R: 0.52267873402755
+#> Metric/exports_help_coverage@R: 0.971226431336254
+#> Metric/downloads_total@R: 2009
+#> Metric/help_pages_with_examples_count@R: 14
+#> Metric/has_recognized_source@R: TRUE
+#> Metric/help_examples_coverage@R: 0.581811599084176
 #> Metric/dependency_count@R: 2
 #> Metric/has_website@R: FALSE
 #> 
-#> Package: CHEMREASSURANCE
-#> Version: 3.1.6
+#> Package: ProminentHale
+#> Version: 1.4.2
+#> Depends: R
+#> Suggests: oasis.Time
+#> License: Phony License
+#> MD5sum: c5f8f0c67c80df83abd6c06190fef884
+#> Metric/has_current_news@R: TRUE
+#> Metric/vignette_count@R: 2
+#> Metric/cran_reverse_dependencies_count@R: 1
+#> Metric/r_cmd_check_error_count@R: 1
+#> Metric/test_line_coverage_fraction@R: 0.994372154847606
+#> Metric/test_expression_coverage_fraction@R: 0.300199197344615
+#> Metric/exports_help_coverage@R: 0.999930491438136
+#> Metric/downloads_total@R: 14
+#> Metric/help_pages_with_examples_count@R: 21
+#> Metric/has_recognized_source@R: TRUE
+#> Metric/help_examples_coverage@R: 0.519760344992392
+#> Metric/dependency_count@R: 1
+#> Metric/has_website@R: FALSE
+#> 
+#> Package: oasis.Time
+#> Version: 3.6-5
 #> Depends: R
 #> License: Phony License
-#> MD5sum: 571aaf732c0feaa66a435273341d95de
-#> Metric/has_current_news@R: FALSE
-#> Metric/vignette_count@R: 3
-#> Metric/r_cmd_check_error_count@R: 0
-#> Metric/test_line_coverage_fraction@R: 0.483373979899107
-#> Metric/test_expression_coverage_fraction@R: 0
-#> Metric/exports_help_coverage@R: 0.87230682335794
-#> Metric/downloads_total@R: 34
-#> Metric/help_pages_with_examples_count@R: 22
+#> MD5sum: 65102e5bd1054787cf13f4cdcb31a1bc
+#> Metric/has_current_news@R: TRUE
+#> Metric/vignette_count@R: 2
+#> Metric/cran_reverse_dependencies_count@R: 3
+#> Metric/r_cmd_check_error_count@R: 2
+#> Metric/test_line_coverage_fraction@R: 0.637346476551969
+#> Metric/test_expression_coverage_fraction@R: 0.11582704462353
+#> Metric/exports_help_coverage@R: 0.883453985257074
+#> Metric/downloads_total@R: 8101
+#> Metric/help_pages_with_examples_count@R: 19
 #> Metric/has_recognized_source@R: TRUE
-#> Metric/help_examples_coverage@R: 0.999826228595339
+#> Metric/help_examples_coverage@R: 0.857593067106791
 #> Metric/dependency_count@R: 1
 #> Metric/has_website@R: FALSE
 ```
@@ -208,11 +214,11 @@ df$dependency_percentile <- percentile(df$dependency_count)
 
 # find our packages with the most dependencies
 df$package[df$dependency_percentile > 0.95]
-#>  [1] "surveyEmpowermentR"       "freevirtuousspace"       
-#>  [3] "meticulouscongratulation" "nicestprominence"        
-#>  [5] "hardyindulgence"          "superData"               
-#>  [7] "epistable"                "pRoper"                  
-#>  [9] "favorable.surreal"        "tidy.gain"
+#>  [1] "nicestprominence"        "impressivenessGratitude"
+#>  [3] "snazzyfast"              "promotr"                
+#>  [5] "timeIntegral"            "chemo.exhilaration"     
+#>  [7] "safety.Decisiveness"     "savr"                   
+#>  [9] "adoRer"                  "stimulativeTime"
 ```
 
 ``` r
