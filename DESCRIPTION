@@ -50,6 +50,7 @@ Suggests:
     rcmdcheck,
     igraph,
     knitr,
+    lintr,
     rmarkdown,
     rosv,
     testthat (>= 3.0.0),
@@ -86,6 +87,7 @@ Collate:
     'generic_pkg_data_derive.R'
     'impl_data.R'
     'data_archive_md5.R'
+    'data_correctness_lints.R'
     'data_coverage.R'
     'data_desc.R'
     'data_documentation_examples.R'
