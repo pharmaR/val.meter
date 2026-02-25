@@ -27,10 +27,10 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 }
 \keyword{workflow}
 \section{Metrics}{The following metrics are provided by \code{\link{val.meter}}.
- \subsection{Robustness Lint Count}{
-\code{<integer>} Count of robustness lints identified by \pkg{lintr}. Robustness lints identify potentially error-prone code patterns based on relatively unopinionated good programming practices. Lower counts indicate more robust code. See \url{https://lintr.r-lib.org/reference/robustness_linters.html}
+ \subsection{Correctness Lint Count}{
+\code{<integer>} Count of correctness lints identified by \pkg{lintr}. Combines linters from the \emph{correctness}, \emph{common_mistakes}, and \emph{robustness} tags to identify potentially error-prone code patterns and common programming mistakes. Lower counts indicate higher code quality. See \url{https://lintr.r-lib.org/reference/correctness_linters.html}
 
- \Sexpr[stage=render,results=rd]{if (length(find.package("lintr", quiet = TRUE)) > 0) "\\\\ifelse{html}{\\\\figure{badge-dep-lintr-x-flat-square-green.svg}{options: alt = \\"[lintr]\\"}}{\\\\strong{[dep::lintr]}}" else "\\\\ifelse{html}{\\\\figure{badge-dep-lintr-x-flat-square-red.svg}{options: alt = \\"[lintr]\\"}}{\\\\strong{[dep::lintr]}}"} 
+  
 
 \Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}}" }}
 }
