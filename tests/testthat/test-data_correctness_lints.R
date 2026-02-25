@@ -6,7 +6,7 @@ create_mock_lints <- function(n = 3) {
       line_number = 1L,
       column_number = 1L,
       type = "warning",
-      message = "mock robustness lint",
+      message = "mock correctness lint",
       line = "x = 1",
       ranges = NULL
     ),
@@ -34,7 +34,7 @@ create_mock_pkg_dir <- function(dir) {
   invisible(dir)
 }
 
-describe("robustness_lint_count derivation from mocked lints", {
+describe("correctness_lint_count derivation from mocked lints", {
   it("returns 0 when there are no lints", {
     skip_if_not_installed("lintr")
     tmp_dir <- withr::local_tempdir()
@@ -48,7 +48,7 @@ describe("robustness_lint_count derivation from mocked lints", {
           source_code_resource(path = tmp_dir, package = "mockpkg"),
           permissions = permissions("execution")
         )
-        result <- p$robustness_lint_count
+        result <- p$correctness_lint_count
         expect_equal(result, 0L)
       }
     )
@@ -67,7 +67,7 @@ describe("robustness_lint_count derivation from mocked lints", {
           source_code_resource(path = tmp_dir, package = "mockpkg"),
           permissions = permissions("execution")
         )
-        result <- p$robustness_lint_count
+        result <- p$correctness_lint_count
         expect_equal(result, 7L)
       }
     )
@@ -86,14 +86,14 @@ describe("robustness_lint_count derivation from mocked lints", {
           source_code_resource(path = tmp_dir, package = "mockpkg"),
           permissions = permissions("execution")
         )
-        result <- p$robustness_lint_count
+        result <- p$correctness_lint_count
         expect_true(is.numeric(result))
         expect_true(result >= 0)
       }
     )
   })
 
-  it("stores the full lints object in robustness_lints", {
+  it("stores the full lints object in correctness_lints", {
     skip_if_not_installed("lintr")
     tmp_dir <- withr::local_tempdir()
     create_mock_pkg_dir(tmp_dir)
@@ -106,7 +106,7 @@ describe("robustness_lint_count derivation from mocked lints", {
           source_code_resource(path = tmp_dir, package = "mockpkg"),
           permissions = permissions("execution")
         )
-        lints <- p$robustness_lints
+        lints <- p$correctness_lints
         expect_true(inherits(lints, "lints"))
         expect_length(lints, 3)
       }
@@ -114,11 +114,11 @@ describe("robustness_lint_count derivation from mocked lints", {
   })
 })
 
-describe("robustness_lint_count mock implementation", {
+describe("correctness_lint_count mock implementation", {
   it("returns non-negative values", {
     results <- replicate(50, {
       p <- random_pkg()
-      p$robustness_lint_count
+      p$correctness_lint_count
     })
 
     expect_true(all(results >= 0))
@@ -127,7 +127,7 @@ describe("robustness_lint_count mock implementation", {
   it("returns numeric values consistently", {
     results <- replicate(20, {
       p <- random_pkg()
-      p$robustness_lint_count
+      p$correctness_lint_count
     })
 
     expect_true(all(vlapply(as.list(results), is.numeric)))
