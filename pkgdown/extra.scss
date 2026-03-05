@@ -1,3 +1,47 @@
 :root {
   --bs-border-color: transparent;
 }
+
+// when translate banner is shown, adjust navbar absolute positioning
+body:has(> div.skiptranslate:not([style*="display:"]) > iframe) nav {
+  top: 40px;
+}
+
+// disable default translate glow effect
+iframe.skiptranslate {
+  box-shadow: none;
+}
+
+// hide the original dropdown menu from pkgdown
+#dropdown-translate + .dropdown-menu {
+  display: none;
+}
+
+// hide the default google translate button
+#dropdown-translate .goog-te-gadget-simple > * {
+  display: none;
+}
+
+// make the gadget invisible
+#dropdown-translate .goog-te-gadget-simple {
+  background: none;
+  border: none;
+}
+
+// make the translate gadget span the original pkgdown button area
+#dropdown-translate .goog-te-gadget {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+// give the translate gadget z-priority so that users click it when clicking
+// the pkgdown-styled button
+#dropdown-translate .goog-te-gadget *:first-child {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
