@@ -58,7 +58,7 @@ format_output <- function(
   }
 
   old_options <- options(width = 80L, crayon.enabled = TRUE, cli.ansi = TRUE)
-  on.exit(options(old_options))
+  on.exit(options(old_options), add = TRUE)
 
   out <- if (evaluate) {
     fn <- function() {}

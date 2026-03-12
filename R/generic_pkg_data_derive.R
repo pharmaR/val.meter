@@ -54,7 +54,7 @@ capture_pkg_data_derive <- function(
     cli.num_colors = 256L
   )
 
-  on.exit(options(original_opts))
+  on.exit(options(original_opts), add = TRUE)
 
   capture <- evaluate::evaluate(
     evaluate_fn,
