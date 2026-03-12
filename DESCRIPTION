@@ -37,6 +37,7 @@ BugReports:
 Imports:
     cli,
     desc,
+    evaluate,
     options,
     S7,
     tools,
@@ -48,6 +49,7 @@ Imports:
 Suggests:
     covr,
     rcmdcheck,
+    htmltools,
     igraph,
     knitr,
     rmarkdown,
@@ -99,7 +101,9 @@ Collate:
     'generic_metric_coerce.R'
     'options.R'
     'package.R'
+    'share-register-s3.R'
     'utils_backports.R'
+    'utils_evaluate.R'
     'utils_rand.R'
     'utils_rstudio.R'
     'utils_tmp.R'
