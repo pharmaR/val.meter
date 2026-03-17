@@ -46,8 +46,6 @@ define_options(
     "for_loop_index_linter",
     "length_test_linter",
     "list_comparison_linter",
-    "missing_package_linter",
-    "namespace_linter",
     "nonportable_path_linter",
     "object_overwrite_linter",
     "package_hooks_linter",
