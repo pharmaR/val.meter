@@ -28,14 +28,15 @@ define_options(
   (for example, running `R CMD check`)",
   quiet = TRUE,
 
-  paste(
-    "Character vector of \\pkg{lintr} linter function names used when computing",
-    "\\code{lint_count} and \\code{lint_free_fraction}. Each name must correspond",
-    "to a zero-argument linter constructor exported by \\pkg{lintr} (e.g.",
-    "\\code{\"equals_na_linter\"}). Override to add, remove, or replace linters.",
-    "Note: linters requiring configuration (e.g. \\code{backport_linter}) are",
-    "excluded from the default set; add them manually with \\code{opt_set()} after",
-    "configuring via \\code{lintr::backport_linter(minimum_r_version = ...)}."
+  fmt(
+    "Character vector of `{{lintr}}` linter function names used when computing
+    `lint_count` and `lint_free_fraction`. Each name must correspond
+    to a linter constructor exported by `{{lintr}}` (e.g.
+    `\"equals_na_linter\"`. Override to add, remove, or replace linters.
+    Note: linters requiring configuration or environment-specific ones 
+    (e.g. `\"backport_linter\"`) are excluded from the default set;
+    add them manually by changing this option, possibly after configuring
+    them globally."
   ),
   lint_linters = c(
     "absolute_path_linter",

@@ -40,7 +40,8 @@ impl_data(
     "Contains detailed information about each lint including line numbers,",
     "column positions, and lint messages. This is auxiliary data used to",
     "derive the \\code{lint_count} and \\code{lint_free_fraction} metrics.",
-    "The set of linters applied is controlled by the \\code{lint_linters} option."
+    "The set of linters applied is controlled by the \\code{lint_linters}",
+    "option."
   )
 )
 
@@ -80,9 +81,10 @@ impl_data(
   title = "Lint Count",
   description = paste(
     "Count of lints identified by \\pkg{lintr}.",
-    "The set of linters applied is controlled by the \\code{lint_linters} option,",
-    "which defaults to 26 linters from the \\emph{correctness},",
-    "\\emph{common_mistakes}, and \\emph{robustness} tags.",
+    "The set of linters applied is controlled by the \\code{lint_linters}",
+    "option, which defaults to linters from the \\emph{correctness},",
+    "\\emph{common_mistakes}, and \\emph{robustness} tags excluding",
+    "those that require configuration or are environment-dependent.",
     "Lower counts indicate higher code quality."
   )
 )
@@ -112,8 +114,8 @@ impl_data(
     "Fraction of non-empty R source lines that are free of lints,",
     "as identified by \\pkg{lintr}. A value of 1 means no linted lines;",
     "lower values indicate more pervasive lint issues.",
-    "The set of linters applied is controlled by the \\code{lint_linters} option.",
-    "Returns \\code{1} when the package has no R source lines."
+    "The set of linters applied is controlled by the \\code{lint_linters}",
+    "option. Returns \\code{1} when the package has no R source lines."
   )
 )
 

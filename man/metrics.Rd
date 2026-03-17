@@ -28,7 +28,7 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 \keyword{workflow}
 \section{Metrics}{The following metrics are provided by \code{\link{val.meter}}.
  \subsection{Lint Count}{
-\code{<integer>} Count of lints identified by \pkg{lintr}. The set of linters applied is controlled by the \code{lint_linters} option, which defaults to 26 linters from the \emph{correctness}, \emph{common_mistakes}, and \emph{robustness} tags. Lower counts indicate higher code quality.
+\code{<integer>} Count of lints identified by \pkg{lintr}. The set of linters applied is controlled by the \code{lint_linters} option, which defaults to linters from the \emph{correctness}, \emph{common_mistakes}, and \emph{robustness} tags excluding those that require configuration or are environment-dependent. Lower counts indicate higher code quality.
 
   
 
