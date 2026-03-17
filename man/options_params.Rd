@@ -4,6 +4,8 @@
 \alias{options_params}
 \title{Options As Parameters}
 \arguments{
+\item{lint_linters}{Character vector of \pkg{lintr} linter function names used when computing \code{lint_count} and \code{lint_free_fraction}. Each name must correspond to a zero-argument linter constructor exported by \pkg{lintr} (e.g. \code{"equals_na_linter"}). Override to add, remove, or replace linters. Note: linters requiring configuration (e.g. \code{backport_linter}) are excluded from the default set; add them manually with \code{opt_set()} after configuring via \code{lintr::backport_linter(minimum_r_version = ...)}. (Defaults to \verb{c("absolute_path_linter", "all_equal_linter", "class_equals_linter", ;     "download_file_linter", "equals_na_linter", "for_loop_index_linter", ;     "length_test_linter", "list_comparison_linter", "missing_package_linter", ;     "namespace_linter", "nonportable_path_linter", "object_overwrite_linter", ;     "package_hooks_linter", "pipe_return_linter", "redundant_equals_linter", ;     "routine_registration_linter", "sample_int_linter", "seq_linter", ;     "sprintf_linter", "strings_as_factors_linter", "T_and_F_symbol_linter", ;     "terminal_close_linter", "unused_import_linter", "vector_logic_linter")}, overwritable using option 'val.meter.lint_linters' or environment variable 'R_VAL_METER_LINT_LINTERS')}
+
 \item{tags}{Set the default \code{val.meter} tags policy. Tags characterize the
 types of information various metrics contain. For more details, see
 \code{\link[=tags]{tags()}}. (Defaults to \code{tags(TRUE)}, overwritable using option 'val.meter.tags' or environment variable 'R_VAL_METER_TAGS')}

@@ -27,8 +27,8 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 }
 \keyword{workflow}
 \section{Metrics}{The following metrics are provided by \code{\link{val.meter}}.
- \subsection{Correctness Lint Count}{
-\code{<integer>} Count of correctness lints identified by \pkg{lintr}. Combines linters from the \emph{correctness}, \emph{common_mistakes}, and \emph{robustness} tags to identify potentially error-prone code patterns and common programming mistakes. Lower counts indicate higher code quality. See \url{https://lintr.r-lib.org/reference/correctness_linters.html}
+ \subsection{Lint Count}{
+\code{<integer>} Count of lints identified by \pkg{lintr}. The set of linters applied is controlled by the \code{lint_linters} option, which defaults to 26 linters from the \emph{correctness}, \emph{common_mistakes}, and \emph{robustness} tags. Lower counts indicate higher code quality.
 
   
 
@@ -40,6 +40,13 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
   
 
 
+}
+ \subsection{Lint-Free Fraction}{
+\code{<double>} Fraction of non-empty R source lines that are free of lints, as identified by \pkg{lintr}. A value of 1 means no linted lines; lower values indicate more pervasive lint issues. The set of linters applied is controlled by the \code{lint_linters} option. Returns \code{1} when the package has no R source lines.
+
+  
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}}" }}
 }
  \subsection{CRAN Reverse Dependencies Count}{
 \code{<integer>} The number of packages on \acronym{CRAN} that directly depend on this package through \code{Depends}, \code{Imports}, or \code{LinkingTo} fields. This metric reflects adoption within the CRAN ecosystem and indicates how many packages would be affected by breaking changes. Higher counts suggest wider usage and community trust, but also greater responsibility for maintaining backward compatibility.
