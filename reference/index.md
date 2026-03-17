@@ -125,3 +125,18 @@ Various developer-facing functions, used for extending `val.meter`
 
 - [`error()`](https://pharmar.github.io/val.meter/reference/error.md) :
   Build an error from an error type and data attributes
+
+## Package Extensions
+
+### Knitr
+
+- [`knit_print.evaluate_evaluation()`](https://pharmar.github.io/val.meter/reference/knit_print.evaluate_evaluation.md)
+  :
+
+  `knitr` Pretty-printing of rich ansi output captured with `evaluate()`
+
+- [`format_output()`](https://pharmar.github.io/val.meter/reference/format_output.md)
+  :
+
+  Formatted version of
+  [`capture.output()`](https://rdrr.io/r/utils/capture.output.html)

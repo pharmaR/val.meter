@@ -12,6 +12,14 @@ Options As Parameters
   (Defaults to `tags(TRUE)`, overwritable using option 'val.meter.tags'
   or environment variable 'R_VAL_METER_TAGS')
 
+- artifacts:
+
+  Directory where artifacts will be stored. This includes installation
+  logs, package source code and temporary libraries used while
+  evaluating packages. (Defaults to `ns_tmp_root()`, overwritable using
+  option 'val.meter.artifacts' or environment variable
+  'R_VAL_METER_ARTIFACTS')
+
 - quiet:
 
   Silences console output during evaluation. This applies when pulling
@@ -31,9 +39,9 @@ Options As Parameters
 
 - logs:
 
-  Logging directory where artifacts will be stored. Defaults to a
-  temporary directory. (Defaults to `ns_tmp_root()`, overwritable using
-  option 'val.meter.logs' or environment variable 'R_VAL_METER_LOGS')
+  Whether output should be captured during the evaluation of metrics.
+  (Defaults to `FALSE`, overwritable using option 'val.meter.logs' or
+  environment variable 'R_VAL_METER_LOGS')
 
 - source_control_domains:
 

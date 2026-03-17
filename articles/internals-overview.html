@@ -269,17 +269,18 @@ they’re lists! They have tab completion, print out their contents
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">rpkg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "covr_coverage"                     "r_cmd_check"                      </span></span>
-<span><span class="co">#&gt;  [3] "desc"                              "has_current_news"                 </span></span>
-<span><span class="co">#&gt;  [5] "archive_md5"                       "documentation_examples"           </span></span>
-<span><span class="co">#&gt;  [7] "vignette_count"                    "web_html"                         </span></span>
-<span><span class="co">#&gt;  [9] "cran_reverse_dependencies_count"   "cran_reverse_dependencies"        </span></span>
-<span><span class="co">#&gt; [11] "web_url"                           "name"                             </span></span>
-<span><span class="co">#&gt; [13] "version"                           "r_cmd_check_error_count"          </span></span>
-<span><span class="co">#&gt; [15] "test_line_coverage_fraction"       "test_expression_coverage_fraction"</span></span>
-<span><span class="co">#&gt; [17] "exports_help_coverage"             "downloads_total"                  </span></span>
-<span><span class="co">#&gt; [19] "help_pages_with_examples_count"    "has_recognized_source"            </span></span>
-<span><span class="co">#&gt; [21] "recognized_source_url"             "help_examples_coverage"           </span></span>
-<span><span class="co">#&gt; [23] "dependency_count"                  "has_website"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [3] "md5"                               "desc"                             </span></span>
+<span><span class="co">#&gt;  [5] "name"                              "version"                          </span></span>
+<span><span class="co">#&gt;  [7] "has_current_news"                  "archive_md5"                      </span></span>
+<span><span class="co">#&gt;  [9] "documentation_examples"            "vignette_count"                   </span></span>
+<span><span class="co">#&gt; [11] "web_html"                          "cran_reverse_dependencies_count"  </span></span>
+<span><span class="co">#&gt; [13] "cran_reverse_dependencies"         "web_url"                          </span></span>
+<span><span class="co">#&gt; [15] "r_cmd_check_error_count"           "test_line_coverage_fraction"      </span></span>
+<span><span class="co">#&gt; [17] "test_expression_coverage_fraction" "exports_help_coverage"            </span></span>
+<span><span class="co">#&gt; [19] "downloads_total"                   "help_pages_with_examples_count"   </span></span>
+<span><span class="co">#&gt; [21] "has_recognized_source"             "recognized_source_url"            </span></span>
+<span><span class="co">#&gt; [23] "help_examples_coverage"            "dependency_count"                 </span></span>
+<span><span class="co">#&gt; [25] "has_website"</span></span></code></pre></div>
 <p>Yep. There they are. All the fields you can just <em>assume</em>
 exist in this <code>pkg</code> object. We say <em>“assume”</em> because
 they don’t actually exist in the <code>pkg</code> - at least not yet.
@@ -325,14 +326,15 @@ about.</p>
 <span><span class="co">#&gt;   &lt;promise&gt;</span></span>
 <span><span class="co">#&gt; $covr_coverage (internal)</span></span>
 <span><span class="co">#&gt; $r_cmd_check (internal)</span></span>
+<span><span class="co">#&gt; $md5 (internal)</span></span>
 <span><span class="co">#&gt; $desc (internal)</span></span>
+<span><span class="co">#&gt; $name (internal)</span></span>
+<span><span class="co">#&gt; $version (internal)</span></span>
 <span><span class="co">#&gt; $archive_md5 (internal)</span></span>
 <span><span class="co">#&gt; $documentation_examples (internal)</span></span>
 <span><span class="co">#&gt; $web_html (internal)</span></span>
 <span><span class="co">#&gt; $cran_reverse_dependencies (internal)</span></span>
 <span><span class="co">#&gt; $web_url (internal)</span></span>
-<span><span class="co">#&gt; $name (internal)</span></span>
-<span><span class="co">#&gt; $version (internal)</span></span>
 <span><span class="co">#&gt; $recognized_source_url (internal)</span></span></code></pre>
 <p>You’ll see that there’s a lot of data missing in there, but that
 doesn’t mean we can’t use it! If we try to use one of these fields we’ll
@@ -379,14 +381,15 @@ some new data.</p>
 <span><span class="co">#&gt;   &lt;promise&gt;</span></span>
 <span><span class="co">#&gt; $covr_coverage (internal)</span></span>
 <span><span class="co">#&gt; $r_cmd_check (internal)</span></span>
+<span><span class="co">#&gt; $md5 (internal)</span></span>
 <span><span class="co">#&gt; $desc (internal)</span></span>
+<span><span class="co">#&gt; $name (internal)</span></span>
+<span><span class="co">#&gt; $version (internal)</span></span>
 <span><span class="co">#&gt; $archive_md5 (internal)</span></span>
 <span><span class="co">#&gt; $documentation_examples (internal)</span></span>
 <span><span class="co">#&gt; $web_html (internal)</span></span>
 <span><span class="co">#&gt; $cran_reverse_dependencies (internal)</span></span>
 <span><span class="co">#&gt; $web_url (internal)</span></span>
-<span><span class="co">#&gt; $name (internal)</span></span>
-<span><span class="co">#&gt; $version (internal)</span></span>
 <span><span class="co">#&gt; $recognized_source_url (internal)</span></span></code></pre>
 <p>After we accessed our data, the package object did the work to
 compute it. In fact, it also computed any necessary dependent data like

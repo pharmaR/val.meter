@@ -128,14 +128,15 @@ pkg("val.meter") # when installed locally
 #>   <promise>
 #> $covr_coverage (internal)
 #> $r_cmd_check (internal)
+#> $md5 (internal)
 #> $desc (internal)
+#> $name (internal)
+#> $version (internal)
 #> $archive_md5 (internal)
 #> $documentation_examples (internal)
 #> $web_html (internal)
 #> $cran_reverse_dependencies (internal)
 #> $web_url (internal)
-#> $name (internal)
-#> $version (internal)
 #> $recognized_source_url (internal)
 ```
 

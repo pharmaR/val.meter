@@ -74,6 +74,11 @@ types of information various metrics contain. For more details, see
 <code><a href="tags.html">tags()</a></code>. (Defaults to <code>tags(TRUE)</code>, overwritable using option 'val.meter.tags' or environment variable 'R_VAL_METER_TAGS')</p></dd>
 
 
+<dt id="arg-artifacts">artifacts<a class="anchor" aria-label="anchor" href="#arg-artifacts"></a></dt>
+<dd><p>Directory where artifacts will be stored. This includes installation logs,
+package source code and temporary libraries used while evaluating packages. (Defaults to <code>ns_tmp_root()</code>, overwritable using option 'val.meter.artifacts' or environment variable 'R_VAL_METER_ARTIFACTS')</p></dd>
+
+
 <dt id="arg-quiet">quiet<a class="anchor" aria-label="anchor" href="#arg-quiet"></a></dt>
 <dd><p>Silences console output during evaluation. This applies when pulling package
 resources (such as download and installation output) and executing code
@@ -87,8 +92,7 @@ calculating metrics. (Defaults to <code><a href="policy.html">policy()</a></code
 
 
 <dt id="arg-logs">logs<a class="anchor" aria-label="anchor" href="#arg-logs"></a></dt>
-<dd><p>Logging directory where artifacts will be stored. Defaults to a temporary
-directory. (Defaults to <code>ns_tmp_root()</code>, overwritable using option 'val.meter.logs' or environment variable 'R_VAL_METER_LOGS')</p></dd>
+<dd><p>Whether output should be captured during the evaluation of metrics. (Defaults to <code>FALSE</code>, overwritable using option 'val.meter.logs' or environment variable 'R_VAL_METER_LOGS')</p></dd>
 
 
 <dt id="arg-source-control-domains">source_control_domains<a class="anchor" aria-label="anchor" href="#arg-source-control-domains"></a></dt>

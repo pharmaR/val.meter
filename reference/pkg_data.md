@@ -147,6 +147,6 @@ impl_data(
 )
 
 p$name_character_count
-#> [1] 32
+#> [1] 18
 
 ```

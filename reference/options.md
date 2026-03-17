@@ -48,7 +48,7 @@ package name to `env`.
 
   default:
 
-  :   ns_tmp_root()
+  :   FALSE
 
   option:
 
@@ -57,6 +57,21 @@ package name to `env`.
   envvar:
 
   :   R_VAL_METER_LOGS (evaluated if possible, raw string otherwise)
+
+- artifacts:
+
+  default:
+
+  :   ns_tmp_root()
+
+  option:
+
+  :   val.meter.artifacts
+
+  envvar:
+
+  :   R_VAL_METER_ARTIFACTS (evaluated if possible, raw string
+      otherwise)
 
 - quiet:
 

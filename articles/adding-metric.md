@@ -32,17 +32,18 @@ internally calculated data.
 ``` r
 names(metrics(all = TRUE))
 #>  [1] "covr_coverage"                     "r_cmd_check"                      
-#>  [3] "desc"                              "has_current_news"                 
-#>  [5] "archive_md5"                       "documentation_examples"           
-#>  [7] "vignette_count"                    "web_html"                         
-#>  [9] "cran_reverse_dependencies_count"   "cran_reverse_dependencies"        
-#> [11] "web_url"                           "name"                             
-#> [13] "version"                           "r_cmd_check_error_count"          
-#> [15] "test_line_coverage_fraction"       "test_expression_coverage_fraction"
-#> [17] "exports_help_coverage"             "downloads_total"                  
-#> [19] "help_pages_with_examples_count"    "has_recognized_source"            
-#> [21] "recognized_source_url"             "help_examples_coverage"           
-#> [23] "dependency_count"                  "has_website"
+#>  [3] "md5"                               "desc"                             
+#>  [5] "name"                              "version"                          
+#>  [7] "has_current_news"                  "archive_md5"                      
+#>  [9] "documentation_examples"            "vignette_count"                   
+#> [11] "web_html"                          "cran_reverse_dependencies_count"  
+#> [13] "cran_reverse_dependencies"         "web_url"                          
+#> [15] "r_cmd_check_error_count"           "test_line_coverage_fraction"      
+#> [17] "test_expression_coverage_fraction" "exports_help_coverage"            
+#> [19] "downloads_total"                   "help_pages_with_examples_count"   
+#> [21] "has_recognized_source"             "recognized_source_url"            
+#> [23] "help_examples_coverage"            "dependency_count"                 
+#> [25] "has_website"
 ```
 
 Sure enough, `"name"` is in the list. We can learn a bit more about it

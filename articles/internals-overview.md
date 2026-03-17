@@ -175,17 +175,18 @@ They have tab completion, print out their contents *almost* like a
 ``` r
 names(rpkg)
 #>  [1] "covr_coverage"                     "r_cmd_check"                      
-#>  [3] "desc"                              "has_current_news"                 
-#>  [5] "archive_md5"                       "documentation_examples"           
-#>  [7] "vignette_count"                    "web_html"                         
-#>  [9] "cran_reverse_dependencies_count"   "cran_reverse_dependencies"        
-#> [11] "web_url"                           "name"                             
-#> [13] "version"                           "r_cmd_check_error_count"          
-#> [15] "test_line_coverage_fraction"       "test_expression_coverage_fraction"
-#> [17] "exports_help_coverage"             "downloads_total"                  
-#> [19] "help_pages_with_examples_count"    "has_recognized_source"            
-#> [21] "recognized_source_url"             "help_examples_coverage"           
-#> [23] "dependency_count"                  "has_website"
+#>  [3] "md5"                               "desc"                             
+#>  [5] "name"                              "version"                          
+#>  [7] "has_current_news"                  "archive_md5"                      
+#>  [9] "documentation_examples"            "vignette_count"                   
+#> [11] "web_html"                          "cran_reverse_dependencies_count"  
+#> [13] "cran_reverse_dependencies"         "web_url"                          
+#> [15] "r_cmd_check_error_count"           "test_line_coverage_fraction"      
+#> [17] "test_expression_coverage_fraction" "exports_help_coverage"            
+#> [19] "downloads_total"                   "help_pages_with_examples_count"   
+#> [21] "has_recognized_source"             "recognized_source_url"            
+#> [23] "help_examples_coverage"            "dependency_count"                 
+#> [25] "has_website"
 ```
 
 Yep. There they are. All the fields you can just *assume* exist in this
@@ -234,14 +235,15 @@ If we take a peek at our `rpkg` object, we’ll see:
     #>   <promise>
     #> $covr_coverage (internal)
     #> $r_cmd_check (internal)
+    #> $md5 (internal)
     #> $desc (internal)
+    #> $name (internal)
+    #> $version (internal)
     #> $archive_md5 (internal)
     #> $documentation_examples (internal)
     #> $web_html (internal)
     #> $cran_reverse_dependencies (internal)
     #> $web_url (internal)
-    #> $name (internal)
-    #> $version (internal)
     #> $recognized_source_url (internal)
 
 You’ll see that there’s a lot of data missing in there, but that doesn’t
@@ -293,14 +295,15 @@ new data.
     #>   <promise>
     #> $covr_coverage (internal)
     #> $r_cmd_check (internal)
+    #> $md5 (internal)
     #> $desc (internal)
+    #> $name (internal)
+    #> $version (internal)
     #> $archive_md5 (internal)
     #> $documentation_examples (internal)
     #> $web_html (internal)
     #> $cran_reverse_dependencies (internal)
     #> $web_url (internal)
-    #> $name (internal)
-    #> $version (internal)
     #> $recognized_source_url (internal)
 
 After we accessed our data, the package object did the work to compute

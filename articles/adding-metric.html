@@ -123,17 +123,18 @@ data.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="../reference/metrics.html">metrics</a></span><span class="op">(</span>all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "covr_coverage"                     "r_cmd_check"                      </span></span>
-<span><span class="co">#&gt;  [3] "desc"                              "has_current_news"                 </span></span>
-<span><span class="co">#&gt;  [5] "archive_md5"                       "documentation_examples"           </span></span>
-<span><span class="co">#&gt;  [7] "vignette_count"                    "web_html"                         </span></span>
-<span><span class="co">#&gt;  [9] "cran_reverse_dependencies_count"   "cran_reverse_dependencies"        </span></span>
-<span><span class="co">#&gt; [11] "web_url"                           "name"                             </span></span>
-<span><span class="co">#&gt; [13] "version"                           "r_cmd_check_error_count"          </span></span>
-<span><span class="co">#&gt; [15] "test_line_coverage_fraction"       "test_expression_coverage_fraction"</span></span>
-<span><span class="co">#&gt; [17] "exports_help_coverage"             "downloads_total"                  </span></span>
-<span><span class="co">#&gt; [19] "help_pages_with_examples_count"    "has_recognized_source"            </span></span>
-<span><span class="co">#&gt; [21] "recognized_source_url"             "help_examples_coverage"           </span></span>
-<span><span class="co">#&gt; [23] "dependency_count"                  "has_website"</span></span></code></pre></div>
+<span><span class="co">#&gt;  [3] "md5"                               "desc"                             </span></span>
+<span><span class="co">#&gt;  [5] "name"                              "version"                          </span></span>
+<span><span class="co">#&gt;  [7] "has_current_news"                  "archive_md5"                      </span></span>
+<span><span class="co">#&gt;  [9] "documentation_examples"            "vignette_count"                   </span></span>
+<span><span class="co">#&gt; [11] "web_html"                          "cran_reverse_dependencies_count"  </span></span>
+<span><span class="co">#&gt; [13] "cran_reverse_dependencies"         "web_url"                          </span></span>
+<span><span class="co">#&gt; [15] "r_cmd_check_error_count"           "test_line_coverage_fraction"      </span></span>
+<span><span class="co">#&gt; [17] "test_expression_coverage_fraction" "exports_help_coverage"            </span></span>
+<span><span class="co">#&gt; [19] "downloads_total"                   "help_pages_with_examples_count"   </span></span>
+<span><span class="co">#&gt; [21] "has_recognized_source"             "recognized_source_url"            </span></span>
+<span><span class="co">#&gt; [23] "help_examples_coverage"            "dependency_count"                 </span></span>
+<span><span class="co">#&gt; [25] "has_website"</span></span></code></pre></div>
 <p>Sure enough, <code>"name"</code> is in the list. We can learn a bit
 more about it by pulling this entry from our metrics:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">

@@ -13,7 +13,7 @@ instead should capture errors for communication back to the user.
 ## Usage
 
 ``` r
-get_pkg_data(x, name, ..., .raise = .state$raise)
+get_pkg_data(x, name, ..., logs = opt("logs"), .raise = .state$raise)
 ```
 
 ## Arguments
@@ -30,6 +30,11 @@ get_pkg_data(x, name, ..., .raise = .state$raise)
 - ...:
 
   Additional arguments unused
+
+- logs:
+
+  `logical(1L)` flag indicating whether console output should be
+  captured during execution.
 
 - .raise:
 
