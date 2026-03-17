@@ -14,26 +14,12 @@ impl_data(
     local_source_resource,
     source_archive_resource
   ),
-  function(pkg, resource, field, ..., quiet = opt("quiet")) {
-    # suppress messages to avoid stdout output from subprocess
-    # (eg warnings about latex availability not suppressed by rcmdcheck)
-
-    wrapper <- if (quiet) {
-      function(...) capture.output(..., type = "message")
-    } else {
-      identity
-    }
-
-    wrapper({
-      result <- rcmdcheck::rcmdcheck(
-        resource@path,
-        quiet = quiet,
-        error_on = "never",
-        build_args = "--no-manual"
-      )
-    })
-
-    result
+  function(pkg, resource, field, ...) {
+    rcmdcheck::rcmdcheck(
+      resource@path,
+      error_on = "never",
+      build_args = "--no-manual"
+    )
   }
 )
 

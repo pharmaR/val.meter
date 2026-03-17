@@ -14,6 +14,7 @@ impl_data(
   "name",
   title = "Package name",
   class = class_character,
+  for_resource = new_union(source_code_resource, install_resource),
   function(pkg, resource, field, ...) {
     pkg$desc$get_field("Package")
   }
@@ -21,7 +22,7 @@ impl_data(
 
 impl_data(
   "name",
-  for_resource = repo_resource,
+  for_resource = class_resource,
   function(pkg, resource, field, ...) {
     resource@package
   }
@@ -30,6 +31,7 @@ impl_data(
 impl_data(
   "version",
   class = class_character,
+  for_resource = new_union(source_code_resource, install_resource),
   function(pkg, resource, field, ...) {
     pkg$desc$get_field("Version")
   }
@@ -37,9 +39,26 @@ impl_data(
 
 impl_data(
   "version",
-  for_resource = repo_resource,
+  for_resource = class_resource,
   function(pkg, resource, field, ...) {
     resource@version
+  }
+)
+
+impl_data(
+  "md5",
+  class = class_character,
+  for_resource = new_union(source_code_resource, install_resource),
+  function(pkg, resource, field, ...) {
+    pkg$desc$get_field("MD5sum")
+  }
+)
+
+impl_data(
+  "md5",
+  for_resource = class_resource,
+  function(pkg, resource, field, ...) {
+    resource@md5
   }
 )
 
