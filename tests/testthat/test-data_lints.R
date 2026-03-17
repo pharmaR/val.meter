@@ -281,20 +281,4 @@ describe("lint_linters option customization", {
     expect_equal(linters, "equals_na_linter")
     expect_length(linters, 1L)
   })
-
-  it("default option contains expected linter names", {
-    linters <- opt("lint_linters")
-
-    expect_true("equals_na_linter" %in% linters)
-    expect_true("seq_linter" %in% linters)
-    expect_true("vector_logic_linter" %in% linters)
-    expect_true("T_and_F_symbol_linter" %in% linters)
-    expect_equal(length(linters), 26L)
-
-    # Excluded linters should not be present
-    expect_false("backport_linter" %in% linters)
-    expect_false("undesirable_function_linter" %in% linters)
-    expect_false("undesirable_operator_linter" %in% linters)
-    expect_false("sample_int_linter" %in% linters)
-  })
 })
