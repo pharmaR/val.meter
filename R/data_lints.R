@@ -14,20 +14,19 @@ find_lintable_files <- function(
     pkg_dirs = c("R", "tests", "inst", "vignettes", "data-raw", "demo", "exec"),
     file_pattern = "(?i)[.](r|rmd|qmd|rnw|rhtml|rrst|rtex|rtxt)$"
 ) {
-  r_files <- character(0)
-  for (dir in pkg_dirs) {
+  unlist(lapply(pkg_dirs, function(dir) {
     dir_path <- file.path(path, dir)
     if (dir.exists(dir_path)) {
-      files <- list.files(
+      list.files(
         dir_path,
         pattern = file_pattern,
         recursive = TRUE,
         full.names = TRUE
       )
-      r_files <- c(r_files, files)
+    } else {
+      character(0)
     }
-  }
-  r_files
+  }), use.names = FALSE)
 }
 
 #' Count token-bearing, non-comment lines in a single file
@@ -74,12 +73,7 @@ count_lintable_code_lines <- function(
     return(0L)
   }
 
-  total_lines <- 0L
-  for (file in r_files) {
-    total_lines <- total_lines + count_file_code_lines(file)
-  }
-
-  total_lines
+  sum(viapply(r_files, count_file_code_lines))
 }
 
 # Helper: count unique (filename, line_number) pairs across all lints
