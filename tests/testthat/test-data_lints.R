@@ -138,7 +138,7 @@ describe("find_lintable_files helper", {
   it("returns empty character vector for package with no R files", {
     tmp_dir <- withr::local_tempdir()
     dir.create(file.path(tmp_dir, "R"))
-    result <- val.meter:::find_lintable_files(tmp_dir)
+    result <- find_lintable_files(tmp_dir)
     expect_type(result, "character")
     expect_length(result, 0L)
   })
@@ -148,7 +148,7 @@ describe("find_lintable_files helper", {
     dir.create(file.path(tmp_dir, "R"))
     writeLines("x <- 1", file.path(tmp_dir, "R", "a.R"))
     writeLines("y <- 2", file.path(tmp_dir, "R", "b.R"))
-    result <- val.meter:::find_lintable_files(tmp_dir)
+    result <- find_lintable_files(tmp_dir)
     expect_length(result, 2L)
     expect_true(all(grepl("\\.R$", result)))
   })
@@ -156,8 +156,11 @@ describe("find_lintable_files helper", {
   it("finds files in tests/ directory", {
     tmp_dir <- withr::local_tempdir()
     dir.create(file.path(tmp_dir, "tests", "testthat"), recursive = TRUE)
-    writeLines("test_that('x', {})", file.path(tmp_dir, "tests", "testthat", "test-a.R"))
-    result <- val.meter:::find_lintable_files(tmp_dir)
+    writeLines(
+      "test_that('x', {})",
+      file.path(tmp_dir, "tests", "testthat", "test-a.R")
+    )
+    result <- find_lintable_files(tmp_dir)
     expect_length(result, 1L)
   })
 
@@ -169,7 +172,7 @@ describe("find_lintable_files helper", {
     writeLines("x <- 1", file.path(tmp_dir, "R", "code.R"))
     writeLines("test_that('x', {})", file.path(tmp_dir, "tests", "test.R"))
     writeLines("# vignette", file.path(tmp_dir, "vignettes", "intro.R"))
-    result <- val.meter:::find_lintable_files(tmp_dir)
+    result <- find_lintable_files(tmp_dir)
     expect_length(result, 3L)
   })
 
@@ -179,7 +182,7 @@ describe("find_lintable_files helper", {
     dir.create(file.path(tmp_dir, "tests"))
     writeLines("x <- 1", file.path(tmp_dir, "R", "code.R"))
     writeLines("test_that('x', {})", file.path(tmp_dir, "tests", "test.R"))
-    result <- val.meter:::find_lintable_files(tmp_dir, pkg_dirs = "R")
+    result <- find_lintable_files(tmp_dir, pkg_dirs = "R")
     expect_length(result, 1L)
     expect_true(grepl("/R/", result))
   })
@@ -190,7 +193,7 @@ describe("find_lintable_files helper", {
     writeLines("x <- 1", file.path(tmp_dir, "R", "code.R"))
     writeLines("---\ntitle: test\n---", file.path(tmp_dir, "R", "doc.Rmd"))
     # Only .R files
-    result <- val.meter:::find_lintable_files(tmp_dir, file_pattern = "\\.R$")
+    result <- find_lintable_files(tmp_dir, file_pattern = "\\.R$")
     expect_length(result, 1L)
     expect_true(grepl("\\.R$", result))
   })
@@ -198,7 +201,7 @@ describe("find_lintable_files helper", {
   it("ignores non-existent directories", {
     tmp_dir <- withr::local_tempdir()
     # No directories created
-    result <- val.meter:::find_lintable_files(tmp_dir)
+    result <- find_lintable_files(tmp_dir)
     expect_type(result, "character")
     expect_length(result, 0L)
   })
@@ -210,7 +213,7 @@ describe("count_file_code_lines helper", {
     tmp_dir <- withr::local_tempdir()
     file_path <- file.path(tmp_dir, "test.R")
     writeLines(c("x <- 1", "y <- 2", "z <- 3"), file_path)
-    result <- val.meter:::count_file_code_lines(file_path)
+    result <- count_file_code_lines(file_path)
     expect_equal(result, 3L)
   })
 
@@ -219,7 +222,7 @@ describe("count_file_code_lines helper", {
     tmp_dir <- withr::local_tempdir()
     file_path <- file.path(tmp_dir, "test.R")
     writeLines(c("x <- 1", "", "", "y <- 2"), file_path)
-    result <- val.meter:::count_file_code_lines(file_path)
+    result <- count_file_code_lines(file_path)
     expect_equal(result, 2L)
   })
 
@@ -228,7 +231,7 @@ describe("count_file_code_lines helper", {
     tmp_dir <- withr::local_tempdir()
     file_path <- file.path(tmp_dir, "test.R")
     writeLines(c("# comment", "x <- 1", "#' roxygen", "y <- 2"), file_path)
-    result <- val.meter:::count_file_code_lines(file_path)
+    result <- count_file_code_lines(file_path)
     expect_equal(result, 2L)
   })
 
@@ -237,7 +240,7 @@ describe("count_file_code_lines helper", {
     tmp_dir <- withr::local_tempdir()
     file_path <- file.path(tmp_dir, "test.R")
     writeLines(character(0), file_path)
-    result <- val.meter:::count_file_code_lines(file_path)
+    result <- count_file_code_lines(file_path)
     expect_equal(result, 0L)
   })
 
@@ -246,7 +249,7 @@ describe("count_file_code_lines helper", {
     tmp_dir <- withr::local_tempdir()
     file_path <- file.path(tmp_dir, "test.R")
     writeLines(c("# just", "# comments"), file_path)
-    result <- val.meter:::count_file_code_lines(file_path)
+    result <- count_file_code_lines(file_path)
     expect_equal(result, 0L)
   })
 })
@@ -256,7 +259,7 @@ describe("count_lintable_code_lines helper", {
     skip_if_not_installed("lintr")
     tmp_dir <- withr::local_tempdir()
     dir.create(file.path(tmp_dir, "R"))
-    result <- val.meter:::count_lintable_code_lines(tmp_dir)
+    result <- count_lintable_code_lines(tmp_dir)
     expect_equal(result, 0L)
   })
 
@@ -268,7 +271,7 @@ describe("count_lintable_code_lines helper", {
     writeLines(c("x <- 1", "", "y <- 2"), file.path(tmp_dir, "R", "a.R"))
     # Line 1: code
     writeLines(c("z <- 3"), file.path(tmp_dir, "R", "b.R"))
-    result <- val.meter:::count_lintable_code_lines(tmp_dir)
+    result <- count_lintable_code_lines(tmp_dir)
     expect_equal(result, 3L)
   })
 
@@ -281,7 +284,7 @@ describe("count_lintable_code_lines helper", {
       c("# This is a comment", "x <- 1", "", "#' roxygen", "y <- 2"),
       file.path(tmp_dir, "R", "a.R")
     )
-    result <- val.meter:::count_lintable_code_lines(tmp_dir)
+    result <- count_lintable_code_lines(tmp_dir)
     expect_equal(result, 2L)
   })
 
@@ -293,7 +296,7 @@ describe("count_lintable_code_lines helper", {
     writeLines("x <- 1", file.path(tmp_dir, "R", "a.R"))
     writeLines("test_that('works', { expect_true(TRUE) })",
                file.path(tmp_dir, "tests", "testthat", "test-a.R"))
-    result <- val.meter:::count_lintable_code_lines(tmp_dir)
+    result <- count_lintable_code_lines(tmp_dir)
     # 1 from R/, 1 from tests/
     expect_equal(result, 2L)
   })
@@ -301,7 +304,7 @@ describe("count_lintable_code_lines helper", {
 
 describe("count_linted_lines helper", {
   it("returns 0 for empty lints", {
-    result <- val.meter:::count_linted_lines(create_mock_lints(0))
+    result <- count_linted_lines(create_mock_lints(0))
     expect_equal(result, 0L)
   })
 
@@ -326,7 +329,7 @@ describe("count_linted_lines helper", {
       ),
       class = c("lints", "list")
     )
-    result <- val.meter:::count_linted_lines(lints_same_line)
+    result <- count_linted_lines(lints_same_line)
     expect_equal(result, 2L)
   })
 })

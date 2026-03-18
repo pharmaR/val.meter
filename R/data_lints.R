@@ -10,9 +10,9 @@
 #' @return Character vector of file paths.
 #' @noRd
 find_lintable_files <- function(
-    path,
-    pkg_dirs = c("R", "tests", "inst", "vignettes", "data-raw", "demo", "exec"),
-    file_pattern = "(?i)[.](r|rmd|qmd|rnw|rhtml|rrst|rtex|rtxt)$"
+  path,
+  pkg_dirs = c("R", "tests", "inst", "vignettes", "data-raw", "demo", "exec"),
+  file_pattern = "(?i)[.](r|rmd|qmd|rnw|rhtml|rrst|rtex|rtxt)$"
 ) {
   unlist(lapply(pkg_dirs, function(dir) {
     dir_path <- file.path(path, dir)
@@ -63,9 +63,9 @@ count_file_code_lines <- function(file) {
 #' @return Integer count of code lines.
 #' @noRd
 count_lintable_code_lines <- function(
-    path,
-    pkg_dirs = c("R", "tests", "inst", "vignettes", "data-raw", "demo", "exec"),
-    file_pattern = "(?i)[.](r|rmd|qmd|rnw|rhtml|rrst|rtex|rtxt)$"
+  path,
+  pkg_dirs = c("R", "tests", "inst", "vignettes", "data-raw", "demo", "exec"),
+  file_pattern = "(?i)[.](r|rmd|qmd|rnw|rhtml|rrst|rtex|rtxt)$"
 ) {
   r_files <- find_lintable_files(path, pkg_dirs, file_pattern)
 
