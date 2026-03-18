@@ -107,6 +107,8 @@ impl_data(
   for_resource = source_code_resource,
   function(pkg, resource, field, ..., quiet = opt("quiet")) {
     linter_names <- opt("lint_linters")
+    # We are loading linter objects by name here to avoid hard dependencies 
+    # on lintr in the rest of the code.
     linters <- setNames(
       lapply(linter_names, function(nm) utils::getFromNamespace(nm, "lintr")()),
       linter_names
