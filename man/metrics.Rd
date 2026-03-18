@@ -42,7 +42,7 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 
 }
  \subsection{Lint-Free Fraction}{
-\code{<double>} Fraction of non-empty R source lines that are free of lints, as identified by \pkg{lintr}. A value of 1 means no linted lines; lower values indicate more pervasive lint issues. The set of linters applied is controlled by the \code{lint_linters} option. Returns \code{1} when the package has no R source lines.
+\code{<double>} Fraction of R code lines that are free of lints. Code lines are defined as lines containing executable R tokens (excluding comments and blank lines) across the standard package directories (\code{R/}, \code{tests/}, \code{inst/}, \code{vignettes/}, \code{data-raw/}, \code{demo/}, \code{exec/}). A value of 1 means no linted lines; lower values indicate more pervasive lint issues. The set of linters applied is controlled by the \code{lint_linters} option.
 
   
 
