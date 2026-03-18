@@ -134,6 +134,123 @@ describe("lint_count mock implementation", {
   })
 })
 
+describe("find_lintable_files helper", {
+  it("returns empty character vector for package with no R files", {
+    tmp_dir <- withr::local_tempdir()
+    dir.create(file.path(tmp_dir, "R"))
+    result <- val.meter:::find_lintable_files(tmp_dir)
+    expect_type(result, "character")
+    expect_length(result, 0L)
+  })
+
+  it("finds .R files in R/ directory", {
+    tmp_dir <- withr::local_tempdir()
+    dir.create(file.path(tmp_dir, "R"))
+    writeLines("x <- 1", file.path(tmp_dir, "R", "a.R"))
+    writeLines("y <- 2", file.path(tmp_dir, "R", "b.R"))
+    result <- val.meter:::find_lintable_files(tmp_dir)
+    expect_length(result, 2L)
+    expect_true(all(grepl("\\.R$", result)))
+  })
+
+  it("finds files in tests/ directory", {
+    tmp_dir <- withr::local_tempdir()
+    dir.create(file.path(tmp_dir, "tests", "testthat"), recursive = TRUE)
+    writeLines("test_that('x', {})", file.path(tmp_dir, "tests", "testthat", "test-a.R"))
+    result <- val.meter:::find_lintable_files(tmp_dir)
+    expect_length(result, 1L)
+  })
+
+  it("finds files across multiple package directories", {
+    tmp_dir <- withr::local_tempdir()
+    dir.create(file.path(tmp_dir, "R"))
+    dir.create(file.path(tmp_dir, "tests"))
+    dir.create(file.path(tmp_dir, "vignettes"))
+    writeLines("x <- 1", file.path(tmp_dir, "R", "code.R"))
+    writeLines("test_that('x', {})", file.path(tmp_dir, "tests", "test.R"))
+    writeLines("# vignette", file.path(tmp_dir, "vignettes", "intro.R"))
+    result <- val.meter:::find_lintable_files(tmp_dir)
+    expect_length(result, 3L)
+  })
+
+  it("respects custom pkg_dirs parameter", {
+    tmp_dir <- withr::local_tempdir()
+    dir.create(file.path(tmp_dir, "R"))
+    dir.create(file.path(tmp_dir, "tests"))
+    writeLines("x <- 1", file.path(tmp_dir, "R", "code.R"))
+    writeLines("test_that('x', {})", file.path(tmp_dir, "tests", "test.R"))
+    result <- val.meter:::find_lintable_files(tmp_dir, pkg_dirs = "R")
+    expect_length(result, 1L)
+    expect_true(grepl("/R/", result))
+  })
+
+  it("respects custom file_pattern parameter", {
+    tmp_dir <- withr::local_tempdir()
+    dir.create(file.path(tmp_dir, "R"))
+    writeLines("x <- 1", file.path(tmp_dir, "R", "code.R"))
+    writeLines("---\ntitle: test\n---", file.path(tmp_dir, "R", "doc.Rmd"))
+    # Only .R files
+    result <- val.meter:::find_lintable_files(tmp_dir, file_pattern = "\\.R$")
+    expect_length(result, 1L)
+    expect_true(grepl("\\.R$", result))
+  })
+
+  it("ignores non-existent directories", {
+    tmp_dir <- withr::local_tempdir()
+    # No directories created
+    result <- val.meter:::find_lintable_files(tmp_dir)
+    expect_type(result, "character")
+    expect_length(result, 0L)
+  })
+})
+
+describe("count_file_code_lines helper", {
+  it("counts code lines in a simple R file", {
+    skip_if_not_installed("lintr")
+    tmp_dir <- withr::local_tempdir()
+    file_path <- file.path(tmp_dir, "test.R")
+    writeLines(c("x <- 1", "y <- 2", "z <- 3"), file_path)
+    result <- val.meter:::count_file_code_lines(file_path)
+    expect_equal(result, 3L)
+  })
+
+  it("excludes blank lines", {
+    skip_if_not_installed("lintr")
+    tmp_dir <- withr::local_tempdir()
+    file_path <- file.path(tmp_dir, "test.R")
+    writeLines(c("x <- 1", "", "", "y <- 2"), file_path)
+    result <- val.meter:::count_file_code_lines(file_path)
+    expect_equal(result, 2L)
+  })
+
+  it("excludes comment-only lines", {
+    skip_if_not_installed("lintr")
+    tmp_dir <- withr::local_tempdir()
+    file_path <- file.path(tmp_dir, "test.R")
+    writeLines(c("# comment", "x <- 1", "#' roxygen", "y <- 2"), file_path)
+    result <- val.meter:::count_file_code_lines(file_path)
+    expect_equal(result, 2L)
+  })
+
+  it("returns 0L for empty file", {
+    skip_if_not_installed("lintr")
+    tmp_dir <- withr::local_tempdir()
+    file_path <- file.path(tmp_dir, "test.R")
+    writeLines(character(0), file_path)
+    result <- val.meter:::count_file_code_lines(file_path)
+    expect_equal(result, 0L)
+  })
+
+  it("returns 0L for comment-only file", {
+    skip_if_not_installed("lintr")
+    tmp_dir <- withr::local_tempdir()
+    file_path <- file.path(tmp_dir, "test.R")
+    writeLines(c("# just", "# comments"), file_path)
+    result <- val.meter:::count_file_code_lines(file_path)
+    expect_equal(result, 0L)
+  })
+})
+
 describe("count_lintable_code_lines helper", {
   it("returns 0 for a package with no R files", {
     skip_if_not_installed("lintr")
