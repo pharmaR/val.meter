@@ -52,6 +52,7 @@ Suggests:
     htmltools,
     igraph,
     knitr,
+    lintr,
     rmarkdown,
     rosv,
     testthat (>= 3.0.0),
@@ -93,6 +94,7 @@ Collate:
     'data_documentation_examples.R'
     'data_downloads_total.R'
     'data_has_current_news.R'
+    'data_lints.R'
     'data_r_cmd_check.R'
     'data_recognized_source.R'
     'data_reverse_dependencies.R'

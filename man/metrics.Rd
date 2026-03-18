@@ -27,12 +27,26 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 }
 \keyword{workflow}
 \section{Metrics}{The following metrics are provided by \code{\link{val.meter}}.
+ \subsection{Lint Count}{
+\code{<integer>} Count of lints identified by \pkg{lintr}. The set of linters applied is controlled by the \code{lint_linters} option, which defaults to linters from the \emph{correctness}, \emph{common_mistakes}, and \emph{robustness} tags excluding those that require configuration or are environment-dependent. Lower counts indicate higher code quality.
+
+  
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}}" }}
+}
  \subsection{Up to date NEWS}{
 \code{<logical>} a NEWS file exists and is synced with the current package version
 
   
 
 
+}
+ \subsection{Lint-Free Fraction}{
+\code{<double>} Fraction of R code lines that are free of lints. Code lines are defined as lines containing executable R tokens (excluding comments and blank lines) across the standard package directories (\code{R/}, \code{tests/}, \code{inst/}, \code{vignettes/}, \code{data-raw/}, \code{demo/}, \code{exec/}). A value of 1 means no linted lines; lower values indicate more pervasive lint issues. The set of linters applied is controlled by the \code{lint_linters} option.
+
+  
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-best_practice-x-flat-square-blue.svg}{options: alt = \\"[best practice]\\"}}{\\\\strong{[best practice]}}}" }}
 }
  \subsection{CRAN Reverse Dependencies Count}{
 \code{<integer>} The number of packages on \acronym{CRAN} that directly depend on this package through \code{Depends}, \code{Imports}, or \code{LinkingTo} fields. This metric reflects adoption within the CRAN ecosystem and indicates how many packages would be affected by breaking changes. Higher counts suggest wider usage and community trust, but also greater responsibility for maintaining backward compatibility.
