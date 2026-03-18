@@ -2,70 +2,77 @@
 
 # Lint metric implementation
 
-#' Count token-bearing, non-comment lines in files that lintr processes
-#'
-#' Uses lintr's own parsing frontend to ensure the denominator matches
-#' the scope of lint_package(). A "relevant code line" is a physical
-#' line containing at least one terminal token that is not a comment.
-#'
-#' This approach:
-#' - Matches lint_package() scope: R/, tests/, inst/, vignettes/, data-raw/,
-#'   demo/, exec/
-#' - Matches lint_package() file pattern: .R, .Rmd, .qmd, .Rnw, .Rhtml, .Rrst,
-#'   .Rtex, .Rtxt
-#' - Excludes blank lines and comment-only lines via parse data
-#' - Correctly handles # inside strings (uses R's parser, not regex)
-#'
-#' @param path Path to package source directory
-#' @return Integer count of code lines
-#' @noRd
-count_lintable_code_lines <- function(path) {
-  # Same directories as lint_package()
-  pkg_dirs <- c("R", "tests", "inst", "vignettes", "data-raw", "demo", "exec")
-
-  # Same file pattern as lint_dir() default (used by lint_package)
-  file_pattern <- "(?i)[.](r|rmd|qmd|rnw|rhtml|rrst|rtex|rtxt)$"
-
-  # Find all matching files in package directories
-  r_files <- character(0)
-  for (dir in pkg_dirs) {
-    dir_path <- file.path(path, dir)
-    if (dir.exists(dir_path)) {
-      files <- list.files(
-        dir_path,
-        pattern = file_pattern,
-        recursive = TRUE,
-        full.names = TRUE
-      )
-      r_files <- c(r_files, files)
-    }
-  }
-
-  if (length(r_files) == 0L) return(0L)
-
-  total_lines <- 0L
-
-  for (file in r_files) {
-    tryCatch({
-      se <- lintr::get_source_expressions(file)
-
-      # Last element contains full file parse data
-      full_expr <- se$expressions[[length(se$expressions)]]
-      pd <- full_expr$full_parsed_content
-
-      if (!is.null(pd) && nrow(pd) > 0L) {
-        # Count lines with terminal tokens that are not comments
-        code_lines <- unique(pd$line1[pd$terminal & pd$token != "COMMENT"])
-        total_lines <- total_lines + length(code_lines)
+  #' Count token-bearing, non-comment lines in files that lintr processes
+  #'
+  #' Uses lintr's own parsing frontend to ensure the denominator matches
+  #' the scope of lint_package(). A "relevant code line" is a physical
+  #' line containing at least one terminal token that is not a comment.
+  #'
+  #' This approach:
+  #' - Matches lint_package() scope by default (configurable via pkg_dirs)
+  #' - Matches lint_package() file pattern by default (configurable via
+  #'   file_pattern)
+  #' - Excludes blank lines and comment-only lines via parse data
+  #' - Correctly handles # inside strings (uses R's parser, not regex)
+  #'
+  #' @param path Path to package source directory.
+  #' @param pkg_dirs Character vector of subdirectories to search. Defaults to
+  #'   the same directories as lint_package(): R/, tests/, inst/, vignettes/,
+  #'   data-raw/, demo/, exec/.
+  #' @param file_pattern Regex pattern for file extensions. Defaults to the same
+  #'   pattern as lint_dir(): .R, .Rmd, .qmd, .Rnw, .Rhtml, .Rrst, .Rtex, .Rtxt.
+  #' @return Integer count of code lines.
+  #' @noRd
+  count_lintable_code_lines <- function(
+    path,
+    pkg_dirs = c("R", "tests", "inst", "vignettes", "data-raw", "demo", "exec"),
+    file_pattern = "(?i)[.](r|rmd|qmd|rnw|rhtml|rrst|rtex|rtxt)$"
+  ) {
+    # Find all matching files in package directories
+    r_files <- character(0)
+    for (dir in pkg_dirs) {
+      dir_path <- file.path(path, dir)
+      if (dir.exists(dir_path)) {
+        files <- list.files(
+          dir_path,
+          pattern = file_pattern,
+          recursive = TRUE,
+          full.names = TRUE
+        )
+        r_files <- c(r_files, files)
       }
-    }, error = function(e) {
-      # Skip unparseable files (lintr would skip them too)
-      NULL
-    })
-  }
+    }
 
-  total_lines
-}
+    if (length(r_files) == 0L) {
+      return(0L)
+    }
+
+    total_lines <- 0L
+
+    for (file in r_files) {
+      tryCatch(
+        {
+          se <- lintr::get_source_expressions(file)
+
+          # Last element contains full file parse data
+          full_expr <- se$expressions[[length(se$expressions)]]
+          pd <- full_expr$full_parsed_content
+
+          if (!is.null(pd) && nrow(pd) > 0L) {
+            # Count lines with terminal tokens that are not comments
+            code_lines <- unique(pd$line1[pd$terminal & pd$token != "COMMENT"])
+            total_lines <- total_lines + length(code_lines)
+          }
+        },
+        error = function(e) {
+          # Skip unparseable files (lintr would skip them too)
+          NULL
+        }
+      )
+    }
+
+    total_lines
+  }
 
 # Helper: count unique (filename, line_number) pairs across all lints
 count_linted_lines <- function(lints) {
