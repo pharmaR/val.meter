@@ -134,21 +134,51 @@ describe("lint_count mock implementation", {
   })
 })
 
-describe("count_r_loc helper", {
+describe("count_lintable_code_lines helper", {
   it("returns 0 for a package with no R files", {
+    skip_if_not_installed("lintr")
     tmp_dir <- withr::local_tempdir()
     dir.create(file.path(tmp_dir, "R"))
-    result <- val.meter:::count_r_loc(tmp_dir)
+    result <- val.meter:::count_lintable_code_lines(tmp_dir)
     expect_equal(result, 0L)
   })
 
-  it("counts non-empty lines across R files", {
+  it("counts token-bearing non-comment lines across R files", {
+    skip_if_not_installed("lintr")
     tmp_dir <- withr::local_tempdir()
     dir.create(file.path(tmp_dir, "R"))
+    # Line 1: code, Line 2: blank (excluded), Line 3: code
     writeLines(c("x <- 1", "", "y <- 2"), file.path(tmp_dir, "R", "a.R"))
+    # Line 1: code
     writeLines(c("z <- 3"), file.path(tmp_dir, "R", "b.R"))
-    result <- val.meter:::count_r_loc(tmp_dir)
+    result <- val.meter:::count_lintable_code_lines(tmp_dir)
     expect_equal(result, 3L)
+  })
+
+  it("excludes comment-only lines", {
+    skip_if_not_installed("lintr")
+    tmp_dir <- withr::local_tempdir()
+    dir.create(file.path(tmp_dir, "R"))
+    # 2 code lines, 2 comment lines, 1 blank
+    writeLines(
+      c("# This is a comment", "x <- 1", "", "#' roxygen", "y <- 2"),
+      file.path(tmp_dir, "R", "a.R")
+    )
+    result <- val.meter:::count_lintable_code_lines(tmp_dir)
+    expect_equal(result, 2L)
+  })
+
+  it("includes tests/ directory in scope", {
+    skip_if_not_installed("lintr")
+    tmp_dir <- withr::local_tempdir()
+    dir.create(file.path(tmp_dir, "R"))
+    dir.create(file.path(tmp_dir, "tests", "testthat"), recursive = TRUE)
+    writeLines("x <- 1", file.path(tmp_dir, "R", "a.R"))
+    writeLines("test_that('works', { expect_true(TRUE) })",
+               file.path(tmp_dir, "tests", "testthat", "test-a.R"))
+    result <- val.meter:::count_lintable_code_lines(tmp_dir)
+    # 1 from R/, 1 from tests/
+    expect_equal(result, 2L)
   })
 })
 

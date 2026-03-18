@@ -2,21 +2,69 @@
 
 # Lint metric implementation
 
-# Helper: count total non-empty R source lines in a package
-count_r_loc <- function(path) {
-  r_files <- list.files(
-    file.path(path, "R"),
-    pattern = "\\.R$",
-    full.names = TRUE,
-    ignore.case = TRUE
-  )
-  if (length(r_files) == 0L) return(0L)
-  total <- 0L
-  for (f in r_files) {
-    lines <- readLines(f, warn = FALSE)
-    total <- total + sum(nzchar(trimws(lines)))
+#' Count token-bearing, non-comment lines in files that lintr processes
+#'
+#' Uses lintr's own parsing frontend to ensure the denominator matches
+#' the scope of lint_package(). A "relevant code line" is a physical
+#' line containing at least one terminal token that is not a comment.
+#'
+#' This approach:
+#' - Matches lint_package() scope: R/, tests/, inst/, vignettes/, data-raw/,
+#'   demo/, exec/
+#' - Matches lint_package() file pattern: .R, .Rmd, .qmd, .Rnw, .Rhtml, .Rrst,
+#'   .Rtex, .Rtxt
+#' - Excludes blank lines and comment-only lines via parse data
+#' - Correctly handles # inside strings (uses R's parser, not regex)
+#'
+#' @param path Path to package source directory
+#' @return Integer count of code lines
+#' @noRd
+count_lintable_code_lines <- function(path) {
+  # Same directories as lint_package()
+  pkg_dirs <- c("R", "tests", "inst", "vignettes", "data-raw", "demo", "exec")
+
+  # Same file pattern as lint_dir() default (used by lint_package)
+  file_pattern <- "(?i)[.](r|rmd|qmd|rnw|rhtml|rrst|rtex|rtxt)$"
+
+  # Find all matching files in package directories
+  r_files <- character(0)
+  for (dir in pkg_dirs) {
+    dir_path <- file.path(path, dir)
+    if (dir.exists(dir_path)) {
+      files <- list.files(
+        dir_path,
+        pattern = file_pattern,
+        recursive = TRUE,
+        full.names = TRUE
+      )
+      r_files <- c(r_files, files)
+    }
   }
-  total
+
+  if (length(r_files) == 0L) return(0L)
+
+  total_lines <- 0L
+
+  for (file in r_files) {
+    tryCatch({
+      se <- lintr::get_source_expressions(file)
+
+      # Last element contains full file parse data
+      full_expr <- se$expressions[[length(se$expressions)]]
+      pd <- full_expr$full_parsed_content
+
+      if (!is.null(pd) && nrow(pd) > 0L) {
+        # Count lines with terminal tokens that are not comments
+        code_lines <- unique(pd$line1[pd$terminal & pd$token != "COMMENT"])
+        total_lines <- total_lines + length(code_lines)
+      }
+    }, error = function(e) {
+      # Skip unparseable files (lintr would skip them too)
+      NULL
+    })
+  }
+
+  total_lines
 }
 
 # Helper: count unique (filename, line_number) pairs across all lints
@@ -111,11 +159,14 @@ impl_data(
   tags = c("best practice"),
   title = "Lint-Free Fraction",
   description = paste(
-    "Fraction of non-empty R source lines that are free of lints,",
-    "as identified by \\pkg{lintr}. A value of 1 means no linted lines;",
-    "lower values indicate more pervasive lint issues.",
-    "The set of linters applied is controlled by the \\code{lint_linters}",
-    "option. Returns \\code{1} when the package has no R source lines."
+    "Fraction of R code lines that are free of lints.",
+    "Code lines are defined as lines containing executable R tokens",
+    "(excluding comments and blank lines) across the standard package",
+    "directories (\\code{R/}, \\code{tests/}, \\code{inst/},",
+    "\\code{vignettes/}, \\code{data-raw/}, \\code{demo/}, \\code{exec/}).",
+    "A value of 1 means no linted lines; lower values indicate more",
+    "pervasive lint issues. The set of linters applied is controlled by",
+    "the \\code{lint_linters} option."
   )
 )
 
@@ -123,7 +174,7 @@ impl_data(
   "lint_free_fraction",
   for_resource = source_code_resource,
   function(pkg, resource, field, ...) {
-    loc <- count_r_loc(resource@path)
+    loc <- count_lintable_code_lines(resource@path)
     if (loc == 0L) return(1.0)
     linted <- count_linted_lines(pkg$lints)
     max(0.0, 1.0 - linted / loc)
