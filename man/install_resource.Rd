@@ -40,6 +40,7 @@ An installed version of a package, as would be found in a package library.
 Other resources: 
 \code{\link{cran_repo_resource}()},
 \code{\link{git_resource}()},
+\code{\link{http_resource}()},
 \code{\link{local_resource}()},
 \code{\link{local_source_resource}()},
 \code{\link{mock_resource}()},
