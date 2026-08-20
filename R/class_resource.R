@@ -306,7 +306,7 @@ method(convert, list(class_character, class_resource)) <-
         return()
       }
 
-      resources[[idx]] <<- resource
+      resources[[idx]] <- resource
       idx
     }
 
