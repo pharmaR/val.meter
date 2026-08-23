@@ -78,6 +78,8 @@ rd_sexpr <- function(
 #' @describeIn utils-rd
 #' Generate a badge, using shields.io and caching svg images for display in
 #' html output.
+#'
+#' @importFrom utils download.file
 rd_badge <- local({
   cache <- NULL
 

@@ -262,6 +262,23 @@ git_resource <- class_git_resource <- new_class(
   )
 )
 
+#' Package `http(s)` Archive Resource Class
+#'
+#' A web-based reference to an R package file. Most often this will be used
+#' to resolve an http url into a source code archive.
+#'
+#' @family resources
+#' @export
+http_resource <- class_http_resource <- new_class(
+  "http_resource",
+  #' @inheritParams remote_resource
+  parent = remote_resource,
+  properties = list(
+    #' @param http_url The git repository url
+    http_url = class_character
+  )
+)
+
 #' [`resource`] from `character`
 #'
 #' Attempt to find any suitable package sources.
@@ -277,6 +294,9 @@ method(convert, list(class_character, class_resource)) <-
     all_resource_type_names <- vcapply(all_resource_types, class_desc)
 
     # create an empty list to populate with discovered resources
+    env <- environment()
+    env  # appease lintr
+
     resources <- list()
     length(resources) <- length(all_resource_types)
 
@@ -289,7 +309,7 @@ method(convert, list(class_character, class_resource)) <-
         return()
       }
 
-      resources[[idx]] <<- resource
+      env$resources[[idx]] <- resource
       idx
     }
 
@@ -418,6 +438,15 @@ method(convert, list(class_character, class_install_resource)) <-
     stop(fmt("Cannot convert string '{from}' into {.cls to}"))
   }
 
+method(convert, list(class_character, class_http_resource)) <-
+  function(from, to, ...) {
+    if (grepl("^https?://.*\\.(tar\\.(gz|bz2?|xz)|zip|tgz)$", from)) {
+      return(to(http_url = from))
+    }
+
+    stop(fmt("Cannot convert string '{from}' into {.cls to}"))
+  }
+
 method(convert, list(class_character, class_source_archive_resource)) <-
   function(from, to, ...) {
     if (file.exists(from) && endsWith(from, ".tar.gz")) {
@@ -476,7 +505,8 @@ method(convert, list(class_repo_resource, class_install_resource)) <-
       pkgs = from@package,
       lib = lib_path,
       repos = from@repo,
-      quiet = quiet
+      quiet = quiet,
+      INSTALL_opts = "--install-tests"
     )
 
     pkg_dir <- list.files(lib_path, full.names = TRUE)
@@ -513,6 +543,8 @@ method(convert, list(class_repo_resource, class_source_archive_resource)) <-
 
     package <- x[[1, 1]]
     path <- x[[1, 2]]
+
+    # TODO: archive may be other formats, ctrl-f bz
     version <- gsub("^.*/[^_]*_(.*)\\.tar\\.gz$", "\\1", path)
 
     source_archive_resource(
@@ -557,7 +589,30 @@ method(convert, list(class_repo_resource, class_cran_repo_resource)) <-
     )
   }
 
-method(convert, list(class_local_source_resource, class_install_resource)) <-
+#' @importFrom utils download.file
+method(convert, list(class_http_resource, class_source_archive_resource)) <-
+  function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
+    assert_permissions(c("write", "network"), policy@permissions)
+
+    # download package to a temporary directory
+    filename <- gsub(".*/", "", from@http_url)
+    destfile <- tempfile()
+    dir.create(destfile, recursive = TRUE)
+    destfile <- file.path(destfile, filename)
+
+    download.file(from@http_url, destfile = destfile, quiet = TRUE)
+
+    # propagate downloaded file as new source archive resource
+    source_archive_resource(path = destfile)
+  }
+
+method(
+  convert,
+  list(
+    class_local_source_resource | class_source_archive_resource,
+    class_install_resource
+  )
+) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
     assert_permissions("write", policy@permissions)
 
@@ -570,7 +625,8 @@ method(convert, list(class_local_source_resource, class_install_resource)) <-
       lib = lib_path,
       repos = NULL,
       type = "source",
-      quiet = quiet
+      quiet = quiet,
+      INSTALL_opts = "--install-tests"
     )
 
     pkg_dir <- list.files(lib_path, full.names = TRUE)

@@ -47,6 +47,7 @@ process, yet may be informative for metric assessment.
 Other resources: 
 \code{\link{cran_repo_resource}()},
 \code{\link{git_resource}()},
+\code{\link{http_resource}()},
 \code{\link{install_resource}()},
 \code{\link{local_resource}()},
 \code{\link{mock_resource}()},

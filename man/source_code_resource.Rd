@@ -40,6 +40,7 @@ A union of all package resource classes that have local source code.
 Other resources: 
 \code{\link{cran_repo_resource}()},
 \code{\link{git_resource}()},
+\code{\link{http_resource}()},
 \code{\link{install_resource}()},
 \code{\link{local_resource}()},
 \code{\link{local_source_resource}()},
