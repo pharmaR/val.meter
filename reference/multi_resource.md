@@ -69,6 +69,7 @@ resource can successfully derive the expected data.
 Other resources:
 [`cran_repo_resource()`](https://pharmar.github.io/val.meter/reference/cran_repo_resource.md),
 [`git_resource()`](https://pharmar.github.io/val.meter/reference/git_resource.md),
+[`http_resource()`](https://pharmar.github.io/val.meter/reference/http_resource.md),
 [`install_resource()`](https://pharmar.github.io/val.meter/reference/install_resource.md),
 [`local_resource()`](https://pharmar.github.io/val.meter/reference/local_resource.md),
 [`local_source_resource()`](https://pharmar.github.io/val.meter/reference/local_source_resource.md),

@@ -1,6 +1,7 @@
 # Adding a Metric
 
 ``` r
+
 library(val.meter)
 ```
 
@@ -30,6 +31,7 @@ function. However, we need to pass `all = TRUE` in order to include any
 internally calculated data.
 
 ``` r
+
 names(metrics(all = TRUE))
 #>  [1] "covr_coverage"                     "r_cmd_check"                      
 #>  [3] "md5"                               "desc"                             
@@ -50,6 +52,7 @@ Sure enough, `"name"` is in the list. We can learn a bit more about it
 by pulling this entry from our metrics:
 
 ``` r
+
 m <- metrics(all = TRUE)
 m$name
 #> Package name <character>
@@ -58,6 +61,7 @@ m$name
 ### Implementing data
 
 ``` r
+
 impl_data(
   "name_character_count",
   title = "Package Name Character Count",
@@ -69,6 +73,7 @@ Already, we can see that it is added to our list of
 [`metrics()`](https://pharmar.github.io/val.meter/reference/metrics.md)
 
 ``` r
+
 m <- metrics(all = TRUE)
 m$name_character_count
 #> Package Name Character Count <ANY>
@@ -79,12 +84,14 @@ a [`pkg()`](https://pharmar.github.io/val.meter/reference/pkg.md)
 object.
 
 ``` r
+
 p <- random_pkg()
 p$name
 #> [1] "incrediblesurvival"
 ```
 
 ``` r
+
 p$name_character_count
 #> [1] 18
 ```
@@ -107,6 +114,7 @@ The first thing we’ll see is that data methods can’t be naively
 overwritten.
 
 ``` r
+
 impl_data(
   "name_character_count",
   title = "Package Name Character Count",
@@ -123,6 +131,7 @@ only needed when you’re developing a metric and want to iterate on the
 implementation.
 
 ``` r
+
 impl_data(
   "name_character_count",
   title = "Package Name Character Count",
@@ -149,6 +158,7 @@ and we prefer to use `S7::class_*` objects to characterize these
 classes.
 
 ``` r
+
 impl_data(
   "name_character_count",
   title = "Package Name Character Count",
@@ -166,6 +176,7 @@ time we can avoid passing `all = TRUE`, as we’ve now registered a
 metric.
 
 ``` r
+
 m <- metrics()
 m$name_character_count
 #> Package Name Character Count <integer>
@@ -224,6 +235,7 @@ vulnerabilities (OSV) database. In our case, we can use a known example
 to see how vulnerabilities might be reported:
 
 ``` r
+
 rosv::osv_query(
   "haven",
   version = "0.1.1",
@@ -267,6 +279,7 @@ accidentally report that a package has no vulnerabilities just because
 it shares a name with one of them.
 
 ``` r
+
 impl_data(
   "rosv_vulnerability_df",
 
@@ -297,6 +310,7 @@ We can confirm our implementation by initializing a new `pkg` object
 explicitly from a `CRAN` resource
 
 ``` r
+
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r, permissions = TRUE)
 p$rosv_vulnerability_df
@@ -316,6 +330,7 @@ working as intended as well.
 We can see that a generic repository will throw an error.
 
 ``` r
+
 r <- repo_resource("haven", "0.1.1", repo = "https://fakecran.org/")
 p <- pkg(r, permissions = "network")
 p$rosv_vulnerability_df
@@ -328,6 +343,7 @@ And that not providing necessary permissions for network access will
 similarly throw an error.
 
 ``` r
+
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r)
 p$rosv_vulnerability_df
@@ -340,6 +356,7 @@ And similarly, if we didn’t have `rosv` installed we’d see something
 like
 
 ``` r
+
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r, permissions = "network")
 p$rosv_vulnerability_df
@@ -353,6 +370,7 @@ Now that we can fetch the `rosv` response, we can process it to derive
 our metric.
 
 ``` r
+
 impl_data(
   "vulnerability_count",
   title = "Number of Reported Vulnerabilities",
@@ -368,6 +386,7 @@ impl_data(
 And if we try to use it, we’ll find that we get
 
 ``` r
+
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r, permissions = "network")
 p$vulnerability_count
@@ -380,6 +399,7 @@ implementing it for *any* package resource. Let’s see what would happen
 if we tried it for a non-CRAN resource:
 
 ``` r
+
 r <- repo_resource("haven", "0.1.1", repo = "https://fakecran.org/")
 p <- pkg(r, permissions = "network")
 p$vulnerability_count
@@ -404,6 +424,7 @@ Already, we can take a look at what a simulated vulnerability count
 might look like!
 
 ``` r
+
 rpkg <- random_pkg()
 rpkg$vulnerability_count
 #> [1] 3
@@ -414,6 +435,7 @@ some simple default rules. We can take a look at what is being generated
 over a sampling of random packages.
 
 ``` r
+
 options(val.meter.policy = policy(permissions = TRUE))
 
 rpkgs <- random_pkgs(n = 100)
@@ -441,6 +463,7 @@ to use the exact same dispatch mechanism to create a custom
 data-generating process.
 
 ``` r
+
 impl_data(
   "vulnerability_count",
   for_resource = mock_resource,
@@ -453,6 +476,7 @@ vulnerabilities are reported we get something that is a bit closer to
 reality.
 
 ``` r
+
 rpkgs <- random_pkgs(n = 100)
 rpkgs_df <- as.data.frame(rpkgs)
 

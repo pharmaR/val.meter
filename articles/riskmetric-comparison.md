@@ -88,6 +88,7 @@ potential sources of package information is controlled by a
 which can be configured globally or as a parameter.
 
 ``` r
+
 library(val.meter)
 pkg("val.meter") # when installed locally
 #> <val.meter::pkg>
@@ -145,6 +146,7 @@ fail to discover it if it wasn’t installed, even for packages available
 in your available repositories.
 
 ``` r
+
 pkg("val.meter") # when not installed
 ```
 
@@ -182,6 +184,7 @@ When exploring metrics, we’ll even see a little indicator that these are
 enabled or disabled.
 
 ``` r
+
 metrics()$downloads_total
 #> Total Downloads <integer>
 #> total number of lifetime downloads, as reported by the Posit CRAN mirror through the cranlogs API
@@ -193,6 +196,7 @@ metrics()$downloads_total
 And after permitting network access, we’ll see
 
 ``` r
+
 permissive_policy <- policy(permissions = FALSE)
 options(val.meter.policy = permissive_policy)
 

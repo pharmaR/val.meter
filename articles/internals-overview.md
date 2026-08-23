@@ -36,6 +36,7 @@ decided these shortcomings did not outweigh the benefits it brings.
 data types of the package.
 
 ``` r
+
 library(igraph)
 #> 
 #> Attaching package: 'igraph'
@@ -108,6 +109,7 @@ Since we’ll be exploring the internals of `val.meter`, we’re going to
 load our entire package namespace.
 
 ``` r
+
 pkgload::load_all()
 ```
 
@@ -135,6 +137,7 @@ We can derive some data for a package using just a package object and a
 “field” (the name for the data in the package object):
 
 ``` r
+
 rpkg <- random_pkg()
 pkg_data_derive(pkg = rpkg, field = "r_cmd_check_error_count")
 #> [1] 0
@@ -173,6 +176,7 @@ They have tab completion, print out their contents *almost* like a
 [`names()`](https://rdrr.io/r/base/names.html).
 
 ``` r
+
 names(rpkg)
 #>  [1] "covr_coverage"                     "r_cmd_check"                      
 #>  [3] "md5"                               "desc"                             
@@ -201,10 +205,10 @@ If we take a peek at our `rpkg` object, we’ll see:
     #> <val.meter::pkg>
     #> @resource
     #>   <val.meter::mock_resource>
-    #>    @ package: chr "quaintwellbeing"
-    #>    @ version: chr "3.1.5"
+    #>    @ package: chr "Rational"
+    #>    @ version: chr "2.3"
     #>    @ id     : int 1
-    #>    @ md5    : chr "f1c516596e9ad5015218ead8114487d5"
+    #>    @ md5    : chr "e205e6d3c5154a36407367756f897f13"
     #> @permissions
     #>   <val.meter::permissions> chr [1:3] "write" "execution" "network"
     #> $has_current_news
@@ -251,6 +255,7 @@ mean we can’t use it! If we try to use one of these fields we’ll get
 some data out.
 
 ``` r
+
 rpkg$r_cmd_check_error_count
 #> [1] 0
 ```
@@ -261,10 +266,10 @@ new data.
     #> <val.meter::pkg>
     #> @resource
     #>   <val.meter::mock_resource>
-    #>    @ package: chr "quaintwellbeing"
-    #>    @ version: chr "3.1.5"
+    #>    @ package: chr "Rational"
+    #>    @ version: chr "2.3"
     #>    @ id     : int 1
-    #>    @ md5    : chr "f1c516596e9ad5015218ead8114487d5"
+    #>    @ md5    : chr "e205e6d3c5154a36407367756f897f13"
     #> @permissions
     #>   <val.meter::permissions> chr [1:3] "write" "execution" "network"
     #> $has_current_news
@@ -334,6 +339,7 @@ that allows us to dispatch to a unique function. We can take a look
 under the hood at exactly what code gets run:
 
 ``` r
+
 method(pkg_data_derive, list(pkg, class_any, class_character))
 #> <S7_method> method(pkg_data_derive, list(class_any, class_any, class_character))
 #> function (pkg, resource, field, ..., field_name) 
@@ -349,6 +355,7 @@ parameter: a data-less object with a class for dispatch. In our case,
 this would be
 
 ``` r
+
 as_pkg_data("r_cmd_check_error_count")
 #> [1] "r_cmd_check_error_count"
 #> attr(,"class")
@@ -378,6 +385,7 @@ data dependency.
 Let’s see what it would look like if this were to occur.
 
 ``` r
+
 r <- install_resource(path = find.package("val.meter"))
 p <- pkg(r)
 p$name
@@ -392,6 +400,7 @@ completing calculation of our package name. We can confirm by looking at
 the internal `"desc"` data:
 
 ``` r
+
 p$desc
 #> <error/val_meter_derive_error>
 #> ! when deriving field "desc"
@@ -432,6 +441,7 @@ re-construct our error (barring the original callstack) by simply
 evaluating this little snippet.
 
 ``` r
+
 eval(parse(text = 'error("missing_suggests", "abc")'))
 #> <error/val_meter_missing_suggests_error>
 #> ! data derivation requires suggests: abc

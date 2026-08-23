@@ -5,6 +5,7 @@
 ## Installation
 
 ``` r
+
 # install.packages("pak")
 pak::pak("pharmaR/val.meter")
 ```
@@ -16,6 +17,7 @@ of *validation* required in regulated industries, but generally useful
 to anyone who wants to survey packages.
 
 ``` r
+
 rpkg <- random_pkg(permissions = TRUE)
 metrics(rpkg)
 ```
@@ -30,6 +32,7 @@ metrics(rpkg)
 what those metrics represent.
 
 ``` r
+
 metrics()
 ```
 
@@ -44,6 +47,7 @@ internal information, you can explore the whole set of package data.
 simple (atomic) data.
 
 ``` r
+
 # see all implemented _data_ (a superset of metrics)
 metrics(all = TRUE)
 ```
@@ -59,6 +63,7 @@ path or package name, `val.meter` will search for the package from
 permitted sources.
 
 ``` r
+
 # calculate some data, using default conservative permissions
 pkg("val.meter")
 ```
@@ -69,6 +74,7 @@ We can also be declarative about exactly how we want to source our
 package metadata.
 
 ``` r
+
 library(S7)
 
 # initialize package with only our source code as a resource
@@ -84,6 +90,7 @@ Once we have declared *what* we want to assess, we can then start
 calculating metrics.
 
 ``` r
+
 p <- pkg("val.meter")
 metrics(p)
 ```
@@ -99,6 +106,7 @@ We can also access individual metrics by accessing our `pkg` object like
 a list.
 
 ``` r
+
 p$dependency_count
 ```
 
@@ -116,6 +124,7 @@ permissive execution. We pass `permissions(TRUE)` to grant blanket
 permission to all capabilities.
 
 ``` r
+
 p <- pkg("val.meter", permissions = "network")
 metrics(p)
 ```
@@ -127,6 +136,7 @@ additional permissions to grant `val.meter` the ability to execute code
 on your machine.
 
 ``` r
+
 p$r_cmd_check
 ```
 
@@ -168,6 +178,11 @@ Concrete classes which characterize sources of package information.
   :
 
   Package `git` Resource Class
+
+- [`http_resource()`](https://pharmar.github.io/val.meter/reference/http_resource.md)
+  :
+
+  Package `http(s)` Archive Resource Class
 
 - [`install_resource()`](https://pharmar.github.io/val.meter/reference/install_resource.md)
   : Package Install Resource Class

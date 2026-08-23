@@ -1,16 +1,17 @@
-# Package Archive Source Code Resource Class
+# Package `http(s)` Archive Resource Class
 
-The extracted source code from a package's build archive.
+A web-based reference to an R package file. Most often this will be used
+to resolve an http url into a source code archive.
 
 ## Usage
 
 ``` r
-source_archive_resource(
+http_resource(
   package = NA_character_,
   version = NA_character_,
   id = next_id(),
   md5 = NA_character_,
-  path = NA_character_
+  http_url = character(0)
 )
 ```
 
@@ -32,8 +33,9 @@ source_archive_resource(
   automatically get a unique identifier. For example, the package source
   code from a
   [`repo_resource()`](https://pharmar.github.io/val.meter/reference/repo_resource.md)
-  may be downloaded to add a `source_archive_resource()` and add it to a
-  new
+  may be downloaded to add a
+  [`source_archive_resource()`](https://pharmar.github.io/val.meter/reference/source_archive_resource.md)
+  and add it to a new
   [`multi_resource()`](https://pharmar.github.io/val.meter/reference/multi_resource.md).
   Because all of these represent the same package, they retain the same
   `id`. Primarily the `id` is used for isolating temporary files.
@@ -44,16 +46,15 @@ source_archive_resource(
   not generally provided directly, but is instead derived when acquiring
   resources.
 
-- path:
+- http_url:
 
-  `character(1L)` file system path to the local package resource.
+  The git repository url
 
 ## See also
 
 Other resources:
 [`cran_repo_resource()`](https://pharmar.github.io/val.meter/reference/cran_repo_resource.md),
 [`git_resource()`](https://pharmar.github.io/val.meter/reference/git_resource.md),
-[`http_resource()`](https://pharmar.github.io/val.meter/reference/http_resource.md),
 [`install_resource()`](https://pharmar.github.io/val.meter/reference/install_resource.md),
 [`local_resource()`](https://pharmar.github.io/val.meter/reference/local_resource.md),
 [`local_source_resource()`](https://pharmar.github.io/val.meter/reference/local_source_resource.md),
@@ -62,5 +63,6 @@ Other resources:
 [`remote_resource()`](https://pharmar.github.io/val.meter/reference/remote_resource.md),
 [`repo_resource()`](https://pharmar.github.io/val.meter/reference/repo_resource.md),
 [`resource()`](https://pharmar.github.io/val.meter/reference/resource.md),
+[`source_archive_resource()`](https://pharmar.github.io/val.meter/reference/source_archive_resource.md),
 [`source_code_resource()`](https://pharmar.github.io/val.meter/reference/source_code_resource.md),
 [`unknown_resource()`](https://pharmar.github.io/val.meter/reference/unknown_resource.md)

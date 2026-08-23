@@ -35,6 +35,11 @@ Concrete classes which characterize sources of package information.
 
   Package `git` Resource Class
 
+- [`http_resource()`](https://pharmar.github.io/val.meter/reference/http_resource.md)
+  :
+
+  Package `http(s)` Archive Resource Class
+
 - [`install_resource()`](https://pharmar.github.io/val.meter/reference/install_resource.md)
   : Package Install Resource Class
 

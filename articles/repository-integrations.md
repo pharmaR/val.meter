@@ -27,6 +27,7 @@ differing only in whether you want to simulate a single or collection of
 packages.
 
 ``` r
+
 p <- random_pkg(permissions = TRUE)
 metrics(p)
 #> $has_current_news
@@ -70,6 +71,7 @@ metrics(p)
 ```
 
 ``` r
+
 sapply(
   random_pkgs(n = 3, permissions = TRUE),
   function(pkg) pkg$name
@@ -85,6 +87,7 @@ encoded as a `PACKAGES` file - the same format used by repositories like
 CRAN to distribute a listing of packages and package data.
 
 ``` r
+
 # igraph is required if we want to simulate sensible package dependencies
 requireNamespace("igraph")
 
@@ -161,6 +164,7 @@ What’s more, we can also reconstruct our package objects from this
 `PACKAGES` file format.
 
 ``` r
+
 ps <- pkgs_from_dcf(dcf_str)
 ```
 
@@ -188,6 +192,7 @@ We’ll start by re-simulating a larger cohort of packages so that our
 anlaysis produces something more interesting.
 
 ``` r
+
 n100pkgs <- random_pkgs(n = 100, permissions = TRUE)
 ```
 
@@ -196,6 +201,7 @@ And just to show that we can derive this data from a representative
 format.
 
 ``` r
+
 dcf <- to_dcf(n100pkgs)
 n100pkgs <- pkgs_from_dcf(dcf)
 ```
@@ -203,6 +209,7 @@ n100pkgs <- pkgs_from_dcf(dcf)
 Finally, we can take a look at how our packages fair.
 
 ``` r
+
 # read in packages as a data.frame
 df <- as.data.frame(n100pkgs)
 
@@ -222,6 +229,7 @@ df$package[df$dependency_percentile > 0.95]
 ```
 
 ``` r
+
 options(scipen = 10)
 plot(
   xlab = "Percently",
