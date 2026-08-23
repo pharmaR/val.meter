@@ -589,6 +589,7 @@ method(convert, list(class_repo_resource, class_cran_repo_resource)) <-
     )
   }
 
+#' @importFrom utils download.file
 method(convert, list(class_http_resource, class_source_archive_resource)) <-
   function(from, to, ..., policy = opt("policy"), quiet = opt("quiet")) {
     assert_permissions(c("write", "network"), policy@permissions)

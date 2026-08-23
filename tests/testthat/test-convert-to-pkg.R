@@ -1,36 +1,80 @@
-test_that("convert(from = character, to = class_pkg) can discover resources", {
-  expected <- simpleError("downloading ...")
-  class(expected) <- c("test_suite_signal", class(expected))
+test_that(
+  paste0(
+    "convert(<character>, <class_pkg>) can discover repo resources from ",
+    "package names"
+  ),
+  {
+    expected <- simpleError("downloading ...")
+    class(expected) <- c("test_suite_signal", class(expected))
 
-  # intercept download package call and instead of doing a slow download, just
-  # signal that we hit our download call
-  with_mocked_bindings(
-    available.packages = function(...) {
-      cbind(
-        Package = "fake.pkg",
-        Version = "1.0",
-        MD5sum = "abcdef",
-        Repository = "acme.org"
-      )
-    },
-    download.packages = function(...) {
-      signalCondition(expected)
-    },
-    code = {
-      # specify a policy that will force pkg to attempt re-download
-      policy <- policy(
-        accepted_resources = list(class_source_archive_resource),
-        source_resources = list(class_repo_resource),
-        permissions = TRUE
-      )
+    # intercept download package call and instead of doing a slow download, just
+    # signal that we hit our download call
+    with_mocked_bindings(
+      available.packages = function(...) {
+        cbind(
+          Package = "fake.pkg",
+          Version = "1.0",
+          MD5sum = "abcdef",
+          Repository = "acme.org"
+        )
+      },
+      download.packages = function(...) {
+        signalCondition(expected)
+      },
+      code = {
+        # specify a policy that will force pkg to attempt re-download
+        policy <- policy(
+          accepted_resources = list(class_source_archive_resource),
+          source_resources = list(class_repo_resource),
+          permissions = TRUE
+        )
 
-      expect_error(
-        pkg("fake.pkg", policy = policy),
-        class = class(expected)[[1L]]
-      )
-    }
-  )
-})
+        expect_error(
+          pkg("fake.pkg", policy = policy),
+          class = class(expected)[[1L]]
+        )
+      }
+    )
+  }
+)
+
+
+test_that(
+  paste0(
+    "convert(<character>, <class_pkg>) can discover repo resources from ",
+    "package archive urls"
+  ),
+  {
+    expected <- simpleError("downloading ...")
+    class(expected) <- c("test_suite_signal", class(expected))
+
+    # intercept download package call and instead of doing a slow download, just
+    # signal that we hit our download call
+    with_mocked_bindings(
+      download.file = function(...) {
+        signalCondition(expected)
+      },
+      code = {
+        # use policy that will attempt to download http resource
+        policy <- policy(
+          accepted_resources = list(class_source_archive_resource),
+          source_resources = list(http_resource),
+          permissions = TRUE
+        )
+
+        expect_error(
+          pkg("http://repo.com/src/contrib/fake.pkg.tar.gz", policy = policy),
+          class = class(expected)[[1L]]
+        )
+
+        expect_error(
+          pkg("https://repo.com/src/contrib/fake.pkg.tar.gz", policy = policy),
+          class = class(expected)[[1L]]
+        )
+      }
+    )
+  }
+)
 
 test_that("convert(from = class_pkg, to = class_pkg)", {
   p <- random_pkg()
