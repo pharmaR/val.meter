@@ -294,6 +294,9 @@ method(convert, list(class_character, class_resource)) <-
     all_resource_type_names <- vcapply(all_resource_types, class_desc)
 
     # create an empty list to populate with discovered resources
+    env <- environment()
+    env  # appease lintr
+
     resources <- list()
     length(resources) <- length(all_resource_types)
 
@@ -306,7 +309,7 @@ method(convert, list(class_character, class_resource)) <-
         return()
       }
 
-      resources[[idx]] <- resource
+      env$resources[[idx]] <- resource
       idx
     }
 
