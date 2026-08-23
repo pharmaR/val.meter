@@ -45,20 +45,23 @@ test_that(
     "package archive urls"
   ),
   {
-    expected <- simpleError("downloading ...")
+    expected <- simpleError("installing ...")
     class(expected) <- c("test_suite_signal", class(expected))
 
     # intercept download package call and instead of doing a slow download, just
     # signal that we hit our download call
     with_mocked_bindings(
-      download.file = function(...) {
+      install.packages = function(...) {
         signalCondition(expected)
       },
+      download.file = function(...) {
+        NULL
+      },
       code = {
-        # use policy that will attempt to download http resource
+        # use policy that will attempt to download & install http resource
         policy <- policy(
-          accepted_resources = list(class_source_archive_resource),
-          source_resources = list(http_resource),
+          accepted_resources = list(class_install_resource),
+          source_resources = list(class_source_archive_resource, http_resource),
           permissions = TRUE
         )
 
