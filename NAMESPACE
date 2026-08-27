@@ -50,26 +50,36 @@ import(cli)
 import(options)
 importFrom(desc,desc)
 importFrom(evaluate,replay)
-importFrom(httr2,req_perform)
-importFrom(httr2,request)
-importFrom(httr2,resp_body_html)
+importFrom(httr2,
+  req_perform,
+  request,
+  resp_body_html
+)
 importFrom(jsonlite,read_json)
-importFrom(stats,rbinom)
-importFrom(stats,rpois)
-importFrom(stats,runif)
-importFrom(tools,dependsOnPkgs)
-importFrom(tools,file_ext)
-importFrom(tools,getVignetteInfo)
-importFrom(tools,toRd)
-importFrom(utils,.DollarNames)
-importFrom(utils,available.packages)
-importFrom(utils,capture.output)
-importFrom(utils,download.file)
-importFrom(utils,download.packages)
-importFrom(utils,getCRANmirrors)
-importFrom(utils,head)
-importFrom(utils,install.packages)
-importFrom(utils,packageName)
-importFrom(utils,packageVersion)
-importFrom(xml2,xml_attrs)
-importFrom(xml2,xml_find_all)
+importFrom(stats,
+  rbinom,
+  rpois,
+  runif
+)
+importFrom(tools,
+  dependsOnPkgs,
+  file_ext,
+  getVignetteInfo,
+  toRd
+)
+importFrom(utils,
+  .DollarNames,
+  available.packages,
+  capture.output,
+  download.file,
+  download.packages,
+  getCRANmirrors,
+  head,
+  install.packages,
+  packageName,
+  packageVersion
+)
+importFrom(xml2,
+  xml_attrs,
+  xml_find_all
+)
