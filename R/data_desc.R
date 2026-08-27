@@ -1,10 +1,12 @@
 #' @include impl_data.R
 
+source_code_or_install <- new_union(source_code_resource, install_resource)
+
 #' @importFrom desc desc
 impl_data(
   "desc",
   class = c("description", "R6"),
-  for_resource = new_union(source_code_resource, install_resource),
+  for_resource = source_code_or_install,
   function(pkg, resource, field, ...) {
     desc::desc(resource@path)
   }
@@ -14,7 +16,7 @@ impl_data(
   "name",
   title = "Package name",
   class = class_character,
-  for_resource = new_union(source_code_resource, install_resource),
+  for_resource = source_code_or_install,
   function(pkg, resource, field, ...) {
     pkg$desc$get_field("Package")
   }
@@ -31,7 +33,7 @@ impl_data(
 impl_data(
   "version",
   class = class_character,
-  for_resource = new_union(source_code_resource, install_resource),
+  for_resource = source_code_or_install,
   function(pkg, resource, field, ...) {
     pkg$desc$get_field("Version")
   }
@@ -48,7 +50,7 @@ impl_data(
 impl_data(
   "md5",
   class = class_character,
-  for_resource = new_union(source_code_resource, install_resource),
+  for_resource = source_code_or_install,
   function(pkg, resource, field, ...) {
     pkg$desc$get_field("MD5sum")
   }

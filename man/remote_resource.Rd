@@ -33,19 +33,19 @@ acquiring resources.}
 Abstract Class for Remote Package Resources
 }
 \seealso{
-Other resources: 
-\code{\link{cran_repo_resource}()},
-\code{\link{git_resource}()},
-\code{\link{http_resource}()},
-\code{\link{install_resource}()},
-\code{\link{local_resource}()},
-\code{\link{local_source_resource}()},
-\code{\link{mock_resource}()},
-\code{\link{multi_resource}()},
-\code{\link{repo_resource}()},
-\code{\link{resource}()},
-\code{\link{source_archive_resource}()},
-\code{\link{source_code_resource}()},
-\code{\link{unknown_resource}()}
+Other resources:
+\code{\link[=cran_repo_resource]{cran_repo_resource()}},
+\code{\link[=git_resource]{git_resource()}},
+\code{\link[=http_resource]{http_resource()}},
+\code{\link[=install_resource]{install_resource()}},
+\code{\link[=local_resource]{local_resource()}},
+\code{\link[=local_source_resource]{local_source_resource()}},
+\code{\link[=mock_resource]{mock_resource()}},
+\code{\link[=multi_resource]{multi_resource()}},
+\code{\link[=repo_resource]{repo_resource()}},
+\code{\link[=resource]{resource()}},
+\code{\link[=source_archive_resource]{source_archive_resource()}},
+\code{\link[=source_code_resource]{source_code_resource()}},
+\code{\link[=unknown_resource]{unknown_resource()}}
 }
 \concept{resources}

@@ -99,7 +99,7 @@ method(
 #' @noRd
 method(
   pkg_data_derive,
-  list(class_pkg, new_union(NULL, class_missing), class_any)
+  list(class_pkg, class_missing | new_S3_class("NULL"), class_any)
 ) <-
   function(pkg, resource, field, ...) {
     pkg_data_derive(pkg = pkg, resource = pkg@resource, field = field, ...)
