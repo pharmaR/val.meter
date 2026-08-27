@@ -29,6 +29,7 @@ Authors:
 Other contributors:
 \itemize{
   \item Aaron Clark \email{clark.aaronchris@gmail.com} [contributor]
+  \item Lluís Revilla Sancho \email{lluis.revilla@gmail.com} (\href{https://orcid.org/0000-0001-9747-2570}{ORCID}) [contributor]
   \item R Validation Hub \email{r-val-hub-maintainers@lists.r-consortium.org} (website: https://www.pharmar.org) [copyright holder]
 }
 
