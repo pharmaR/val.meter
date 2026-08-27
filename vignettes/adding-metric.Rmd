@@ -203,7 +203,7 @@ Let's implement a rigorous metric, which will surface vulnerabilities using the
 vulnerabilities (OSV) database. In our case, we can use a known example to see
 how vulnerabilities might be reported:
 
-```{r}
+```{r, eval = requireNamespace("rosv", quietly = TRUE)}
 rosv::osv_query(
   "haven",
   version = "0.1.1",
@@ -236,7 +236,7 @@ are the same as those coming from `CRAN`. There are tens of thousands of
 packages on `CRAN` and we don't want to accidentally report that a package has
 no vulnerabilities just because it shares a name with one of them.
 
-```{r}
+```{r, eval = requireNamespace("rosv", quietly = TRUE)}
 impl_data(
   "rosv_vulnerability_df",
 
