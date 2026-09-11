@@ -41,3 +41,36 @@ method(
   function(from, to, ...) {
     as.integer(from, ...)
   }
+
+method(
+  metric_coerce,
+  list(
+    new_union(class_character, class_integer, class_logical),
+    new_S3_class(class_desc(class_double))
+  )
+) <-
+  function(from, to, ...) {
+    as.double(from, ...)
+  }
+
+method(
+  metric_coerce,
+  list(
+    new_union(class_character, class_double, class_integer),
+    new_S3_class(class_desc(class_logical))
+  )
+) <-
+  function(from, to, ...) {
+    as.logical(from, ...)
+  }
+
+method(
+  metric_coerce,
+  list(
+    new_union(class_double, class_integer, class_logical),
+    new_S3_class(class_desc(class_character))
+  )
+) <-
+  function(from, to, ...) {
+    as.character(from, ...)
+  }
