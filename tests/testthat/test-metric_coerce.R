@@ -1,4 +1,4 @@
-test_that("metric_coerce coerces character metric strings to each atomic type", {
+test_that("metric_coerce coerces character metrics to each atomic type", {
   ms <- metrics()
 
   # integer metric
@@ -30,7 +30,7 @@ test_that("metric_coerce coerces atomic values to character", {
   expect_identical(metric_coerce(TRUE, class_character), "TRUE")
 })
 
-test_that("convert(class_package_matrix, class_metric_data_frame) handles all atomic metric types", {
+test_that("convert package_matrix to metric_data_frame handles atomic types", {
   set.seed(1)
   repo <- suppressWarnings(random_repo(n = 4))
   on.exit(unlink(sub("^file://", "", repo), recursive = TRUE))
