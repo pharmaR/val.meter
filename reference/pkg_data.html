@@ -188,6 +188,38 @@ function for a combination of data field <em>and</em> package resource) and
 <li><p><code>impl_data_derive()</code>: Register a derivation function for a data field and package resource.</p></li>
 </ul></div>
     <div class="section level2">
+    <h2 id="data-versus-metrics">Data versus metrics<a class="anchor" aria-label="anchor" href="#data-versus-metrics"></a></h2>
+
+
+
+<p>Every value val.meter derives about a package is <em>data</em>. A <em>metric</em>
+is a specially-designated subset of that data. The two terms are often used
+interchangeably, but the distinction matters when implementing new fields:</p>
+<dl><dt>Data</dt>
+<dd><p>Any information that can be derived about a package, accessed
+with <code>pkg$field</code>. Data may be a raw, richly-structured or intermediate
+value used only to calculate other fields (for example, the parsed
+<code>DESCRIPTION</code> or a package's raw web page HTML). Data carries no
+constraints on its type.</p></dd>
+
+<dt>Metric</dt>
+<dd><p>Data that has additionally been declared a metric –
+structured, regular information intended for systematic,
+decision-making comparisons <em>across</em> packages (for example, a
+<code>R CMD check</code> error count or a download total). To keep metrics
+comparable, a metric must resolve to an <em>atomic</em> value (an
+<code>S7</code> <code>class_atomic</code> subclass); declaring a non-atomic field as a
+metric is an error.</p></dd>
+
+
+</dl><p>A field becomes a metric when its metadata sets <code>metric = TRUE</code>, either
+through the <code>metric</code> argument of <code>impl_data()</code>/<code>impl_data_info()</code> or via
+<code>impl_metric()</code>. This flag is what <code><a href="metrics.html">metrics()</a></code> uses to decide what to
+surface: <code><a href="metrics.html">metrics()</a></code> lists (or, given a <code><a href="pkg.html">pkg</a></code>, calculates) only metrics
+by default, while <code>metrics(all = TRUE)</code> also returns the non-metric,
+typically intermediate, data.</p>
+    </div>
+    <div class="section level2">
     <h2 id="implementing-a-new-metric">Implementing a new metric<a class="anchor" aria-label="anchor" href="#implementing-a-new-metric"></a></h2>
 
 
