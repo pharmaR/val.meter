@@ -11,6 +11,34 @@
 #' recommended to use [`impl_data()`], which provides a high-level interface
 #' that helps make this process as simple as possible.
 #'
+#' @section Data versus metrics:
+#'
+#' Every value `r packageName()` derives about a package is *data*. A *metric*
+#' is a specially-designated subset of that data. The two terms are often used
+#' interchangeably, but the distinction matters when implementing new fields:
+#'
+#' \describe{
+#'   \item{Data}{Any information that can be derived about a package, accessed
+#'     with `pkg$field`. Data may be a raw, richly-structured or intermediate
+#'     value used only to calculate other fields (for example, the parsed
+#'     `DESCRIPTION` or a package's raw web page HTML). Data carries no
+#'     constraints on its type.}
+#'   \item{Metric}{Data that has additionally been declared a metric --
+#'     structured, regular information intended for systematic,
+#'     decision-making comparisons *across* packages (for example, a
+#'     `R CMD check` error count or a download total). To keep metrics
+#'     comparable, a metric must resolve to an *atomic* value (an
+#'     `S7` `class_atomic` subclass); declaring a non-atomic field as a
+#'     metric is an error.}
+#' }
+#'
+#' A field becomes a metric when its metadata sets `metric = TRUE`, either
+#' through the `metric` argument of [`impl_data()`]/[`impl_data_info()`] or via
+#' `impl_metric()`. This flag is what [`metrics()`] uses to decide what to
+#' surface: [`metrics()`] lists (or, given a [`pkg`], calculates) only metrics
+#' by default, while `metrics(all = TRUE)` also returns the non-metric,
+#' typically intermediate, data.
+#'
 #' @section Implementing a new metric:
 #'
 #' To implement some new data, you can use [`impl_data()`], providing, at a
