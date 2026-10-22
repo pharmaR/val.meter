@@ -35,6 +35,10 @@ find_lintable_files <- function(
 #' @return Integer count of code lines, or 0L on parse error.
 #' @noRd
 count_file_code_lines <- function(file) {
+  if (!requireNamespace("lintr", quietly = TRUE)) {
+    return(0L)
+  }
+
   tryCatch(
     {
       se <- lintr::get_source_expressions(file)
@@ -137,6 +141,7 @@ impl_data(
   metric = TRUE,
   class = class_integer,
   tags = c("best practice"),
+  suggests = "lintr",
   title = "Lint Count",
   description = paste(
     "Count of lints identified by \\pkg{lintr}.",
@@ -168,6 +173,7 @@ impl_data(
   metric = TRUE,
   class = class_double,
   tags = c("best practice"),
+  suggests = "lintr",
   title = "Lint-Free Fraction",
   description = paste(
     "Fraction of R code lines that are free of lints.",
