@@ -101,7 +101,11 @@ pkg("val.meter") # when installed locally
 #>    @ path   : chr "/home/runner/work/_temp/Library/val.meter"
 #> @permissions
 #>   <val.meter::permissions> chr(0) 
+#> $lint_count
+#>   <promise>
 #> $has_current_news
+#>   <promise>
+#> $lint_free_fraction
 #>   <promise>
 #> $vignette_count
 #>   <promise>
@@ -133,6 +137,7 @@ pkg("val.meter") # when installed locally
 #> $desc (internal)
 #> $name (internal)
 #> $version (internal)
+#> $lints (internal)
 #> $archive_md5 (internal)
 #> $documentation_examples (internal)
 #> $web_html (internal)

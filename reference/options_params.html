@@ -68,7 +68,18 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-tags">tags<a class="anchor" aria-label="anchor" href="#arg-tags"></a></dt>
+<dl><dt id="arg-lint-linters">lint_linters<a class="anchor" aria-label="anchor" href="#arg-lint-linters"></a></dt>
+<dd><p>Character vector of <code>{lintr}</code> linter function names used when computing
+<code>lint_count</code> and <code>lint_free_fraction</code>. Each name must correspond
+to a linter constructor exported by <code>{lintr}</code> (e.g.
+<code>"equals_na_linter"</code>. Override to add, remove, or replace linters.
+Note: linters requiring configuration or environment-specific ones
+(e.g. <code>"backport_linter"</code>) are excluded from the default set;
+add them manually by changing this option, possibly after configuring
+them globally. (Defaults to <code>c("absolute_path_linter", "all_equal_linter", "class_equals_linter", ;     "download_file_linter", "equals_na_linter", "for_loop_index_linter", ;     "length_test_linter", "list_comparison_linter", "nonportable_path_linter", ;     "object_overwrite_linter", "package_hooks_linter", "pipe_return_linter", ;     "redundant_equals_linter", "routine_registration_linter", ;     "sample_int_linter", "seq_linter", "sprintf_linter", "strings_as_factors_linter", ;     "T_and_F_symbol_linter", "terminal_close_linter", "unused_import_linter", ;     "vector_logic_linter")</code>, overwritable using option 'val.meter.lint_linters' or environment variable 'R_VAL_METER_LINT_LINTERS')</p></dd>
+
+
+<dt id="arg-tags">tags<a class="anchor" aria-label="anchor" href="#arg-tags"></a></dt>
 <dd><p>Set the default <code>val.meter</code> tags policy. Tags characterize the
 types of information various metrics contain. For more details, see
 <code><a href="tags.html">tags()</a></code>. (Defaults to <code>tags(TRUE)</code>, overwritable using option 'val.meter.tags' or environment variable 'R_VAL_METER_TAGS')</p></dd>

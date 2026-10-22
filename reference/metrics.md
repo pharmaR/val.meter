@@ -39,10 +39,38 @@ is or is not provided respectively.
 The following metrics are provided by
 [`val.meter`](https://pharmar.github.io/val.meter/reference/val.meter-package.md).
 
+### Lint Count
+
+`<integer>` Count of lints identified by lintr. The set of linters
+applied is controlled by the `lint_linters` option, which defaults to
+linters from the *correctness*, *common_mistakes*, and *robustness* tags
+excluding those that require configuration or are environment-dependent.
+Lower counts indicate higher code quality.
+
+![\[lintr\]](figures/badge-dep-lintr-x-flat-square-green.svg)
+
+[![\[best
+practice\]](figures/badge-best_practice-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
+
 ### Up to date NEWS
 
 `<logical>` a NEWS file exists and is synced with the current package
 version
+
+### Lint-Free Fraction
+
+`<double>` Fraction of R code lines that are free of lints. Code lines
+are defined as lines containing executable R tokens (excluding comments
+and blank lines) across the standard package directories (`R/`,
+`tests/`, `inst/`, `vignettes/`, `data-raw/`, `demo/`, `exec/`). A value
+of 1 means no linted lines; lower values indicate more pervasive lint
+issues. The set of linters applied is controlled by the `lint_linters`
+option.
+
+![\[lintr\]](figures/badge-dep-lintr-x-flat-square-green.svg)
+
+[![\[best
+practice\]](figures/badge-best_practice-x-flat-square-blue.svg)](https://pharmar.github.io/val.meter/reference/tags.md)
 
 ### CRAN Reverse Dependencies Count
 

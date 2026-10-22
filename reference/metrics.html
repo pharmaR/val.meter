@@ -103,12 +103,22 @@ object is or is not provided respectively.</p>
     <div class="section level2">
     <h2 id="metrics">Metrics<a class="anchor" aria-label="anchor" href="#metrics"></a></h2>
     <p>The following metrics are provided by <code><a href="val.meter-package.html">val.meter</a></code>.</p><div class="section">
+<h3 id="lint-count">Lint Count<a class="anchor" aria-label="anchor" href="#lint-count"></a></h3>
+<p><code>&lt;integer&gt;</code> Count of lints identified by <span class="pkg">lintr</span>. The set of linters applied is controlled by the <code>lint_linters</code> option, which defaults to linters from the <em>correctness</em>, <em>common_mistakes</em>, and <em>robustness</em> tags excluding those that require configuration or are environment-dependent. Lower counts indicate higher code quality.</p>
+<p><img src="figures/badge-dep-lintr-x-flat-square-green.svg" alt="[lintr]"></p>
+<p><a href="tags.html"><img src="figures/badge-best_practice-x-flat-square-blue.svg" alt="[best practice]"></a></p>
+</div><p></p><div class="section">
 <h3 id="up-to-date-news">Up to date NEWS<a class="anchor" aria-label="anchor" href="#up-to-date-news"></a></h3>
 <p><code>&lt;logical&gt;</code> a NEWS file exists and is synced with the current package version</p>
 
 
 
 
+</div><p></p><div class="section">
+<h3 id="lint-free-fraction">Lint-Free Fraction<a class="anchor" aria-label="anchor" href="#lint-free-fraction"></a></h3>
+<p><code>&lt;double&gt;</code> Fraction of R code lines that are free of lints. Code lines are defined as lines containing executable R tokens (excluding comments and blank lines) across the standard package directories (<code>R/</code>, <code>tests/</code>, <code>inst/</code>, <code>vignettes/</code>, <code>data-raw/</code>, <code>demo/</code>, <code>exec/</code>). A value of 1 means no linted lines; lower values indicate more pervasive lint issues. The set of linters applied is controlled by the <code>lint_linters</code> option.</p>
+<p><img src="figures/badge-dep-lintr-x-flat-square-green.svg" alt="[lintr]"></p>
+<p><a href="tags.html"><img src="figures/badge-best_practice-x-flat-square-blue.svg" alt="[best practice]"></a></p>
 </div><p></p><div class="section">
 <h3 id="cran-reverse-dependencies-count">CRAN Reverse Dependencies Count<a class="anchor" aria-label="anchor" href="#cran-reverse-dependencies-count"></a></h3>
 <p><code>&lt;integer&gt;</code> The number of packages on <acronym>CRAN</acronym> that directly depend on this package through <code>Depends</code>, <code>Imports</code>, or <code>LinkingTo</code> fields. This metric reflects adoption within the CRAN ecosystem and indicates how many packages would be affected by breaking changes. Higher counts suggest wider usage and community trust, but also greater responsibility for maintaining backward compatibility.</p>

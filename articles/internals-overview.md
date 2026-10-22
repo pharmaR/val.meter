@@ -180,17 +180,18 @@ They have tab completion, print out their contents *almost* like a
 names(rpkg)
 #>  [1] "covr_coverage"                     "r_cmd_check"                      
 #>  [3] "md5"                               "desc"                             
-#>  [5] "name"                              "version"                          
-#>  [7] "has_current_news"                  "archive_md5"                      
-#>  [9] "documentation_examples"            "vignette_count"                   
-#> [11] "web_html"                          "cran_reverse_dependencies_count"  
-#> [13] "cran_reverse_dependencies"         "web_url"                          
-#> [15] "r_cmd_check_error_count"           "test_line_coverage_fraction"      
-#> [17] "test_expression_coverage_fraction" "exports_help_coverage"            
-#> [19] "downloads_total"                   "help_pages_with_examples_count"   
-#> [21] "has_recognized_source"             "recognized_source_url"            
-#> [23] "help_examples_coverage"            "dependency_count"                 
-#> [25] "has_website"
+#>  [5] "name"                              "lint_count"                       
+#>  [7] "version"                           "has_current_news"                 
+#>  [9] "lints"                             "lint_free_fraction"               
+#> [11] "archive_md5"                       "documentation_examples"           
+#> [13] "vignette_count"                    "web_html"                         
+#> [15] "cran_reverse_dependencies_count"   "cran_reverse_dependencies"        
+#> [17] "web_url"                           "r_cmd_check_error_count"          
+#> [19] "test_line_coverage_fraction"       "test_expression_coverage_fraction"
+#> [21] "exports_help_coverage"             "downloads_total"                  
+#> [23] "help_pages_with_examples_count"    "has_recognized_source"            
+#> [25] "recognized_source_url"             "help_examples_coverage"           
+#> [27] "dependency_count"                  "has_website"
 ```
 
 Yep. There they are. All the fields you can just *assume* exist in this
@@ -211,7 +212,11 @@ If we take a peek at our `rpkg` object, we’ll see:
     #>    @ md5    : chr "e205e6d3c5154a36407367756f897f13"
     #> @permissions
     #>   <val.meter::permissions> chr [1:3] "write" "execution" "network"
+    #> $lint_count
+    #>   <promise>
     #> $has_current_news
+    #>   <promise>
+    #> $lint_free_fraction
     #>   <promise>
     #> $vignette_count
     #>   <promise>
@@ -243,6 +248,7 @@ If we take a peek at our `rpkg` object, we’ll see:
     #> $desc (internal)
     #> $name (internal)
     #> $version (internal)
+    #> $lints (internal)
     #> $archive_md5 (internal)
     #> $documentation_examples (internal)
     #> $web_html (internal)
@@ -272,7 +278,11 @@ new data.
     #>    @ md5    : chr "e205e6d3c5154a36407367756f897f13"
     #> @permissions
     #>   <val.meter::permissions> chr [1:3] "write" "execution" "network"
+    #> $lint_count
+    #>   <promise>
     #> $has_current_news
+    #>   <promise>
+    #> $lint_free_fraction
     #>   <promise>
     #> $vignette_count
     #>   <promise>
@@ -304,6 +314,7 @@ new data.
     #> $desc (internal)
     #> $name (internal)
     #> $version (internal)
+    #> $lints (internal)
     #> $archive_md5 (internal)
     #> $documentation_examples (internal)
     #> $web_html (internal)

@@ -160,6 +160,35 @@ resources (such as download and installation output) and executing code
 </dl></dd>
 
 
+<dt>lint_linters</dt>
+<dd><dl>
+Character vector of {lintr} linter function names used when computing
+lint_count and lint_free_fraction. Each name must correspond
+to a linter constructor exported by {lintr} (e.g.
+"equals_na_linter". Override to add, remove, or replace linters.
+Note: linters requiring configuration or environment-specific ones
+(e.g. "backport_linter") are excluded from the default set;
+add them manually by changing this option, possibly after configuring
+them globally.<dt>default: </dt>
+<dd><div class="sourceCode"><pre><code><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"absolute_path_linter"</span>, <span class="st">"all_equal_linter"</span>, <span class="st">"class_equals_linter"</span>,</span>
+<span>    <span class="st">"download_file_linter"</span>, <span class="st">"equals_na_linter"</span>, <span class="st">"for_loop_index_linter"</span>,</span>
+<span>    <span class="st">"length_test_linter"</span>, <span class="st">"list_comparison_linter"</span>, <span class="st">"nonportable_path_linter"</span>,</span>
+<span>    <span class="st">"object_overwrite_linter"</span>, <span class="st">"package_hooks_linter"</span>, <span class="st">"pipe_return_linter"</span>,</span>
+<span>    <span class="st">"redundant_equals_linter"</span>, <span class="st">"routine_registration_linter"</span>,</span>
+<span>    <span class="st">"sample_int_linter"</span>, <span class="st">"seq_linter"</span>, <span class="st">"sprintf_linter"</span>, <span class="st">"strings_as_factors_linter"</span>,</span>
+<span>    <span class="st">"T_and_F_symbol_linter"</span>, <span class="st">"terminal_close_linter"</span>, <span class="st">"unused_import_linter"</span>,</span>
+<span>    <span class="st">"vector_logic_linter"</span><span class="op">)</span></span></code></pre></div></dd>
+
+<dt>option: </dt>
+<dd><p>val.meter.lint_linters</p></dd>
+
+<dt>envvar: </dt>
+<dd><p>R_VAL_METER_LINT_LINTERS (evaluated if possible, raw string otherwise)</p></dd>
+
+
+</dl></dd>
+
+
 <dt>source_control_domains</dt>
 <dd><dl>
 Recognized source control hosting domains used when inferring whether a
