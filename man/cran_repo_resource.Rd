@@ -35,24 +35,24 @@ is to be sourced.}
 }
 \description{
 A reference to a listing in CRAN. CRAN Resources must be from one of the
-repositories listed in \code{\link[utils:chooseCRANmirror]{utils::getCRANmirrors()}}. To assert that a new url
+repositories listed in \code{\link[utils:getCRANmirrors]{utils::getCRANmirrors()}}. To assert that a new url
 is also a CRAN mirror, please follow instructions in
-\code{\link[utils:chooseCRANmirror]{utils::getCRANmirrors()}}.
+\code{\link[utils:getCRANmirrors]{utils::getCRANmirrors()}}.
 }
 \seealso{
-Other resources: 
-\code{\link{git_resource}()},
-\code{\link{http_resource}()},
-\code{\link{install_resource}()},
-\code{\link{local_resource}()},
-\code{\link{local_source_resource}()},
-\code{\link{mock_resource}()},
-\code{\link{multi_resource}()},
-\code{\link{remote_resource}()},
-\code{\link{repo_resource}()},
-\code{\link{resource}()},
-\code{\link{source_archive_resource}()},
-\code{\link{source_code_resource}()},
-\code{\link{unknown_resource}()}
+Other resources:
+\code{\link[=git_resource]{git_resource()}},
+\code{\link[=http_resource]{http_resource()}},
+\code{\link[=install_resource]{install_resource()}},
+\code{\link[=local_resource]{local_resource()}},
+\code{\link[=local_source_resource]{local_source_resource()}},
+\code{\link[=mock_resource]{mock_resource()}},
+\code{\link[=multi_resource]{multi_resource()}},
+\code{\link[=remote_resource]{remote_resource()}},
+\code{\link[=repo_resource]{repo_resource()}},
+\code{\link[=resource]{resource()}},
+\code{\link[=source_archive_resource]{source_archive_resource()}},
+\code{\link[=source_code_resource]{source_code_resource()}},
+\code{\link[=unknown_resource]{unknown_resource()}}
 }
 \concept{resources}
