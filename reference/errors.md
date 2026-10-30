@@ -31,12 +31,6 @@ new_err(
 err
 ```
 
-## Format
-
-An object of class `environment` of length 2.
-
-An object of class `list` of length 6.
-
 ## Functions
 
 - `.state`: Global error raising flags

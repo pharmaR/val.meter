@@ -12,7 +12,7 @@ knit_print.evaluate_evaluation(x, ...)
 
 - x:
 
-  An R object to be printed
+  An R object to be printed.
 
 - ...:
 

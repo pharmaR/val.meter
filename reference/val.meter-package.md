@@ -22,9 +22,16 @@ Useful links:
 
 **Maintainer**: Doug Kelkhoff <doug.kelkhoff@gmail.com>
 
+Authors:
+
+- Doug Kelkhoff <doug.kelkhoff@gmail.com>
+
 Other contributors:
 
 - Aaron Clark <clark.aaronchris@gmail.com> \[contributor\]
 
+- Lluís Revilla Sancho <lluis.revilla@gmail.com>
+  ([ORCID](https://orcid.org/0000-0001-9747-2570)) \[contributor\]
+
 - R Validation Hub <r-val-hub-maintainers@lists.r-consortium.org>
-  (https://www.pharmar.org) \[copyright holder\]
+  (website: https://www.pharmar.org) \[copyright holder\]

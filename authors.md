@@ -6,6 +6,9 @@
 
 - **Aaron Clark**. Contributor.
 
+- **Lluís Revilla Sancho**. Contributor.
+  [](https://orcid.org/0000-0001-9747-2570)
+
 - **R Validation Hub**. Copyright holder.  
   https://www.pharmar.org
 

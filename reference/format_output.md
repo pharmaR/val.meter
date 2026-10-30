@@ -1,10 +1,10 @@
 # Formatted version of `capture.output()`
 
 Captures output and formats it according to `style`. Uses the
-[evaluate::evaluate](https://pharmar.github.io/val.meter/reference/evaluate.r-lib.org/reference/evaluate.md)
+[evaluate](https://pharmar.github.io/val.meter/reference/evaluate.r-lib.org/reference/evaluate.md)
 package to capture output to be more resilient to other processes
 sinking output, causing issues with `capture.output` – notably when used
-with [knitr::knitr](https://rdrr.io/pkg/knitr/man/knitr-package.html).
+with [knitr](https://rdrr.io/pkg/knitr/man/knitr-package.html).
 
 ## Usage
 
