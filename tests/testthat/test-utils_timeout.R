@@ -88,6 +88,38 @@ test_that("dependencies share the deadline of the data that requires them", {
   expect_timeout_error(p$timeout_test_slow)
 })
 
+test_that("error handling isn't interrupted by an expired enclosing deadline", {
+  # slow down error construction, as on slow CI runners, so that an enclosing
+  # deadline re-armed too early would interrupt it while the error is built
+  original_cli_abort <- cli::cli_abort
+  local_mocked_bindings(
+    cli_abort = function(...) {
+      busy_wait(0.1)
+      original_cli_abort(...)
+    },
+    .package = "cli"
+  )
+
+  withr::local_options(val.meter.timeout = 0.5)
+  impl_slow_data("timeout_test_slow", seconds = 30)
+  impl_data(
+    "timeout_test_dependent",
+    metric = TRUE,
+    class = class_integer,
+    overwrite = TRUE,
+    quiet = TRUE,
+    function(pkg, resource, field, ...) {
+      pkg$timeout_test_slow + 1L
+    }
+  )
+
+  p <- pkg(mock_resource(package = "test", version = "1.2.3"))
+  expect_s3_class(p$timeout_test_dependent, cnd_type()[[1L]])
+
+  # inspect the stored value directly, as indexing would derive it again
+  expect_timeout_error(get0("timeout_test_slow", envir = p@data))
+})
+
 test_that("outer time limit is restored after a nested derivation", {
   withr::local_options(val.meter.timeout = 1)
   impl_slow_data("timeout_test_fast", seconds = 0)
