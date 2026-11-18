@@ -71,9 +71,30 @@ deadline_passed <- function(deadline, now = elapsed_now()) {
 }
 
 #' @describeIn timeout
+#' Make `deadline` the deadline of the derivation being evaluated, so that
+#' derivations of its dependencies share it. Returns the enclosing deadline,
+#' to be restored using `exit_deadline()`.
+enter_deadline <- function(deadline) {
+  outer <- .timeout_state$deadline
+  .timeout_state$deadline <- deadline
+  outer
+}
+
+#' @describeIn timeout
+#' Restore the deadline and time limit of an enclosing derivation. Called once
+#' a derivation is complete, just before returning to the enclosing derivation,
+#' so that the enclosing derivation's limit can't interrupt the bookkeeping of
+#' this one.
+exit_deadline <- function(outer) {
+  .timeout_state$deadline <- outer
+  set_elapsed_time_limit(outer)
+}
+
+#' @describeIn timeout
 #' Evaluate an expression with an elapsed time limit, signalling an error if
-#' the deadline passes before or during its evaluation. Restores the time limit
-#' of an enclosing derivation on exit.
+#' the deadline passes before or during its evaluation. The time limit is
+#' removed as soon as the expression completes, so that handling its result
+#' (such as constructing errors) isn't interrupted.
 with_deadline <- function(deadline, expr) {
   if (!is.finite(deadline)) {
     return(expr)
@@ -83,16 +104,7 @@ with_deadline <- function(deadline, expr) {
     stop("deadline passed before derivation started")
   }
 
-  outer <- .timeout_state$deadline
-  .timeout_state$deadline <- deadline
-  on.exit(
-    {
-      .timeout_state$deadline <- outer
-      set_elapsed_time_limit(outer)
-    },
-    add = TRUE
-  )
-
+  on.exit(setTimeLimit(elapsed = Inf), add = TRUE)
   set_elapsed_time_limit(deadline)
   result <- expr
 

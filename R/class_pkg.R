@@ -230,6 +230,11 @@ get_pkg_data <- function(
     }
 
     deadline <- derive_deadline()
+    if (is.finite(deadline)) {
+      outer_deadline <- enter_deadline(deadline)
+      on.exit(exit_deadline(outer_deadline), add = TRUE)
+    }
+
     x@data[[name]] <- tryCatch(
       with_deadline(deadline, {
         info <- pkg_data_info(name)
