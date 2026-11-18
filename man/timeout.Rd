@@ -3,6 +3,7 @@
 \name{timeout}
 \alias{timeout}
 \alias{.timeout_state}
+\alias{elapsed_now}
 \alias{as_deadline}
 \alias{derive_deadline}
 \alias{deadline_passed}
@@ -12,16 +13,18 @@
 \usage{
 .timeout_state
 
-as_deadline(x)
+elapsed_now()
+
+as_deadline(x, now = elapsed_now())
 
 derive_deadline(
   timeout = opt("timeout"),
   deadline = opt("deadline"),
   outer = .timeout_state$deadline,
-  now = as.numeric(Sys.time())
+  now = elapsed_now()
 )
 
-deadline_passed(deadline, now = as.numeric(Sys.time()))
+deadline_passed(deadline, now = elapsed_now())
 
 with_deadline(deadline, expr)
 
@@ -34,12 +37,22 @@ are interrupted using \code{\link[=setTimeLimit]{setTimeLimit()}} when the deadl
 derivations that start after their deadline fail immediately. In both cases,
 a \code{timeout} error is recorded in place of the data.
 }
+\details{
+Deadlines are tracked on the session's elapsed time clock
+(\code{proc.time()[["elapsed"]]}), the clock used by \code{\link[=setTimeLimit]{setTimeLimit()}}. Its
+accuracy differs from \code{\link[=Sys.time]{Sys.time()}}: on Windows it is measured in 10ms
+ticks. Comparing deadlines using the same clock ensures that a time limit
+never fires before \code{\link[=deadline_passed]{deadline_passed()}} considers the deadline reached.
+}
 \section{Functions}{
 \itemize{
-\item \code{.timeout_state}: Deadline of the derivation currently being evaluated, as seconds since the
-epoch.
+\item \code{.timeout_state}: Deadline of the derivation currently being evaluated, in seconds of session
+elapsed time.
 
-\item \code{as_deadline()}: Normalize a deadline option value to seconds since the epoch.
+\item \code{elapsed_now()}: Session elapsed time, in seconds. The clock used by \code{\link[=setTimeLimit]{setTimeLimit()}}.
+
+\item \code{as_deadline()}: Convert a deadline option value, a date-time or seconds since the epoch, to
+seconds of session elapsed time.
 
 \item \code{derive_deadline()}: Calculate the deadline for a new derivation.
 
