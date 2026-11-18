@@ -20,9 +20,21 @@ types of information various metrics contain. For more details, see
 \item{artifacts}{Directory where artifacts will be stored. This includes installation logs,
 package source code and temporary libraries used while evaluating packages. (Defaults to \code{ns_tmp_root()}, overwritable using option 'val.meter.artifacts' or environment variable 'R_VAL_METER_ARTIFACTS')}
 
+\item{timeout}{Maximum time, in seconds, allowed for deriving each piece of package data,
+including the data it depends on. Data that isn't derived in time is
+recorded as a \code{timeout} error. Blocking calls to other processes (such as
+\code{system()}) can only be stopped once they return. (Defaults to \code{Inf}, overwritable using option 'val.meter.timeout' or environment variable 'R_VAL_METER_TIMEOUT')}
+
 \item{quiet}{Silences console output during evaluation. This applies when pulling package
 resources (such as download and installation output) and executing code
 (for example, running \verb{R CMD check}) (Defaults to \code{TRUE}, overwritable using option 'val.meter.quiet' or environment variable 'R_VAL_METER_QUIET')}
+
+\item{deadline}{Time by which all package data must be derived, as a \code{POSIXct} date-time
+or a number of seconds since the epoch. Data that isn't derived by then is
+recorded as a \code{timeout} error, so that evaluation can finish and write its
+results before an external time limit (such as a CI job timeout) is
+reached. When set through an environment variable, use seconds since the
+epoch, for example \verb{$(( $(date +\%s) + 3000 ))} for 50 minutes from now. (Defaults to \code{NULL}, overwritable using option 'val.meter.deadline' or environment variable 'R_VAL_METER_DEADLINE')}
 
 \item{policy}{Set the default \code{val.meter} policies, specifying how package
 resources will be discovered and what permissions are granted when

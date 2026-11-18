@@ -34,6 +34,7 @@ Imports:
     utils,
     xml2
 Suggests:
+    callr,
     covr,
     htmltools,
     igraph,
@@ -96,5 +97,6 @@ Collate:
     'utils_evaluate.R'
     'utils_rand.R'
     'utils_rstudio.R'
+    'utils_timeout.R'
     'utils_tmp.R'
     'zzz.R'

@@ -1,0 +1,9 @@
+Package: pkg.covr.tests
+Title: Package With Tests For Coverage
+Version: 0.0.0.9000
+Authors@R: 
+    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
+Description: A package whose tests cover half of its functions. Its tests
+    hang when the environment variable 'PKG_COVR_TESTS_HANG' is set.
+License: MIT
+Encoding: UTF-8

@@ -23,6 +23,24 @@ define_options(
   ),
   tags = tags(TRUE),
 
+  fmt(
+    "Maximum time, in seconds, allowed for deriving each piece of package data,
+    including the data it depends on. Data that isn't derived in time is
+    recorded as a `timeout` error. Blocking calls to other processes (such as
+    `system()`) can only be stopped once they return."
+  ),
+  timeout = Inf,
+
+  fmt(
+    "Time by which all package data must be derived, as a `POSIXct` date-time
+    or a number of seconds since the epoch. Data that isn't derived by then is
+    recorded as a `timeout` error, so that evaluation can finish and write its
+    results before an external time limit (such as a CI job timeout) is
+    reached. When set through an environment variable, use seconds since the
+    epoch, for example `$(( $(date +%s) + 3000 ))` for 50 minutes from now."
+  ),
+  deadline = NULL,
+
   fmt("Whether output should be captured during the evaluation of metrics."),
   logs = FALSE,
 

@@ -87,6 +87,9 @@ data field threw an error during execution.}
 \item{\code{data_not_implemented}}{Create an error indicating that data could not
 be derived because it is not implemented for this resource.}
 
+\item{\code{timeout}}{Create an error indicating that a data derivation did not
+finish before its deadline. See the \code{timeout} and \code{deadline} options.}
+
 \item{\code{derive_error}}{Wrap an error raised through data derivation in a
 packag error type for communication.}
 }}
