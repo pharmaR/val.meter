@@ -2,29 +2,28 @@ test_that("metric_coerce coerces character metrics to each atomic type", {
   ms <- metrics()
 
   # integer metric
-  expect_identical(
-    metric_coerce("3", ms[["r_cmd_check_error_count"]]@data_class),
-    3L
-  )
+  int <- metric_coerce("3", ms[["r_cmd_check_error_count"]]@data_class)
+  expect_type(int, "integer")
+  expect_identical(int, 3L)
 
   # logical metric
-  expect_identical(
-    metric_coerce("TRUE", ms[["has_website"]]@data_class),
-    TRUE
-  )
-  expect_identical(
-    metric_coerce("FALSE", ms[["has_website"]]@data_class),
-    FALSE
-  )
+  lgl_true <- metric_coerce("TRUE", ms[["has_website"]]@data_class)
+  lgl_false <- metric_coerce("FALSE", ms[["has_website"]]@data_class)
+  expect_type(lgl_true, "logical")
+  expect_type(lgl_false, "logical")
+  expect_identical(lgl_true, TRUE)
+  expect_identical(lgl_false, FALSE)
 
   # double metric
-  expect_identical(
-    metric_coerce("0.5", ms[["test_line_coverage_fraction"]]@data_class),
-    0.5
-  )
+  dbl <- metric_coerce("0.5", ms[["test_line_coverage_fraction"]]@data_class)
+  expect_type(dbl, "double")
+  expect_identical(dbl, 0.5)
 })
 
 test_that("metric_coerce coerces atomic values to character", {
+  for (x in list(3L, 0.5, TRUE)) {
+    expect_type(metric_coerce(x, class_character), "character")
+  }
   expect_identical(metric_coerce(3L, class_character), "3")
   expect_identical(metric_coerce(0.5, class_character), "0.5")
   expect_identical(metric_coerce(TRUE, class_character), "TRUE")
