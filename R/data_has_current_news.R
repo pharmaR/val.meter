@@ -1,5 +1,54 @@
 
 #' @include impl_data.R
+
+#' Version strings a NEWS entry may use for a package version
+#'
+#' The full version, plus shorter forms with trailing `.0` components dropped
+#' (`"1.2.0"` may be written `"1.2"`), never shorter than `major.minor` so that
+#' `"2.0.0"` is not reduced to a bare `"2"`.
+#'
+#' @param version Package version, as a string or [`package_version`].
+#' @return Character vector of version strings, longest first.
+#' @noRd
+news_version_forms <- function(version) {
+  parts <- unlist(package_version(as.character(version)))
+  forms <- paste(parts, collapse = ".")
+  while (length(parts) > 2L && parts[[length(parts)]] == 0L) {
+    parts <- parts[-length(parts)]
+    forms <- c(forms, paste(parts, collapse = "."))
+  }
+  forms
+}
+
+#' Does NEWS text mention a package version?
+#'
+#' Matches each form from `news_version_forms()` literally, as a whole version:
+#' `"1.2.1"` does not match `"1.2.10"`, `"11.2.1"` or `"1a2b1"`. A development
+#' version (a fourth component of 9000 or more, by the usethis convention) also
+#' matches a "development version" heading.
+#'
+#' @param text Character vector of NEWS text.
+#' @param version Package version, as a string or [`package_version`].
+#' @return `TRUE` if any line mentions the version.
+#' @noRd
+news_mentions_version <- function(text, version) {
+  text <- as.character(unlist(text))
+  forms <- news_version_forms(version)
+  escaped <- gsub("([.])", "\\\\\\1", forms)
+  # not preceded by a digit or dot, not followed by a digit or ".<digit>"
+  pattern <- sprintf(
+    "(?<![0-9.])(%s)(?![0-9]|\\.[0-9])",
+    paste(escaped, collapse = "|")
+  )
+  if (any(grepl(pattern, text, perl = TRUE))) {
+    return(TRUE)
+  }
+
+  parts <- unlist(package_version(as.character(version)))
+  is_dev <- length(parts) >= 4L && parts[[4L]] >= 9000L
+  is_dev && any(grepl("development version", text, ignore.case = TRUE))
+}
+
 impl_data(
   "has_current_news",
   metric = TRUE,
@@ -32,17 +81,10 @@ impl_data(
       })
     # Derive has_news & read news files to see if latest version is present
     has_news <- length(news_lst) > 0
-    html_nodes <- lapply(
-      news_lst,
-      xml2::xml_find_all,
-      sprintf("//text()[contains(., '%s')]",
-        gsub("(\\.0)+$", "", as.character(pkg$version)) # remove trailing ".0"
-      )
-    )
-    news_current <-
-      vapply(html_nodes, function(i) length(i) > 0, logical(1L)) |>
-      any()
-    has_news && news_current
+    news_text <- lapply(news_lst, function(doc) {
+      xml2::xml_text(xml2::xml_find_all(doc, "//text()"))
+    })
+    has_news && news_mentions_version(news_text, pkg$version)
   }
 )
 
@@ -80,12 +122,13 @@ impl_data(
       }
       news_lst <- content[valid]
     }
-    # Derive has_news & read news files to see if latest version is present
+    # Derive has_news & read news files to see if latest version is present.
+    # Rd NEWS is parsed into a data frame of entries; use its Version column.
     has_news <- length(news_lst) > 0
-    news_current <- gsub("(\\.0)+$", "", as.character(pkg$version)) |>
-      grepl(news_lst) |>
-      any()
-    has_news && news_current
+    news_text <- lapply(news_lst, function(x) {
+      if (is.data.frame(x)) as.character(x$Version) else x
+    })
+    has_news && news_mentions_version(news_text, pkg$version)
   }
 )
 
