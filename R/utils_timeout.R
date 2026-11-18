@@ -6,6 +6,12 @@
 #' derivations that start after their deadline fail immediately. In both cases,
 #' a `timeout` error is recorded in place of the data.
 #'
+#' Deadlines are tracked on the session's elapsed time clock
+#' (`proc.time()[["elapsed"]]`), the clock used by [`setTimeLimit()`]. Its
+#' accuracy differs from [`Sys.time()`]: on Windows it is measured in 10ms
+#' ticks. Comparing deadlines using the same clock ensures that a time limit
+#' never fires before [`deadline_passed()`] considers the deadline reached.
+#'
 #' @note [`setTimeLimit()`] is only checked while R code is running. Blocking
 #'   calls into other processes (such as [`system()`] or [`system2()`]) can't
 #'   be interrupted and are only stopped once they return.
@@ -15,16 +21,23 @@
 NULL
 
 #' @describeIn timeout
-#' Deadline of the derivation currently being evaluated, as seconds since the
-#' epoch.
+#' Deadline of the derivation currently being evaluated, in seconds of session
+#' elapsed time.
 .timeout_state <- local({
   deadline <- Inf
   environment()
 })
 
 #' @describeIn timeout
-#' Normalize a deadline option value to seconds since the epoch.
-as_deadline <- function(x) {
+#' Session elapsed time, in seconds. The clock used by [`setTimeLimit()`].
+elapsed_now <- function() {
+  proc.time()[["elapsed"]]
+}
+
+#' @describeIn timeout
+#' Convert a deadline option value, a date-time or seconds since the epoch, to
+#' seconds of session elapsed time.
+as_deadline <- function(x, now = elapsed_now()) {
   if (is.null(x) || length(x) == 0L || all(is.na(x))) {
     return(Inf)
   }
@@ -36,7 +49,7 @@ as_deadline <- function(x) {
     )
   }
 
-  as.numeric(as.POSIXct(x))
+  now + as.numeric(as.POSIXct(x)) - as.numeric(Sys.time())
 }
 
 #' @describeIn timeout
@@ -45,15 +58,15 @@ derive_deadline <- function(
   timeout = opt("timeout"),
   deadline = opt("deadline"),
   outer = .timeout_state$deadline,
-  now = as.numeric(Sys.time())
+  now = elapsed_now()
 ) {
   timeout <- if (is.null(timeout) || is.na(timeout)) Inf else timeout
-  min(now + timeout, as_deadline(deadline), outer)
+  min(now + timeout, as_deadline(deadline, now = now), outer)
 }
 
 #' @describeIn timeout
 #' Test whether a deadline has passed.
-deadline_passed <- function(deadline, now = as.numeric(Sys.time())) {
+deadline_passed <- function(deadline, now = elapsed_now()) {
   is.finite(deadline) && now >= deadline
 }
 
@@ -101,7 +114,7 @@ set_elapsed_time_limit <- function(deadline) {
   }
 
   # an expired outer deadline should interrupt promptly once resumed
-  remaining <- max(deadline - as.numeric(Sys.time()), 0.01)
+  remaining <- max(deadline - elapsed_now(), 0.01)
   setTimeLimit(elapsed = remaining, transient = TRUE)
   invisible()
 }
