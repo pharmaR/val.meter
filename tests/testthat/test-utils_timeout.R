@@ -21,7 +21,7 @@ impl_slow_data <- function(name, seconds, value = 1L, envir = parent.frame()) {
 }
 
 expect_timeout_error <- function(x) {
-  expect_s3_class(x, cnd_type("timeout")[[1L]])
+  testthat::expect_s3_class(x, cnd_type("timeout")[[1L]])
 }
 
 test_that("derivations are interrupted after the per-derivation timeout", {
