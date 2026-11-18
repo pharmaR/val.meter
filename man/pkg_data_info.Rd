@@ -21,7 +21,7 @@ retrieving package data info.}
 Retrieve metadata about a data field.
 }
 \seealso{
-Other generics: 
-\code{\link{pkg_data_derive}()}
+Other generics:
+\code{\link[=pkg_data_derive]{pkg_data_derive()}}
 }
 \concept{generics}

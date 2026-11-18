@@ -177,7 +177,7 @@ random_repo <- function(..., path = tempfile("repo")) {
   )
   writeLines(dcf, packages_path)
 
-  repos <- paste0("file://", normalizePath(path))
+  repos <- normalizePath(path, winslash = "/")
   names(repos) <- paste0(packageName(), "-generated")
 
   repos

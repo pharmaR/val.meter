@@ -21,10 +21,16 @@ Useful links:
 \author{
 \strong{Maintainer}: Doug Kelkhoff \email{doug.kelkhoff@gmail.com}
 
+Authors:
+\itemize{
+  \item Doug Kelkhoff \email{doug.kelkhoff@gmail.com}
+}
+
 Other contributors:
 \itemize{
   \item Aaron Clark \email{clark.aaronchris@gmail.com} [contributor]
-  \item R Validation Hub \email{r-val-hub-maintainers@lists.r-consortium.org} (https://www.pharmar.org) [copyright holder]
+  \item Lluís Revilla Sancho \email{lluis.revilla@gmail.com} (\href{https://orcid.org/0000-0001-9747-2570}{ORCID}) [contributor]
+  \item R Validation Hub \email{r-val-hub-maintainers@lists.r-consortium.org} (website: https://www.pharmar.org) [copyright holder]
 }
 
 }
