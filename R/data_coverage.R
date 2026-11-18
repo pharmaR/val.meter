@@ -2,7 +2,7 @@ impl_data(
   "covr_coverage",
   class = S7::new_S3_class("coverage"),
   tags = c("execution"),
-  suggests = "covr",
+  suggests = c("covr", "callr"),
   permissions = "execution"
 )
 
@@ -10,9 +10,17 @@ impl_data(
   "covr_coverage",
   for_resource = local_source_resource,
   function(pkg, resource, field, ...) {
-    # package installs use `system2()` whose output cannot be captured by sink()
-    # so we just execute quietly
-    covr::package_coverage(resource@path, type = "tests", quiet = TRUE)
+    # covr installs the package and runs its tests using `system()` and
+    # `system2()`, which can't be interrupted by a time limit (see `timeout`
+    # option), so run it in a subprocess, which can. Their output can't be
+    # captured by sink() either, so we just execute quietly.
+    callr::r(
+      function(path) {
+        covr::package_coverage(path, type = "tests", quiet = TRUE)
+      },
+      args = list(path = resource@path),
+      show = FALSE
+    )
   }
 )
 
