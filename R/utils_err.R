@@ -196,6 +196,19 @@ err <- list(
     )
   },
 
+  #' @field timeout Create an error indicating that a data derivation did not
+  #'   finish before its deadline. See the `timeout` and `deadline` options.
+  timeout = function(field, ...) {
+    data <- list(field = field)
+    stopifnot(is.character(data$field))
+    new_err(
+      class = "timeout",
+      data = data,
+      "data field {.str {data$field}} did not finish before its deadline",
+      ...
+    )
+  },
+
   #' @field derive_error Wrap an error raised through data derivation in a
   #'   packag error type for communication.
   derive = function(

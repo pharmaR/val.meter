@@ -229,8 +229,9 @@ get_pkg_data <- function(
       on.exit(.state$raise_derive_errors(FALSE))
     }
 
+    deadline <- derive_deadline()
     x@data[[name]] <- tryCatch(
-      {
+      with_deadline(deadline, {
         info <- pkg_data_info(name)
         required_permissions <- info@permissions
         required_suggests <- info@suggests
@@ -256,8 +257,11 @@ get_pkg_data <- function(
         }
 
         data
-      },
+      }),
       error = function(e, ...) {
+        if (deadline_passed(deadline)) {
+          return(err$timeout(field = name, capture = TRUE))
+        }
         convert(e, class_val_meter_error, field = name)
       }
     )
