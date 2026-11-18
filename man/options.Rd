@@ -36,6 +36,26 @@ types of information various metrics contain. For more details, see
 \item{envvar: }{R_VAL_METER_TAGS (evaluated if possible, raw string otherwise)}
 }}
 
+\item{timeout}{\describe{
+Maximum time, in seconds, allowed for deriving each piece of package data,
+including the data it depends on. Data that isn't derived in time is
+recorded as a \code{timeout} error. Blocking calls to other processes (such as
+\code{system()}) can only be stopped once they return.\item{default: }{\preformatted{Inf}}
+\item{option: }{val.meter.timeout}
+\item{envvar: }{R_VAL_METER_TIMEOUT (evaluated if possible, raw string otherwise)}
+}}
+
+\item{deadline}{\describe{
+Time by which all package data must be derived, as a \code{POSIXct} date-time
+or a number of seconds since the epoch. Data that isn't derived by then is
+recorded as a \code{timeout} error, so that evaluation can finish and write its
+results before an external time limit (such as a CI job timeout) is
+reached. When set through an environment variable, use seconds since the
+epoch, for example \verb{$(( $(date +\%s) + 3000 ))} for 50 minutes from now.\item{default: }{\preformatted{NULL}}
+\item{option: }{val.meter.deadline}
+\item{envvar: }{R_VAL_METER_DEADLINE (evaluated if possible, raw string otherwise)}
+}}
+
 \item{logs}{\describe{
 Whether output should be captured during the evaluation of metrics.\item{default: }{\preformatted{FALSE}}
 \item{option: }{val.meter.logs}
