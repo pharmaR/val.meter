@@ -7,6 +7,8 @@
 \alias{as_deadline}
 \alias{derive_deadline}
 \alias{deadline_passed}
+\alias{enter_deadline}
+\alias{exit_deadline}
 \alias{with_deadline}
 \alias{set_elapsed_time_limit}
 \title{Time limits for package data derivation}
@@ -25,6 +27,10 @@ derive_deadline(
 )
 
 deadline_passed(deadline, now = elapsed_now())
+
+enter_deadline(deadline)
+
+exit_deadline(outer)
 
 with_deadline(deadline, expr)
 
@@ -58,9 +64,19 @@ seconds of session elapsed time.
 
 \item \code{deadline_passed()}: Test whether a deadline has passed.
 
+\item \code{enter_deadline()}: Make \code{deadline} the deadline of the derivation being evaluated, so that
+derivations of its dependencies share it. Returns the enclosing deadline,
+to be restored using \code{exit_deadline()}.
+
+\item \code{exit_deadline()}: Restore the deadline and time limit of an enclosing derivation. Called once
+a derivation is complete, just before returning to the enclosing derivation,
+so that the enclosing derivation's limit can't interrupt the bookkeeping of
+this one.
+
 \item \code{with_deadline()}: Evaluate an expression with an elapsed time limit, signalling an error if
-the deadline passes before or during its evaluation. Restores the time limit
-of an enclosing derivation on exit.
+the deadline passes before or during its evaluation. The time limit is
+removed as soon as the expression completes, so that handling its result
+(such as constructing errors) isn't interrupted.
 
 \item \code{set_elapsed_time_limit()}: Set the session's elapsed time limit to expire at \code{deadline}.
 
