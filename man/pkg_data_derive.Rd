@@ -34,7 +34,7 @@ This function is used internally when accessing a \code{\link{pkg}} object using
 \code{[[} and \code{[}.
 }
 \seealso{
-Other generics: 
-\code{\link{pkg_data_info}()}
+Other generics:
+\code{\link[=pkg_data_info]{pkg_data_info()}}
 }
 \concept{generics}

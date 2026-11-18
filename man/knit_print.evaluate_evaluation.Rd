@@ -7,7 +7,7 @@
 knit_print.evaluate_evaluation(x, ...)
 }
 \arguments{
-\item{x}{An R object to be printed}
+\item{x}{An R object to be printed.}
 
 \item{...}{Additional arguments passed to the S3 method. Currently ignored,
 except two optional arguments \code{options} and \code{inline}; see

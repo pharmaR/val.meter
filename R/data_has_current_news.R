@@ -50,7 +50,7 @@ impl_data(
 #' @importFrom tools file_ext
 impl_data(
   "has_current_news",
-  for_resource = new_union(install_resource, source_code_resource),
+  for_resource = new_union(source_code_resource, install_resource),
   overwrite = TRUE,
   function(pkg, resource, field, ...) {
     files <- resource@path |>

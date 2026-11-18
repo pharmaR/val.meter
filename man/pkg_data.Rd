@@ -95,6 +95,36 @@ function for a combination of data field \emph{and} package resource) and
 \item \code{impl_data_derive()}: Register a derivation function for a data field and package resource.
 
 }}
+\section{Data versus metrics}{
+
+
+Every value val.meter derives about a package is \emph{data}. A \emph{metric}
+is a specially-designated subset of that data. The two terms are often used
+interchangeably, but the distinction matters when implementing new fields:
+
+\describe{
+\item{Data}{Any information that can be derived about a package, accessed
+with \code{pkg$field}. Data may be a raw, richly-structured or intermediate
+value used only to calculate other fields (for example, the parsed
+\code{DESCRIPTION} or a package's raw web page HTML). Data carries no
+constraints on its type.}
+\item{Metric}{Data that has additionally been declared a metric --
+structured, regular information intended for systematic,
+decision-making comparisons \emph{across} packages (for example, a
+\verb{R CMD check} error count or a download total). To keep metrics
+comparable, a metric must resolve to an \emph{atomic} value (an
+\code{S7} \code{class_atomic} subclass); declaring a non-atomic field as a
+metric is an error.}
+}
+
+A field becomes a metric when its metadata sets \code{metric = TRUE}, either
+through the \code{metric} argument of \code{\link[=impl_data]{impl_data()}}/\code{\link[=impl_data_info]{impl_data_info()}} or via
+\code{impl_metric()}. This flag is what \code{\link[=metrics]{metrics()}} uses to decide what to
+surface: \code{\link[=metrics]{metrics()}} lists (or, given a \code{\link{pkg}}, calculates) only metrics
+by default, while \code{metrics(all = TRUE)} also returns the non-metric,
+typically intermediate, data.
+}
+
 \section{Implementing a new metric}{
 
 

@@ -27,10 +27,10 @@ directly.}
 \item{envir}{An environment in which expression \code{x} should be evaluated.}
 }
 \description{
-Captures output and formats it according to \code{style}. Uses the \link[evaluate:evaluate]{evaluate::evaluate}
+Captures output and formats it according to \code{style}. Uses the \link[evaluate:evaluate]{evaluate}
 package to capture output to be more resilient to other processes sinking
 output, causing issues with \code{capture.output} -- notably when used with
-\link[knitr:knitr-package]{knitr::knitr}.
+\link[knitr:knitr]{knitr}.
 }
 \examples{
 format_output(
