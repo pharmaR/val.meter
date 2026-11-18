@@ -54,9 +54,17 @@ impl_data(
 
 impl_data(
   "cran_reverse_dependencies",
-  for_resource = cran_repo_resource,
+  for_resource = class_resource,
   function(pkg, resource, field, ...) {
-    cran_matrix <- viable_revdep_packages(repos = resource@repo)
+    # the CRAN package universe does not depend on where this package came
+    # from: use the resource's own CRAN mirror if it has one, otherwise the
+    # cloud mirror (so e.g. an installed package can still be assessed)
+    repo <- if (S7_inherits(resource, cran_repo_resource)) {
+      resource@repo
+    } else {
+      "https://cloud.r-project.org/"
+    }
+    cran_matrix <- viable_revdep_packages(repos = repo)
 
     get_reverse_deps(
       pkg$name,
@@ -100,7 +108,7 @@ impl_data(
 
 impl_data(
   "cran_reverse_dependencies_count",
-  for_resource = new_union(cran_repo_resource, mock_resource),
+  for_resource = class_resource,
   function(pkg, resource, field, ...) {
     # Just count the length of rev dep vector
     length(pkg$cran_reverse_dependencies)

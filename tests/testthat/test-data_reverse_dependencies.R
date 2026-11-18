@@ -155,6 +155,34 @@ describe("cran_reverse_dependencies metric behavior with mocked data", {
   })
 })
 
+describe("cran_reverse_dependencies for non-CRAN resources", {
+  it("queries the CRAN cloud mirror for an installed package", {
+    mock_matrix <- create_mock_package_matrix()
+    queried <- NULL
+
+    with_mocked_bindings(
+      viable_revdep_packages = function(repos) {
+        queried <<- repos
+        mock_matrix
+      },
+      .package = "val.meter",
+      {
+        p <- pkg(
+          local_installed_resource("targetpkg"),
+          permissions = permissions("network")
+        )
+
+        deps <- p$cran_reverse_dependencies
+
+        expect_type(deps, "character")
+        expect_true(all(c("pkgA", "pkgB", "pkgD") %in% deps))
+        expect_identical(p$cran_reverse_dependencies_count, 3L)
+        expect_identical(queried, "https://cloud.r-project.org/")
+      }
+    )
+  })
+})
+
 describe("cran_reverse_dependencies_count metric behavior", {
   it("returns integer count matching dependency vector length", {
     mock_matrix <- create_mock_package_matrix()
