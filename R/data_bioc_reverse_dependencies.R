@@ -17,7 +17,8 @@
 #' different release (or an internal mirror) can be supplied through the
 #' `val.meter.bioc_repos` option.
 #'
-#' @param version BioConductor release to target. Defaults to `"release"`.
+#' @param version BioConductor release to target: `"release"`, `"devel"` or a
+#'   version number such as `"3.20"`. Defaults to `"release"`.
 #' @return Character vector of repository URLs.
 #' @noRd
 get_bioc_repos <- function(version = "release") {
@@ -26,11 +27,31 @@ get_bioc_repos <- function(version = "release") {
     return(repos)
   }
 
+  if (!is_bioc_version(version)) {
+    stop(
+      "BioConductor `version` must be \"release\", \"devel\" or a version ",
+      "number such as \"3.20\", not ", deparse(version),
+      call. = FALSE
+    )
+  }
+
   file.path(
     "https://bioconductor.org/packages",
     version,
     c("bioc", "data/annotation", "data/experiment", "workflows")
   )
+}
+
+#' Is this a valid BioConductor release identifier?
+#'
+#' @param version Object to check.
+#' @return `TRUE` for `"release"`, `"devel"` or an `X.Y` version number.
+#' @noRd
+is_bioc_version <- function(version) {
+  is.character(version) &&
+    length(version) == 1L &&
+    !is.na(version) &&
+    (version %in% c("release", "devel") || grepl("^\\d+\\.\\d+$", version))
 }
 
 impl_data(
@@ -49,11 +70,11 @@ impl_data(
 
 impl_data(
   "bioc_reverse_dependencies",
-  for_resource = cran_repo_resource,
+  for_resource = class_resource,
   function(pkg, resource, field, ...) {
     # the BioConductor package universe is independent of the package's own
-    # resource, so it is queried from the known BioConductor repositories
-    # rather than from resource@repo.
+    # resource, so it is queried from the known BioConductor repositories for
+    # any resource (e.g. an installed package, not only a CRAN listing).
     bioc_matrix <- viable_revdep_packages(repos = get_bioc_repos())
 
     get_reverse_deps(
@@ -99,7 +120,7 @@ impl_data(
 
 impl_data(
   "bioc_reverse_dependencies_count",
-  for_resource = new_union(cran_repo_resource, mock_resource),
+  for_resource = class_resource,
   function(pkg, resource, field, ...) {
     # Just count the length of rev dep vector
     length(pkg$bioc_reverse_dependencies)

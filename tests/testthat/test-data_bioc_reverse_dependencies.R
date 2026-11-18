@@ -36,6 +36,16 @@ describe("get_bioc_repos", {
     expect_true(all(grepl("/3.18/", get_bioc_repos(version = "3.18"))))
   })
 
+  it("accepts the devel alias", {
+    expect_true(all(grepl("/devel/", get_bioc_repos(version = "devel"))))
+  })
+
+  it("rejects anything but release, devel or an X.Y version", {
+    for (bad in list("3", "3.18.1", "latest", c("3.18", "3.19"), NA, 3.18)) {
+      expect_error(get_bioc_repos(version = bad), "BioConductor `version`")
+    }
+  })
+
   it("honours the val.meter.bioc_repos option override", {
     withr::with_options(
       list(val.meter.bioc_repos = "file:///tmp/fake-bioc"),
@@ -89,6 +99,27 @@ describe("bioc_reverse_dependencies metric behavior with mocked data", {
 
         expect_type(deps, "character")
         expect_length(deps, 0)
+      }
+    )
+  })
+
+  it("is derived for an installed package, not only a CRAN listing", {
+    mock_matrix <- create_mock_bioc_matrix()
+
+    with_mocked_bindings(
+      viable_revdep_packages = function(repos) mock_matrix,
+      .package = "val.meter",
+      {
+        p <- pkg(
+          local_installed_resource("targetpkg"),
+          permissions = permissions("network")
+        )
+
+        deps <- p$bioc_reverse_dependencies
+
+        expect_type(deps, "character")
+        expect_true(all(c("biocA", "biocB", "biocD") %in% deps))
+        expect_identical(p$bioc_reverse_dependencies_count, 3L)
       }
     )
   })
