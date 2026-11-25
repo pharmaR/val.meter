@@ -59,7 +59,7 @@ pkg <- class_pkg <- new_class(
 
     # handle anything that can be converted into a resource - especially
     # useful for character shorthands
-    if (!is_mocked) {
+    if (!is_mocked && !S7::S7_inherits(resource, class_resource)) {
       # TODO: warn when we won't use the policy; when a resource is provided
       resource <- convert(resource, class_resource, policy = policy)
     }
