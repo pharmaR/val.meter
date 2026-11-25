@@ -28,7 +28,7 @@ impl_data(
     )
 
     if (!length(nodes)) {
-      return(0)
+      return(0L)
     }
 
     paths <- xml2::xml_attr(nodes, "href")
