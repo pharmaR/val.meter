@@ -24,7 +24,7 @@ method(metric_coerce, list(class_any, class_any)) <-
   }
 
 method(metric_coerce, list(class_any, new_S3_class(class_desc(class_any)))) <-
-  convert
+  S7::convert
 
 method(metric_coerce, list(new_S3_class(cnd_type()), class_any)) <-
   function(from, to, ...) {

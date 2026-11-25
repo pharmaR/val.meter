@@ -28,7 +28,7 @@ Imports:
     httr2,
     jsonlite,
     options,
-    S7,
+    S7 (>= 1.0.0),
     stats,
     tools,
     utils,
