@@ -65,7 +65,7 @@ pkg <- class_pkg <- new_class(
     }
 
     new_object(
-      .parent = S7::S7_object(),
+      S7::S7_object(),
       data = new.env(parent = emptyenv()),
       logs = new.env(parent = emptyenv()),
       metrics = list(),
