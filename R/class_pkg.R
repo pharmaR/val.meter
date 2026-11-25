@@ -258,6 +258,15 @@ get_pkg_data <- function(
         data
       },
       error = function(e, ...) {
+        # errors that are already ours (and have no dedicated conversion) are
+        # kept as they are, S7 >= 1.0.0 can't `convert()` them to the abstract
+        # parent class
+        if (
+          inherits(e, class_val_meter_error$class) &&
+            !inherits(e, class_val_meter_derive_error$class)
+        ) {
+          return(e)
+        }
         convert(e, class_val_meter_error, field = name)
       }
     )
