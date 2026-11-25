@@ -56,7 +56,7 @@ data_info <- class_data_info <- new_class(
     #'   Can use Rd formatting for rich text.
     description = new_property(
       S7::new_S3_class("Rd"),
-      default = rd_empty(),
+      default = quote(rd_empty()),
       setter = function(self, value) {
         if (!inherits(value, "Rd")) {
           if (is.character(value) && sum(nchar(value)) == 0L) {
@@ -80,7 +80,7 @@ data_info <- class_data_info <- new_class(
     #'   categories.
     tags = new_property(
       class_tags,
-      default = class_tags()
+      default = quote(class_tags())
     ),
 
     #' @param data_class an object that can be converted into an `S7_class`
