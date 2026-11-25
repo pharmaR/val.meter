@@ -31,23 +31,21 @@ is_implemented <- function(generic, class, ...) {
 #' any new value to our desired type, raising an error if the input type can't
 #' be converted.
 #'
-#' @param self,value see [`S7::new_property`]`(setter = )` documentation for
-#'   function signature details.
+#' @param name `character(1L)` name of the property the setter is used for
+#' @param class the class to try to convert values to
 #'
 #' @keywords internal
 #' @noRd
-setter_try_from <- function(...) {
-  function(self, value) {
-    # we need to grab our S7 class information from the parent call
-    self_object <- attr(with(sys.frame(-1L), object), "S7_class")
-    prop_name <- with(sys.frame(-1L), name)
-    prop <- self_object@properties[[prop_name]]
+setter_try_from <- function(name, class) {
+  force(name)
+  force(class)
 
-    # then we can generically try to convert to our required class, returning
-    # the original value if we couldn't convert (which will throw a more
-    # informative error) when S7 tries to validate the object
-    S7::prop(self, prop_name) <- tryCatch(
-      convert(value, prop$class),
+  function(self, value) {
+    # try to convert to our required class, returning the original value if we
+    # couldn't convert (which will throw a more informative error) when S7
+    # tries to validate the object
+    S7::prop(self, name) <- tryCatch(
+      convert(value, class),
       error = function(e) value
     )
 

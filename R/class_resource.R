@@ -124,7 +124,7 @@ local_resource <- class_local_resource <- new_class(
     path = new_property(
       class_character,
       default = NA_character_,
-      setter = setter_try_from(),
+      setter = setter_try_from("path", class_character),
       validator = function(value) {
         # if (length(value) != 1L || is.na(value) || !file.exists(value)) {
         #   "invalid path"
