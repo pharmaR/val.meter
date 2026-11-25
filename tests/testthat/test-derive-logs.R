@@ -188,3 +188,11 @@ test_that("logging captures logs for the deepest evaluated metric", {
     "outer_message2"
   )
 })
+
+test_that("errors that are already val.meter errors are stored as they are", {
+  p <- pkg(mock_resource(package = "test", version = "1.2.3"))
+
+  m <- suppressWarnings(metrics(p))
+
+  expect_s3_class(m$downloads_total, "val_meter_disallowed_permissions_error")
+})
