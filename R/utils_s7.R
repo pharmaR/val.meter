@@ -31,23 +31,21 @@ is_implemented <- function(generic, class, ...) {
 #' any new value to our desired type, raising an error if the input type can't
 #' be converted.
 #'
-#' @param self,value see [`S7::new_property`]`(setter = )` documentation for
-#'   function signature details.
+#' @param name `character(1L)` name of the property the setter is used for
+#' @param class the class to try to convert values to
 #'
 #' @keywords internal
 #' @noRd
-setter_try_from <- function(...) {
-  function(self, value) {
-    # we need to grab our S7 class information from the parent call
-    self_object <- attr(with(sys.frame(-1L), object), "S7_class")
-    prop_name <- with(sys.frame(-1L), name)
-    prop <- self_object@properties[[prop_name]]
+setter_try_into <- function() {
+  function(self, name, value) {
+    self_class <- S7_class(self)
+    prop_class <- attr(self_class, "properties")[[name]]$class
 
-    # then we can generically try to convert to our required class, returning
-    # the original value if we couldn't convert (which will throw a more
-    # informative error) when S7 tries to validate the object
-    S7::prop(self, prop_name) <- tryCatch(
-      convert(value, prop$class),
+    # try to convert to our required class, returning the original value if we
+    # couldn't convert (which will throw a more informative error) when S7
+    # tries to validate the object
+    S7::prop(self, name) <- tryCatch(
+      S7::convert(value, prop_class),
       error = function(e) value
     )
 
@@ -102,7 +100,9 @@ constructor_try_from <- function(...) {
   self <- sys.frame(-1L)
   self_args <- list()
   for (name in names(self)) {
-    if (identical(name, "constructor")) next
+    if (identical(name, "constructor")) {
+      next
+    }
     self_args[[name]] <- self[[name]]
   }
 
@@ -112,13 +112,15 @@ constructor_try_from <- function(...) {
     # other args will come from the default constructor
     args <- list()
     arg_names <- setdiff(names(match.call(expand.dots = TRUE)[-1]), ".from")
-    for (name in arg_names) args[[name]] <- environment()[[name]]
+    for (name in arg_names) {
+      args[[name]] <- environment()[[name]]
+    }
 
     class <- sys.function()
     if (!missing(.from)) {
       # attempt conversion, overlaying parameter args
       return(tryCatch(
-        valid_eventually(convert(.from, class), function(object) {
+        valid_eventually(S7::convert(.from, class), function(object) {
           props(object) <- args
           object
         }),
@@ -284,10 +286,13 @@ class_graph <- function(x) {
     )
   )
 
-  g <- igraph::add_edges(g, rbind(
-    tail = names(x)[has_parent],
-    head = as.character(x_parents[has_parent])
-  ))
+  g <- igraph::add_edges(
+    g,
+    rbind(
+      tail = names(x)[has_parent],
+      head = as.character(x_parents[has_parent])
+    )
+  )
 
   g
 }

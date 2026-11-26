@@ -59,13 +59,13 @@ pkg <- class_pkg <- new_class(
 
     # handle anything that can be converted into a resource - especially
     # useful for character shorthands
-    if (!is_mocked) {
+    if (!is_mocked && !S7::S7_inherits(resource, class_resource)) {
       # TODO: warn when we won't use the policy; when a resource is provided
       resource <- convert(resource, class_resource, policy = policy)
     }
 
     new_object(
-      .parent = S7::S7_object(),
+      "_parent" = S7::S7_object(),
       data = new.env(parent = emptyenv()),
       logs = new.env(parent = emptyenv()),
       metrics = list(),
@@ -258,6 +258,15 @@ get_pkg_data <- function(
         data
       },
       error = function(e, ...) {
+        # errors that are already ours (and have no dedicated conversion) are
+        # kept as they are, S7 >= 1.0.0 can't `convert()` them to the abstract
+        # parent class
+        if (
+          inherits(e, class_val_meter_error$class) &&
+            !inherits(e, class_val_meter_derive_error$class)
+        ) {
+          return(e)
+        }
         convert(e, class_val_meter_error, field = name)
       }
     )

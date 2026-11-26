@@ -124,7 +124,7 @@ local_resource <- class_local_resource <- new_class(
     path = new_property(
       class_character,
       default = NA_character_,
-      setter = setter_try_from(),
+      setter = setter_try_into(),
       validator = function(value) {
         # if (length(value) != 1L || is.na(value) || !file.exists(value)) {
         #   "invalid path"
@@ -295,7 +295,7 @@ method(convert, list(class_character, class_resource)) <-
 
     # create an empty list to populate with discovered resources
     env <- environment()
-    env  # appease lintr
+    env # appease lintr
 
     resources <- list()
     length(resources) <- length(all_resource_types)
@@ -401,16 +401,6 @@ method(convert, list(class_character, class_resource)) <-
         resources = resources
       )
     }
-  }
-
-method(convert, list(class_resource, class_resource)) <-
-  function(from, to, ...) {
-    if (S7::S7_inherits(from, class = to)) {
-      return(from)
-    }
-    from_str <- S7:::class_desc(from_class) # nolint
-    to_str <- S7:::class_desc(to) # nolint
-    stop(fmt("{from_str} cannot be cast into a {to_str}"))
   }
 
 # mask built-in convert up/down-casting conversions
