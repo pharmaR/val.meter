@@ -36,16 +36,16 @@ is_implemented <- function(generic, class, ...) {
 #'
 #' @keywords internal
 #' @noRd
-setter_try_from <- function(name, class) {
-  force(name)
-  force(class)
+setter_try_into <- function() {
+  function(self, name, value) {
+    self_class <- S7_class(self)
+    prop_class <- attr(self_class, "properties")[[name]]$class
 
-  function(self, value) {
     # try to convert to our required class, returning the original value if we
     # couldn't convert (which will throw a more informative error) when S7
     # tries to validate the object
     S7::prop(self, name) <- tryCatch(
-      S7::convert(value, class),
+      S7::convert(value, prop_class),
       error = function(e) value
     )
 
@@ -100,7 +100,9 @@ constructor_try_from <- function(...) {
   self <- sys.frame(-1L)
   self_args <- list()
   for (name in names(self)) {
-    if (identical(name, "constructor")) next
+    if (identical(name, "constructor")) {
+      next
+    }
     self_args[[name]] <- self[[name]]
   }
 
@@ -110,7 +112,9 @@ constructor_try_from <- function(...) {
     # other args will come from the default constructor
     args <- list()
     arg_names <- setdiff(names(match.call(expand.dots = TRUE)[-1]), ".from")
-    for (name in arg_names) args[[name]] <- environment()[[name]]
+    for (name in arg_names) {
+      args[[name]] <- environment()[[name]]
+    }
 
     class <- sys.function()
     if (!missing(.from)) {
@@ -282,10 +286,13 @@ class_graph <- function(x) {
     )
   )
 
-  g <- igraph::add_edges(g, rbind(
-    tail = names(x)[has_parent],
-    head = as.character(x_parents[has_parent])
-  ))
+  g <- igraph::add_edges(
+    g,
+    rbind(
+      tail = names(x)[has_parent],
+      head = as.character(x_parents[has_parent])
+    )
+  )
 
   g
 }

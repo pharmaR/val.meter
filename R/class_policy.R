@@ -72,7 +72,7 @@ policy <- class_policy <- new_class(
     permissions = new_property(
       class_permissions,
       default = quote(class_permissions(FALSE)),
-      setter = setter_try_from("permissions", class_permissions)
+      setter = setter_try_into()
     )
   )
 )

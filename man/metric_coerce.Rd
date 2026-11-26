@@ -11,8 +11,11 @@ metric_coerce(from, to, ...)
 
 \item{to}{An S7 class specification, passed to \code{\link[S7:as_class]{as_class()}}.}
 
-\item{...}{Other arguments passed to custom \code{convert()} methods. For upcasting,
-these can be used to override existing properties or set new ones.}
+\item{...}{Other arguments passed to custom \code{convert()} methods. For
+downcasting, these can be used to override existing properties or set new
+ones. As a convenience, you can supply a single unnamed list instead of
+individual name-value pairs, which makes it easy to override properties
+programmatically.}
 }
 \description{
 Nearly identical to \code{\link[S7:convert]{S7::convert()}}, but with a few additional helpers for
