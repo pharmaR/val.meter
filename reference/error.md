@@ -49,5 +49,5 @@ error objects.
 # we want to parse (by evaluation) the output into our own error type
 error("missing_suggests", "wordcount")
 #> <error/val_meter_missing_suggests_error>
-#> ! data derivation requires suggests: wordcount
+#> ! data derivation requires suggests: wordcount 
 ```

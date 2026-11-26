@@ -140,7 +140,7 @@ impl_data(
   overwrite = TRUE,
   function(pkg, resource, field, ...) nchar(pkg$name)
 )
-#> Error:
+#> Error in `<data_info>@data_class`:
 #> ! metric data must have an atomic data class
 ```
 
@@ -169,7 +169,6 @@ impl_data(
   function(pkg, resource, field, ...) nchar(pkg$name)
 )
 #> Overwriting method pkg_data_info(S3<pkg_data_field_name_character_count/pkg_data_field>, <MISSING>)
-#> Overwriting method pkg_data_derive(<val.meter::pkg>, <val.meter::resource>, S3<pkg_data_field_name_character_count/pkg_data_field>)
 ```
 
 And finally, we can again confirm that we’ve registered our metric. This
@@ -315,14 +314,9 @@ explicitly from a `CRAN` resource
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r, permissions = TRUE)
 p$rosv_vulnerability_df
-#>            id
-#> 1 RSEC-2023-5
-#>                                                                       summary
-#> 1 Infinite loop, memory leak, and heap-based buffer over-read vulnerabilities
-#>                      modified                published  name ecosystem
-#> 1 2025-05-19T19:43:47.336587Z 2023-10-05T05:00:00.600Z haven      CRAN
-#>             purl versions
-#> 1 pkg:cran/haven    0.1.1
+#> <error/val_meter_derive_error>
+#> ! when deriving field "rosv_vulnerability_df"
+#> Can't convert to abstract class <data.frame>.
 ```
 
 That looks good! We can double check that a few of our guardrails are
@@ -348,9 +342,8 @@ similarly throw an error.
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r)
 p$rosv_vulnerability_df
-#> <error/val_meter_derive_error>
-#> ! when deriving field "rosv_vulnerability_df"
-#> data derivation was not granted permissions: "network"
+#> <error/val_meter_disallowed_permissions_error>
+#> ! data derivation was not granted permissions: "network"
 ```
 
 And similarly, if we didn’t have `rosv` installed we’d see something
@@ -363,9 +356,8 @@ p <- pkg(r, permissions = "network")
 p$rosv_vulnerability_df
 ```
 
-    #> <error/val_meter_derive_error>
-    #> ! when deriving field "rosv_vulnerability_df"
-    #> data derivation requires suggests: rosv
+    #> <error/val_meter_missing_suggests_error>
+    #> ! data derivation requires suggests: rosv
 
 Now that we can fetch the `rosv` response, we can process it to derive
 our metric.
@@ -391,7 +383,9 @@ And if we try to use it, we’ll find that we get
 r <- cran_repo_resource("haven", "0.1.1", repo = "https://cloud.r-project.org/")
 p <- pkg(r, permissions = "network")
 p$vulnerability_count
-#> [1] 1
+#> <error/val_meter_derive_dependency_error>
+#> ! field depends on field "rosv_vulnerability_df" that threw an error
+#>   during derivation
 ```
 
 You may have noticed that we *didn’t* declare which resources we were
@@ -404,10 +398,9 @@ if we tried it for a non-CRAN resource:
 r <- repo_resource("haven", "0.1.1", repo = "https://fakecran.org/")
 p <- pkg(r, permissions = "network")
 p$vulnerability_count
-#> <error/val_meter_derive_error>
-#> ! when deriving field "vulnerability_count"
-#> data field "rosv_vulnerability_df" could not be derived because it is not
-#> implemented for resource <val.meter::repo_resource>
+#> <error/val_meter_not_implemented_for_resource_error>
+#> ! data field "rosv_vulnerability_df" could not be derived because it is
+#>   not implemented for resource <val.meter::repo_resource>
 ```
 
 When attempting to calculate our count, we implicitly try to fetch the

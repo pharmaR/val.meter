@@ -26,8 +26,10 @@ metric_coerce(from, to, ...)
 
   Other arguments passed to custom
   [`convert()`](https://rconsortium.github.io/S7/reference/convert.html)
-  methods. For upcasting, these can be used to override existing
-  properties or set new ones.
+  methods. For downcasting, these can be used to override existing
+  properties or set new ones. As a convenience, you can supply a single
+  unnamed list instead of individual name-value pairs, which makes it
+  easy to override properties programmatically.
 
 ## Note
 
