@@ -45,7 +45,7 @@ setter_try_from <- function(name, class) {
     # couldn't convert (which will throw a more informative error) when S7
     # tries to validate the object
     S7::prop(self, name) <- tryCatch(
-      convert(value, class),
+      S7::convert(value, class),
       error = function(e) value
     )
 
@@ -116,7 +116,7 @@ constructor_try_from <- function(...) {
     if (!missing(.from)) {
       # attempt conversion, overlaying parameter args
       return(tryCatch(
-        valid_eventually(convert(.from, class), function(object) {
+        valid_eventually(S7::convert(.from, class), function(object) {
           props(object) <- args
           object
         }),
