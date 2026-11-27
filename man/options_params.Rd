@@ -17,6 +17,10 @@ them globally. (Defaults to \verb{c("absolute_path_linter", "all_equal_linter", 
 types of information various metrics contain. For more details, see
 \code{\link[=tags]{tags()}}. (Defaults to \code{tags(TRUE)}, overwritable using option 'val.meter.tags' or environment variable 'R_VAL_METER_TAGS')}
 
+\item{metrics.cran_status.ignore_version_mismatch}{Whether \verb{cran_status_*} metrics should ignore CRAN status results when
+the version on CRAN does not match the version of the package being
+assessed. (Defaults to \code{FALSE}, overwritable using option 'val.meter.metrics.cran_status.ignore_version_mismatch' or environment variable 'R_VAL_METER_METRICS_CRAN_STATUS_IGNORE_VERSION_MISMATCH')}
+
 \item{artifacts}{Directory where artifacts will be stored. This includes installation logs,
 package source code and temporary libraries used while evaluating packages. (Defaults to \code{ns_tmp_root()}, overwritable using option 'val.meter.artifacts' or environment variable 'R_VAL_METER_ARTIFACTS')}
 

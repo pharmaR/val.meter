@@ -87,6 +87,14 @@ GitLab instances or other federated git providers).\item{default: }{\preformatte
 \item{envvar: }{R_VAL_METER_SOURCE_CONTROL_DOMAINS (evaluated if possible, raw string otherwise)}
 }}
 
+\item{metrics.cran_status.ignore_version_mismatch}{\describe{
+Whether \verb{cran_status_*} metrics should ignore CRAN status results when
+the version on CRAN does not match the version of the package being
+assessed.\item{default: }{\preformatted{FALSE}}
+\item{option: }{val.meter.metrics.cran_status.ignore_version_mismatch}
+\item{envvar: }{R_VAL_METER_METRICS_CRAN_STATUS_IGNORE_VERSION_MISMATCH (evaluated if possible, raw string otherwise)}
+}}
+
 }
 }
 

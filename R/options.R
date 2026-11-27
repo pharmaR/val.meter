@@ -42,7 +42,7 @@ define_options(
     `lint_count` and `lint_free_fraction`. Each name must correspond
     to a linter constructor exported by `{{lintr}}` (e.g.
     `\"equals_na_linter\"`. Override to add, remove, or replace linters.
-    Note: linters requiring configuration or environment-specific ones 
+    Note: linters requiring configuration or environment-specific ones
     (e.g. `\"backport_linter\"`) are excluded from the default set;
     add them manually by changing this option, possibly after configuring
     them globally."
@@ -72,18 +72,27 @@ define_options(
     "vector_logic_linter"
   ),
 
-  fmt("Recognized source control hosting domains used when inferring whether a
-      package has a source code repository on a recognized hosting platform.
-      Customize this to add additional git hosting services (e.g., self-hosted
-      GitLab instances or other federated git providers)."),
+  fmt(
+    "Recognized source control hosting domains used when inferring whether a
+    package has a source code repository on a recognized hosting platform.
+    Customize this to add additional git hosting services (e.g., self-hosted
+    GitLab instances or other federated git providers)."
+  ),
   source_control_domains = c(
     "github.com",
     "gitlab.com",
     "bitbucket.org",
     "r-forge.r-project.org",
     "codeberg.org",
-    "sr.ht",              # sourcehut
+    "sr.ht", # sourcehut
     "gitea.com",
     "git.sr.ht"
-  )
+  ),
+
+  fmt(
+    "Whether `cran_status_*` metrics should ignore CRAN status results when
+    the version on CRAN does not match the version of the package being
+    assessed."
+  ),
+  metrics.cran_status.ignore_version_mismatch = FALSE
 )

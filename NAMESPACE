@@ -56,12 +56,14 @@ importFrom(httr2,
   resp_body_html
 )
 importFrom(jsonlite,read_json)
+importFrom(options,opt)
 importFrom(stats,
   rbinom,
   rpois,
   runif
 )
 importFrom(tools,
+  CRAN_check_results,
   dependsOnPkgs,
   file_ext,
   getVignetteInfo,
