@@ -9,7 +9,7 @@ checks <- data.frame(
 )
 
 with_mocked_cran_checks <- function(...) {
-  with_mocked_bindings(
+  testthat::with_mocked_bindings(
     cran_check_results = function(...) checks,
     ...
   )
