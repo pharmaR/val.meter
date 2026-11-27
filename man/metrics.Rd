@@ -69,6 +69,13 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
 
 \Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}}" }}
 }
+ \subsection{CRAN check ERRORs fraction by system flavor}{
+\code{<double>} The fraction of \abbr{CRAN} checks that produced \code{ERROR}s. Note that only the current latest version of the package on \abbr{CRAN} has the check status available. By default, See `?options` to include \abbr{CRAN} status results regardless of version.
+
+\Sexpr[stage=render,results=rd]{if (!is.na(match("network", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-green.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-red.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}"}  
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}\\n\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}}" }}
+}
  \subsection{Test coverage of package code by line}{
 \code{<double>} The fraction of lines of package code that are evaluated by any test
 
@@ -131,4 +138,25 @@ For access to \emph{all} the internally calculated data, pass \code{all = TRUE}.
   
 
 
+}
+ \subsection{CRAN check NOTEs fraction by system flavor}{
+\code{<double>} The fraction of \abbr{CRAN} checks that produced \code{NOTE}s. Note that only the current latest version of the package on \abbr{CRAN} has the check status available. By default, See `?options` to include \abbr{CRAN} status results regardless of version.
+
+\Sexpr[stage=render,results=rd]{if (!is.na(match("network", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-green.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-red.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}"}  
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}\\n\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}}" }}
+}
+ \subsection{CRAN check FAILUREs fraction by system flavor}{
+\code{<double>} The fraction of \abbr{CRAN} checks that produced \code{FAILURE}s. Note that only the current latest version of the package on \abbr{CRAN} has the check status available. By default, See `?options` to include \abbr{CRAN} status results regardless of version.
+
+\Sexpr[stage=render,results=rd]{if (!is.na(match("network", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-green.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-red.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}"}  
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}\\n\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}}" }}
+}
+ \subsection{CRAN check WARNINGs fraction by system flavor}{
+\code{<double>} The fraction of \abbr{CRAN} checks that produced \code{WARNING}s. Note that only the current latest version of the package on \abbr{CRAN} has the check status available. By default, See `?options` to include \abbr{CRAN} status results regardless of version.
+
+\Sexpr[stage=render,results=rd]{if (!is.na(match("network", getOption("val.meter.permissions")))) "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-green.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}" else "\\\\ifelse{html}{\\\\figure{badge-req-network-x-flat-square-red.svg}{options: alt = \\"[network]\\"}}{\\\\strong{[req::network]}}"}  
+
+\Sexpr[stage=install,results=rd]{if (numeric_version(paste0(R.version$major, ".", R.version$minor)) < "4.5.0") {     "\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}\\n\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}" } else {     "\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-transient-x-flat-square-blue.svg}{options: alt = \\"[transient]\\"}}{\\\\strong{[transient]}}}\\n\\\\link[val.meter:tags]{\\\\ifelse{html}{\\\\figure{badge-execution-x-flat-square-blue.svg}{options: alt = \\"[execution]\\"}}{\\\\strong{[execution]}}}" }}
 }}
