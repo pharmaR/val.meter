@@ -1,53 +1,33 @@
 # Helper: create a fake lintr `lints` object with n entries
 create_mock_lints <- function(n = 3) {
-  lint_list <- replicate(n, structure(
-    list(
-      filename = "R/test.R",
-      line_number = 1L,
-      column_number = 1L,
-      type = "warning",
-      message = "mock lint",
-      line = "x = 1",
-      ranges = NULL
+  lint_list <- replicate(
+    n,
+    structure(
+      list(
+        filename = "R/test.R",
+        line_number = 1L,
+        column_number = 1L,
+        type = "warning",
+        message = "mock lint",
+        line = "x = 1",
+        ranges = NULL
+      ),
+      class = "lint"
     ),
-    class = "lint"
-  ), simplify = FALSE)
+    simplify = FALSE
+  )
 
   structure(lint_list, class = c("lints", "list"))
-}
-
-# Helper: create a minimal package source directory for source_code_resource
-create_mock_pkg_dir <- function(dir) {
-  dir.create(file.path(dir, "R"), recursive = TRUE)
-  writeLines(
-    c(
-      "Package: mockpkg",
-      "Version: 1.0.0",
-      "Title: Mock Package",
-      "Description: A mock package for testing.",
-      "Authors@R: person('A', 'B', role = 'aut')",
-      "License: MIT + file LICENSE"
-    ),
-    file.path(dir, "DESCRIPTION")
-  )
-  writeLines("x <- 1", file.path(dir, "R", "mock.R"))
-  invisible(dir)
 }
 
 describe("lint_count derivation from mocked lints", {
   it("returns 0 when there are no lints", {
     skip_if_not_installed("lintr")
-    tmp_dir <- withr::local_tempdir()
-    create_mock_pkg_dir(tmp_dir)
-
     with_mocked_bindings(
       lint_package = function(...) create_mock_lints(0),
       .package = "lintr",
       {
-        p <- pkg(
-          source_code_resource(path = tmp_dir, package = "mockpkg"),
-          permissions = permissions("execution")
-        )
+        p <- mock_source_pkg(permissions = permissions("execution"))
         result <- p$lint_count
         expect_equal(result, 0L)
       }
@@ -56,17 +36,11 @@ describe("lint_count derivation from mocked lints", {
 
   it("returns the correct count matching number of lints", {
     skip_if_not_installed("lintr")
-    tmp_dir <- withr::local_tempdir()
-    create_mock_pkg_dir(tmp_dir)
-
     with_mocked_bindings(
       lint_package = function(...) create_mock_lints(7),
       .package = "lintr",
       {
-        p <- pkg(
-          source_code_resource(path = tmp_dir, package = "mockpkg"),
-          permissions = permissions("execution")
-        )
+        p <- mock_source_pkg(permissions = permissions("execution"))
         result <- p$lint_count
         expect_equal(result, 7L)
       }
@@ -75,17 +49,11 @@ describe("lint_count derivation from mocked lints", {
 
   it("returns a non-negative integer", {
     skip_if_not_installed("lintr")
-    tmp_dir <- withr::local_tempdir()
-    create_mock_pkg_dir(tmp_dir)
-
     with_mocked_bindings(
       lint_package = function(...) create_mock_lints(4),
       .package = "lintr",
       {
-        p <- pkg(
-          source_code_resource(path = tmp_dir, package = "mockpkg"),
-          permissions = permissions("execution")
-        )
+        p <- mock_source_pkg(permissions = permissions("execution"))
         result <- p$lint_count
         expect_true(is.numeric(result))
         expect_true(result >= 0)
@@ -95,17 +63,11 @@ describe("lint_count derivation from mocked lints", {
 
   it("stores the full lints object in lints", {
     skip_if_not_installed("lintr")
-    tmp_dir <- withr::local_tempdir()
-    create_mock_pkg_dir(tmp_dir)
-
     with_mocked_bindings(
       lint_package = function(...) create_mock_lints(3),
       .package = "lintr",
       {
-        p <- pkg(
-          source_code_resource(path = tmp_dir, package = "mockpkg"),
-          permissions = permissions("execution")
-        )
+        p <- mock_source_pkg(permissions = permissions("execution"))
         lints <- p$lints
         expect_true(inherits(lints, "lints"))
         expect_length(lints, 3)
@@ -294,8 +256,10 @@ describe("count_lintable_code_lines helper", {
     dir.create(file.path(tmp_dir, "R"))
     dir.create(file.path(tmp_dir, "tests", "testthat"), recursive = TRUE)
     writeLines("x <- 1", file.path(tmp_dir, "R", "a.R"))
-    writeLines("test_that('works', { expect_true(TRUE) })",
-               file.path(tmp_dir, "tests", "testthat", "test-a.R"))
+    writeLines(
+      "test_that('works', { expect_true(TRUE) })",
+      file.path(tmp_dir, "tests", "testthat", "test-a.R")
+    )
     result <- count_lintable_code_lines(tmp_dir)
     # 1 from R/, 1 from tests/
     expect_equal(result, 2L)
@@ -312,18 +276,39 @@ describe("count_linted_lines helper", {
     lints_same_line <- structure(
       list(
         structure(
-          list(filename = "R/a.R", line_number = 5L, column_number = 1L,
-               type = "warning", message = "lint 1", line = "x", ranges = NULL),
+          list(
+            filename = "R/a.R",
+            line_number = 5L,
+            column_number = 1L,
+            type = "warning",
+            message = "lint 1",
+            line = "x",
+            ranges = NULL
+          ),
           class = "lint"
         ),
         structure(
-          list(filename = "R/a.R", line_number = 5L, column_number = 3L,
-               type = "warning", message = "lint 2", line = "x", ranges = NULL),
+          list(
+            filename = "R/a.R",
+            line_number = 5L,
+            column_number = 3L,
+            type = "warning",
+            message = "lint 2",
+            line = "x",
+            ranges = NULL
+          ),
           class = "lint"
         ),
         structure(
-          list(filename = "R/a.R", line_number = 6L, column_number = 1L,
-               type = "warning", message = "lint 3", line = "y", ranges = NULL),
+          list(
+            filename = "R/a.R",
+            line_number = 6L,
+            column_number = 1L,
+            type = "warning",
+            message = "lint 3",
+            line = "y",
+            ranges = NULL
+          ),
           class = "lint"
         )
       ),
@@ -337,17 +322,11 @@ describe("count_linted_lines helper", {
 describe("lint_free_fraction derivation", {
   it("returns 1 when there are no lints", {
     skip_if_not_installed("lintr")
-    tmp_dir <- withr::local_tempdir()
-    create_mock_pkg_dir(tmp_dir)
-
     with_mocked_bindings(
       lint_package = function(...) create_mock_lints(0),
       .package = "lintr",
       {
-        p <- pkg(
-          source_code_resource(path = tmp_dir, package = "mockpkg"),
-          permissions = permissions("execution")
-        )
+        p <- mock_source_pkg(permissions = permissions("execution"))
         result <- p$lint_free_fraction
         expect_equal(result, 1.0)
       }
@@ -356,17 +335,11 @@ describe("lint_free_fraction derivation", {
 
   it("returns a value in [0, 1]", {
     skip_if_not_installed("lintr")
-    tmp_dir <- withr::local_tempdir()
-    create_mock_pkg_dir(tmp_dir)
-
     with_mocked_bindings(
       lint_package = function(...) create_mock_lints(2),
       .package = "lintr",
       {
-        p <- pkg(
-          source_code_resource(path = tmp_dir, package = "mockpkg"),
-          permissions = permissions("execution")
-        )
+        p <- mock_source_pkg(permissions = permissions("execution"))
         result <- p$lint_free_fraction
         expect_true(is.numeric(result))
         expect_true(result >= 0.0 && result <= 1.0)
@@ -398,8 +371,6 @@ describe("lint_free_fraction mock implementation", {
 describe("lint_linters option customization", {
   it("uses the linter names from the option", {
     skip_if_not_installed("lintr")
-    tmp_dir <- withr::local_tempdir()
-    create_mock_pkg_dir(tmp_dir)
 
     called_with <- NULL
     old <- opt_set("lint_linters", c("equals_na_linter", "seq_linter"))
@@ -412,10 +383,7 @@ describe("lint_linters option customization", {
       },
       .package = "lintr",
       {
-        p <- pkg(
-          source_code_resource(path = tmp_dir, package = "mockpkg"),
-          permissions = permissions("execution")
-        )
+        p <- mock_source_pkg(permissions = permissions("execution"))
         p$lints
       }
     )

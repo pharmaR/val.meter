@@ -40,12 +40,45 @@ method(from_dcf, list(class_character, S7::new_S3_class("S7_class"))) <-
     from_dcf(x, structure(list(), class = c(class_name, "S7_object")))
   }
 
+#' A minimalist evaluation context for evaluating arbitrary code
+#'
+#' @keywords internal
+safe_envir <- function() {
+  env <- new.env(parent = emptyenv())
+
+  safe_allow_list <- c(
+    "c",
+    "numeric",
+    "character",
+    "factor",
+    "integer",
+    "logical"
+  )
+
+  for (name in safe_allow_list) {
+    env[[name]] <- baseenv()[[name]]
+  }
+
+  env[["::"]] <- function(pkg, name) {
+    name_str <- as.character(substitute(name))
+    pkg_str <- as.character(substitute(pkg))
+    if (identical(pkg_str, packageName())) {
+      getExportedValue(packageName(), name_str)
+    } else {
+      stop("Package loads are disabled in safe eval mode.")
+    }
+  }
+
+  env
+}
+
 method(from_dcf, list(class_character, class_any)) <-
   function(
     x,
     to,
     ...,
     eval = TRUE,
+    eval_envir = safe_envir(),
     fragment = c("key-values", "key-value", "value")
   ) {
     fragment <- match.arg(fragment)
@@ -82,7 +115,7 @@ method(from_dcf, list(class_character, class_any)) <-
         x
       },
       "value" = {
-        if (eval) eval(parse(text = x), envir = topenv()) else x
+        if (eval) eval(parse(text = x), envir = eval_envir) else x
       }
     )
   }
