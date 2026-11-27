@@ -152,7 +152,13 @@ random_pkgs <- function(n = 100, ...) {
     metrics(pkg)
   }
 
-  structure(pkgs, class = c("list_of_pkg", class(pkgs)))
+  list_of_pkg(pkgs)
+}
+
+#' Give a list-of object a bespoke class
+#' @keyword internal
+list_of_pkg <- function(x) {
+  structure(x, class = c("list_of_pkg", class(x)))
 }
 
 #' @describeIn random_pkg
